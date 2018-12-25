@@ -25,7 +25,7 @@ extras = {
 }
 
 setup(name='grafanimate',
-      version='0.0.0',
+      version='0.1.0',
       description='Animate all the data.',
       long_description=README,
       license="AGPL 3, EUPL 1.2",
