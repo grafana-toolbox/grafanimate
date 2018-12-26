@@ -2,13 +2,11 @@
 # (c) 2018 Andreas Motl <andreas@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
 import logging
+from munch import munchify
 from datetime import timedelta
-
-import shutil
-
-import os
 from dateutil.relativedelta import relativedelta
-from dateutil.rrule import rrule, HOURLY, DAILY, WEEKLY, MONTHLY
+from dateutil.rrule import rrule, SECONDLY, MINUTELY, HOURLY, DAILY, WEEKLY, MONTHLY, YEARLY
+
 from grafanimate.grafana import GrafanaWrapper
 
 logger = logging.getLogger(__name__)
@@ -79,31 +77,46 @@ class SequentialAnimation:
             # Store image.
             with open(imagefile, 'w') as f:
                 f.write(image)
-
-            logger.info('Saved frame to {}. Size: {}'.format(imagefile, len(image)))
-
     def get_freq_delta(self, interval):
 
+            logger.info('Saved frame to {}. Size: {}'.format(imagefile, len(image)))
+        # Second
+        if interval == 'secondly':
+            freq = SECONDLY
+            delta = timedelta(seconds=1)
+
+        # Minute
+        elif interval == 'minutely':
+            freq = MINUTELY
+            delta = timedelta(minutes=1) - timedelta(seconds=1)
+
         # Hourly
-        if interval == 'hourly':
+        elif interval == 'hourly':
             freq = HOURLY
-            delta = timedelta(hours=1)
+            delta = timedelta(hours=1) - timedelta(seconds=1)
 
         # Daily
         elif interval == 'daily':
             freq = DAILY
-            delta = timedelta(days=1)
+            delta = timedelta(days=1) - timedelta(seconds=1)
 
         # Weekly
         elif interval == 'weekly':
             freq = WEEKLY
-            delta = timedelta(weeks=1)
+            delta = timedelta(weeks=1) - timedelta(seconds=1)
 
         # Monthly
         elif interval == 'monthly':
             freq = MONTHLY
-            #delta = timedelta(month=1)
-            delta = relativedelta(months=+1)
+            delta = relativedelta(months=+1) - relativedelta(seconds=1)
+
+        # Yearly
+        elif interval == 'yearly':
+            freq = YEARLY
+            delta = relativedelta(years=+1) - relativedelta(seconds=1)
+
+        else:
+            raise ValueError('Unknown interval "{}"'.format(interval))
 
         return freq, delta
 

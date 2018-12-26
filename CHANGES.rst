@@ -6,6 +6,7 @@ grafanimate changelog
 in progress
 ===========
 - Fix missing ``grafana-sidecar.js`` file in Python sdist package
+- Add intervals "secondly" and "minutely". Thanks, weef!
 
 
 2018-12-26 0.2.0
