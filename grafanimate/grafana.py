@@ -70,7 +70,7 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         try:
             waiter.until(condition)
         except TimeoutException as ex:
-            logger.warning('wait_all_data_received timed out: %s', ex)
+            logger.warning('Timed out waiting for data: %s', ex)
 
     def clear_all_data_received(self):
         self.run_javascript("grafanaSidecar.hasAllData(false);")

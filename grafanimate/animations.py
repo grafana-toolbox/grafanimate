@@ -36,6 +36,10 @@ class SequentialAnimation:
 
     def run(self, dtstart=None, dtuntil=None, interval=None):
 
+        if dtstart > dtuntil:
+            message = 'Timestamp dtstart={} is after dtuntil={}'.format(dtstart, dtuntil)
+            raise ValueError(message)
+
         #flavor = 'expand'
         flavor = 'window'
 
@@ -46,10 +50,14 @@ class SequentialAnimation:
             dtuntil += delta
 
         # Compute complete date range.
+        logger.info('Creating rrule: dtstart=%s, until=%s, freq=%s', dtstart, dtuntil, freq)
         daterange = list(rrule(dtstart=dtstart, until=dtuntil, freq=freq))
+        #logger.info('Date range is: %s', daterange)
 
         # Iterate date range.
         for date in daterange:
+
+            logger.info('Datetime step: %s', date)
 
             # Compute start and end dates based on flavor.
 

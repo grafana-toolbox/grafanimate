@@ -8,6 +8,7 @@ in progress
 - Fix missing ``grafana-sidecar.js`` file in Python sdist package
 - Add intervals "secondly", "minutely" and "yearly". Thanks, weef!
 - Improve date formatting and separation of concerns
+- Add sanity checks, improve logging
 
 
 2018-12-26 0.2.0
