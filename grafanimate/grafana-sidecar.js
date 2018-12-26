@@ -114,7 +114,7 @@ class GrafanaSidecarSrv {
         $('.navbar').css('padding-left', '15px');
 
         // Dashboard title, left side.
-        $('.navbar-page-btn').css('font-size', 'xx-large');
+        $('.navbar-page-btn').css('font-size', 'xx-large').css('max-width', '800px');
 
         // Buttons and clock, right side.
         $('.navbar-buttons--tv').hide();
