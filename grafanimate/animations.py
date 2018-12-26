@@ -16,6 +16,7 @@ class SequentialAnimation:
 
     def __init__(self, grafana_url=None, dashboard_uid=None, time_start=None, time_end=None, time_step=None):
 
+        self.grafana_url = grafana_url
         self.dashboard_uid = dashboard_uid
 
         self.time_start = time_start
@@ -23,7 +24,7 @@ class SequentialAnimation:
         self.time_end = time_end
         self.time_step = time_step
 
-        self.grafana = GrafanaWrapper(grafana_url=grafana_url)
+        self.grafana = GrafanaWrapper(grafana_url=self.grafana_url)
         self.grafana.boot_firefox(headless=False)
         self.grafana.boot_grafana()
 
@@ -53,33 +54,33 @@ class SequentialAnimation:
             # Compute start and end dates based on flavor.
 
             if flavor == 'window':
-                start_date_formatted = format_date(date, interval)
-                end_date_formatted = format_date(date + delta, interval)
+                dtstart = date
+                dtuntil = date + delta
 
             elif flavor == 'expand':
-                start_date_formatted = format_date(dtstart, interval)
-                end_date_formatted = format_date(date, interval)
+                dtuntil = date
 
             # Render image.
-            image = self.render(start_date_formatted, end_date_formatted)
+            image = self.render(dtstart, dtuntil, interval)
 
-            # Compute image sequence file name.
-            imagefile = './var/spool/{uid}/{uid}_{date}.png'.format(
-                interval=interval,
-                uid=self.dashboard_uid,
-                date=start_date_formatted)
+            # Build item model.
+            item = munchify({
+                'meta': {
+                    'grafana': self.grafana_url,
+                    'dashboard': self.dashboard_uid,
+                    'interval': interval,
+                },
+                'data': {
+                    'dtstart': dtstart,
+                    'dtuntil': dtuntil,
+                    'image': image,
+                },
+            })
 
-            # Ensure directory exists.
-            directory = os.path.dirname(imagefile)
-            if not os.path.exists(directory):
-                os.makedirs(directory)
+            yield item
 
-            # Store image.
-            with open(imagefile, 'w') as f:
-                f.write(image)
     def get_freq_delta(self, interval):
 
-            logger.info('Saved frame to {}. Size: {}'.format(imagefile, len(image)))
         # Second
         if interval == 'secondly':
             freq = SECONDLY
@@ -120,10 +121,10 @@ class SequentialAnimation:
 
         return freq, delta
 
-    def render(self, date_begin, date_end):
+    def render(self, dtstart, dtuntil, interval):
 
         logger.debug('Adjusting time range control')
-        self.grafana.timewarp(date_begin, date_end)
+        self.grafana.timewarp(dtstart, dtuntil, interval)
 
         logger.debug('Rendering image')
         return self.make_image()
@@ -132,11 +133,3 @@ class SequentialAnimation:
         image = self.grafana.render_image()
         #logger.info('Image size: %s', len(image))
         return image
-
-
-def format_date(date, interval=None):
-    pattern = '%Y-%m-%d'
-    if interval == 'hourly':
-        pattern = '%Y-%m-%dT%H:%M:%S'
-    date_formatted = date.strftime(pattern)
-    return date_formatted

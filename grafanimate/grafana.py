@@ -2,6 +2,8 @@
 # (c) 2018 Andreas Motl <andreas@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
 import logging
+
+from grafanimate.util import format_date_grafana
 from pkg_resources import resource_stream
 from marionette_driver import Wait
 from marionette_driver.errors import TimeoutException
@@ -73,20 +75,20 @@ class GrafanaWrapper(FirefoxMarionetteBase):
     def clear_all_data_received(self):
         self.run_javascript("grafanaSidecar.hasAllData(false);")
 
-    def timewarp(self, starttime, endtime):
+    def timewarp(self, dtstart, dtuntil, interval):
         """
         Navigate the Dashboard to the designated point in time
         and wait for refreshing all child components including data.
         """
 
         # Notify user.
-        message = 'Timewarp to {} -> {}'.format(starttime, endtime)
+        message = 'Timewarp to {} -> {}'.format(dtstart, dtuntil)
         logger.info(message)
         self.console_log(message)
 
         # Perform timewarp.
         self.clear_all_data_received()
-        self.timerange_set(starttime, endtime)
+        self.timerange_set(format_date_grafana(dtstart, interval), format_date_grafana(dtuntil, interval))
         self.wait_all_data_received()
 
     def timerange_set(self, starttime, endtime):
