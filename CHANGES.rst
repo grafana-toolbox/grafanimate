@@ -9,6 +9,7 @@ in progress
 - Add intervals "secondly", "minutely" and "yearly". Thanks, weef!
 - Improve date formatting and separation of concerns
 - Add sanity checks, improve logging
+- Fix croaking when initially opening dashboard with "from=0&to=0" parameters
 
 
 2018-12-26 0.2.0

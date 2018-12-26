@@ -81,7 +81,7 @@ class GrafanaSidecarSrv {
                 // Trigger the dashboard loading.
                 // https://docs.angularjs.org/api/ng/service/$location#url
                 // https://stackoverflow.com/questions/16450125/angularjs-redirect-from-outside-angular/16450748#16450748
-                $location.url('/d/' + uid + '?from=0&to=0');
+                $location.url('/d/' + uid);
 
             });
 
