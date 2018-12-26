@@ -180,6 +180,11 @@ class GrafanaSidecarSrv {
         // Wait for all panels to receive their data.
         var promises = [];
         dashboard.panels.forEach(function(panel) {
+            // Skip panels with type==row
+            if (panel.type == 'row') {
+                return;
+            }
+
             var promise = new Promise(function(resolve, reject) {
                 panel.events.on('data-received', function(event) {
                     //log('--- PANEL DATA-RECEIVED');
