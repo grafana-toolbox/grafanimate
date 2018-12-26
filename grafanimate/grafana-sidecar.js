@@ -173,7 +173,8 @@ class GrafanaSidecarSrv {
 
         });
 
-        _this.onPanelRefresh();
+        // FIXME: Really?
+        //_this.onPanelRefresh();
 
     }
 

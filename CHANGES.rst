@@ -12,6 +12,7 @@ in progress
 - Fix croaking when initially opening dashboard with "from=0&to=0" parameters
 - Optimize user interface for wide dashboad names
 - Fix stalling on row-type panel objects
+- Don't initially run "onPanelRefresh"?
 
 
 2018-12-26 0.2.0
