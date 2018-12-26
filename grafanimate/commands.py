@@ -21,23 +21,28 @@ def run():
 
     Options:
       --grafana-url=<url>           Base URL to Grafana, [default: http://localhost:3000].
-      --scenario=<scenario>         Which scenario to run. Scenarios are defined as methods in file ``scenarios.py``.
+      --scenario=<scenario>         Which scenario to run. Scenarios are defined as methods.
       --dashboard-uid=<uid>         Grafana dashboard uid
 
       --debug                       Enable debug logging
       -h --help                     Show this screen
 
-      --target=<target>             Data output target (not available yet)
 
-    Examples:
+    Examples for scenario mode. Script your animation in file "scenarios.py".
 
       # Generate sequence of .png files in ./var/spool/ldi_all/1aOmc1sik
       grafanimate --grafana-url=http://localhost:3000/ --scenario=ldi_all --dashboard-uid=1aOmc1sik
 
 
-    Todo: Implement ad-hoc mode.
-    Until then, please use scenario mode.
-    Don't be afraid, it's just some copy/pasting in the scenarios.py file, go ahead.
+
+    NOT IMPLEMENTED YET
+
+      --target=<target>             Data output target
+
+    Examples: Ad hoc mode.
+
+    Until implemented, please use scenario mode.
+    Don't be afraid, it's just some copy/pasting in the "scenarios.py" file, go ahead.
 
       --start=<start>               Start time
       --end=<end>                   End time

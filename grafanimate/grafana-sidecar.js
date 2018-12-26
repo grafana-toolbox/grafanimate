@@ -127,11 +127,13 @@ class GrafanaSidecarSrv {
     improvePanelChrome() {
 
         // Disable animated spinner.
+        // TODO: Make controllable by commandline parameter.
         $('.panel-loading').hide();
 
         // Remove zoom element from Worldmap Panel.
         $('.leaflet-control-zoom').hide();
 
+        // Hijack Leaflet attribution area for Grafana and grafanimate.
         var signature = $('.leaflet-control-attribution');
         if (!signature.data('manipulated')) {
             signature.data('manipulated', true);
@@ -139,7 +141,6 @@ class GrafanaSidecarSrv {
             var grafanimate = $('<a href="https://github.com/daq-tools/grafanimate" title="grafanimate: Animate timeseries data with Grafana">grafanimate</a>');
             var grafana = $('<a href="https://grafana.com/" title="Grafana: The leading open source software for time series analytics">Grafana</a>');
             signature.prepend(grafanimate, seperator, grafana, seperator);
-            //signature.prepend(link);
         }
 
     }
@@ -147,6 +148,7 @@ class GrafanaSidecarSrv {
     onDashboardOpen() {
         console.info('Dashboard opened');
 
+        // Adjust user interface on dashboard load.
         this.improveDashboardChrome();
 
         // Acquire real dashboard model object.
@@ -163,6 +165,7 @@ class GrafanaSidecarSrv {
             // Clear signal.
             _this.hasAllData(false);
 
+            // Adjust user interface on dashboard refresh.
             _this.improvePanelChrome();
 
             // Watch for panel data to arrive.
@@ -180,19 +183,20 @@ class GrafanaSidecarSrv {
         // Wait for all panels to receive their data.
         var promises = [];
         dashboard.panels.forEach(function(panel) {
+
             // Skip panels with type==row
             if (panel.type == 'row') {
                 return;
             }
 
             var promise = new Promise(function(resolve, reject) {
-                panel.events.on('data-received', function(event) {
+                panel.events.on('data-received', function() {
                     //log('--- PANEL DATA-RECEIVED');
                     resolve();
                 });
                 panel.events.on('data-error', function(event) {
-                    console.error('--- PANEL DATA-ERROR', event);
-                    reject();
+                    //console.error('--- PANEL DATA-ERROR', event);
+                    reject(event);
                 });
             });
             promises.push(promise);
@@ -201,8 +205,10 @@ class GrafanaSidecarSrv {
         // Consolidate all promises into single one.
         // TODO: What about the error case? Should call `.hasAllData(false)`?
         var _this = this;
-        Promise.all(promises).then(function() {
+        Promise.all(promises).then(function(event) {
             _this.$rootScope.$emit('all-data-received', dashboard);
+        }).catch(function(error) {
+            console.error('Unable to receive data:', error);
         });
     }
 
