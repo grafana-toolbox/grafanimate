@@ -7,11 +7,11 @@ import atexit
 import logging
 from collections import OrderedDict
 
+from marionette_driver import Wait
 from marionette_driver.marionette import Marionette
 from marionette_driver.errors import NoSuchElementException
 
 from grafanimate.util import check_socket, find_program_candidate
-
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +54,7 @@ class FirefoxMarionetteBase(object):
     def enable_shutdown(self, do_shutdown=True):
         self.firefox_do_shutdown = do_shutdown
 
-    def bootstrap(self, headless=True):
+    def boot_firefox(self, headless=True):
 
         # Indicate whether to run in headless mode
         self.enable_headless(headless)
@@ -127,7 +127,7 @@ class FirefoxMarionetteBase(object):
     def ensure_session(self):
         #self.log_status()
         if not self.has_active_session():
-            self.bootstrap()
+            self.boot_firefox()
             logger.info('No session with Marionette, started new session {}'.format(self.marionette.session_id))
 
     def shutdown(self):
@@ -150,3 +150,18 @@ class FirefoxMarionetteBase(object):
             return element
         except NoSuchElementException:
             pass
+
+    def wait_for_element_tag(self, tagname):
+        """
+        Wait for element to appear.
+        """
+        waiter = Wait(self.marionette, timeout=20.0, interval=0.1)
+        element = waiter.until(lambda m: self.find_tag(tagname))
+        return element
+
+    def render_image(self, element=None):
+        """
+        Return screenshot from element.
+        """
+        image = self.marionette.screenshot(element=element, format='binary')
+        return image

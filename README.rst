@@ -13,52 +13,82 @@
 grafanimate
 ###########
 
-Animate all the data.
+Animate timeseries data with Grafana.
 
 
 *****
 About
 *****
 In essence, this program captures screenshots while animating
-a Grafana dashboard by manipulating its `time range control`_.
+a Grafana dashboard by manipulating its `time range control`_,
+i.e. navigating through time.
 
-The result can be saved as a series of images, an animated
+The result can be saved as a sequence of images, an animated
 gif file or as a video file. The latter optionally accepts
-adding audio to support creating a lovely atmosphere when
-watching the data move.
-
-
-*******
-Details
-*******
-Animating things in Grafana_ across the time-axis in the spirit
-of the `GeoLoop Panel Plugin`_ has not been unlocked in a general
-way. Neither Playlists_ nor `Scripted Dashboards`_ offer these
-things to the user, but this program can be combined with both
-to
-
-At this programs' core is the code to `set time range in Grafana`_::
-
-    timeSrv = angular.element('grafana-app').injector().get('timeSrv');
-    timeSrv.setTime({from: "$date_range_start", to: "$date_range_end"});
-
-Turtles all the way up, the main rendering work horse is a Firefox Browser
-automated through `Marionette Python Client`_ fame:
-
-    The Marionette Python client library allows you to remotely control
-    a Gecko-based browser or device which is running a Marionette server.
+adding audio for creating a more immersive atmosphere.
 
 
 ****
 Demo
 ****
-Todo.
+.. image:: https://ptrace.hiveeyes.org/2018-12-26_ldi-coverage.gif
+
+
+*****
+Usage
+*****
+::
+
+    $ grafanimate --help
+
+    Usage:
+      grafanimate [options] [--target=<target>]...
+      grafanimate --version
+      grafanimate (-h | --help)
+
+    Options:
+      --grafana-url=<url>           Base URL to Grafana, [default: http://localhost:3000].
+      --scenario=<scenario>         Which scenario to run. Scenarios are defined as methods in file ``scenarios.py``.
+      --dashboard-uid=<uid>         Grafana dashboard uid
+
+      --debug                       Enable debug logging
+      -h --help                     Show this screen
+
+      --target=<target>             Data output target (not available yet)
+
+    Examples:
+
+      # Generate sequence of .png files in ./var/spool/ldi_all/1aOmc1sik
+      grafanimate --grafana-url=http://localhost:3000/ --scenario=ldi_all --dashboard-uid=1aOmc1sik
+
+
+    Todo: Implement ad-hoc mode.
+    Until then, please use scenario mode.
+    Don't be afraid, it's just some copy/pasting in the scenarios.py file, go ahead.
+
+      --start=<start>               Start time
+      --end=<end>                   End time
+      --interval=<end>              Interval time
 
 
 *****
 Setup
 *****
 
+
+ffmpeg
+======
+This programs depends on the ``drawtext`` ffmpeg filter.
+To make this work, ffmpeg must be compiled with ``--with-freetype``.
+
+.. seealso:: https://stackoverflow.com/questions/48006872/no-such-filter-drawtext/53702852#53702852
+
+::
+
+    brew upgrade ffmpeg --with-freetype
+
+grafanimate
+===========
 .. note::
 
     As Marionette for Firefox is not available for Python 3,
@@ -71,35 +101,51 @@ Setup
     pip install grafanimate
 
 
-*****
-Usage
-*****
-::
-
-    $ grafanimate --help
-
-    Usage:
-      grafanimate <url> [options] [--target=<target>]...
-      grafanimate --version
-      grafanimate (-h | --help)
-
-    Options:
-      --target=<target>             Data output target (not available yet)
-      --start=<start>               Start time
-      --end=<end>                   End time
-      --interval=<end>              Interval time
-      --debug                       Enable debug logging
-      -h --help                     Show this screen
-
-    Examples:
-
-      # Run on designated dashboard, starting time range control at 2015-10-01 with an interval of 1 day
-      grafanimate http://localhost:3000/d/1aOmc1sik/luftdaten-info-growth --start=20151001 --interval=1d
-
-
 *******
+Details
+*******
+Animating things in Grafana_ across the time-axis in the spirit
+of the `GeoLoop Panel Plugin`_ has not been unlocked in a general
+way until now.
+
+At this programs' core is the code to `set time range in Grafana`_::
+
+    timeSrv = angular.element('grafana-app').injector().get('timeSrv');
+    timeSrv.setTime({from: "$date_range_start", to: "$date_range_end"});
+
+Turtles all the way up, the main rendering work horse is a Firefox Browser
+automated through `Marionette Python Client`_ fame:
+
+    The Marionette Python client library allows you to remotely control
+    a Gecko-based browser or device which is running a Marionette server.
+
+Outlook
+=======
+Neither Playlists_ nor `Scripted Dashboards`_ offer these things
+to the user, but this program can be combined with both in order
+to implement more complex animations on top of Grafana.
+
+
+*******************
+Project information
+*******************
+``grafanimate`` is released under the GNU AGPL v3 license.
+The code lives on `GitHub <https://github.com/daq-tools/grafanimate>`_ and
+the Python package is published to `PyPI <https://pypi.org/project/grafanimate/>`_.
+
+The software has been tested on Python 2.7.
+
+
+Contributing
+============
+We are always happy to receive code contributions, ideas, suggestions
+and problem reports from the community.
+Spend some time taking a look around, locate a bug, design issue or
+spelling mistake and then send us a pull request or create an issue.
+
+
 License
-*******
+=======
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
@@ -115,6 +161,7 @@ along with this program; if not, see:
 <http://www.gnu.org/licenses/agpl-3.0.txt>,
 or write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+
 
 
 .. _Grafana: https://grafana.com/

@@ -6,6 +6,7 @@ import sys
 import socket
 import logging
 from contextlib import closing
+from munch import munchify
 
 
 def setup_logging(level=logging.INFO):
@@ -25,7 +26,7 @@ def normalize_options(options):
     for key, value in options.items():
         key = key.strip('--<>')
         normalized[key] = value
-    return normalized
+    return munchify(normalized)
 
 
 def find_program_candidate(candidates):

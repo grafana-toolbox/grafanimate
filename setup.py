@@ -25,8 +25,8 @@ extras = {
 }
 
 setup(name='grafanimate',
-      version='0.1.0',
-      description='Animate all the data.',
+      version='0.1.0a2',
+      description='Animate timeseries data with Grafana',
       long_description=README,
       license="AGPL 3, EUPL 1.2",
       classifiers=[
@@ -63,6 +63,9 @@ setup(name='grafanimate',
       packages=find_packages(),
       include_package_data=True,
       package_data={
+        'grafanimate': [
+          '*.js',
+        ],
       },
       zip_safe=False,
       test_suite='grafanimate.test',
