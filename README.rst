@@ -19,19 +19,44 @@ Animate timeseries data with Grafana.
 *****
 About
 *****
-In essence, this program captures screenshots while animating
-a Grafana dashboard by manipulating its `time range control`_,
+`grafanimate` captures screenshots while animating a
+Grafana dashboard by manipulating its `time range control`_,
 i.e. navigating through time.
 
 The result can be saved as a sequence of images, an animated
-gif file or as a video file. The latter optionally accepts
-adding audio for creating a more immersive atmosphere.
+gif file or as a video file.
+
+
+.. attention::
+
+    This program can put significant load on your Grafana instance
+    and the underlying database machinery. Handle with care!
 
 
 ****
 Demo
 ****
+
+Screenshot
+==========
+Coverage of luftdaten.info sensors starting October 2015.
+
 .. image:: https://ptrace.hiveeyes.org/2018-12-26_ldi-coverage.gif
+    :width: 600px
+
+Details
+=======
+- **Data source**: `luftdaten.info`_ (LDI)
+- **Production**: `Luftdatenpumpe`_, daily
+
+- **Development**: `Erneuerung der Luftdatenpumpe`_. All contributions welcome.
+- **Composition**: `The Hiveeyes Project`_. Developing a flexible beehive monitoring infrastructure.
+
+.. _luftdaten.info: http://luftdaten.info/
+.. _Luftdatenpumpe: https://github.com/hiveeyes/luftdatenpumpe
+.. _Erneuerung der Luftdatenpumpe: https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199
+.. _The Hiveeyes Project: https://hiveeyes.org/
+
 
 
 *****
@@ -48,7 +73,7 @@ Usage
 
     Options:
       --grafana-url=<url>           Base URL to Grafana, [default: http://localhost:3000].
-      --scenario=<scenario>         Which scenario to run. Scenarios are defined as methods in file ``scenarios.py``.
+      --scenario=<scenario>         Which scenario to run. Scenarios are defined as methods in file "scenarios.py".
       --dashboard-uid=<uid>         Grafana dashboard uid
 
       --debug                       Enable debug logging
@@ -81,9 +106,9 @@ ffmpeg
 This programs depends on the ``drawtext`` ffmpeg filter.
 To make this work, ffmpeg must be compiled with ``--with-freetype``.
 
-.. seealso:: https://stackoverflow.com/questions/48006872/no-such-filter-drawtext/53702852#53702852
+-- https://stackoverflow.com/questions/48006872/no-such-filter-drawtext/53702852#53702852
 
-::
+e.g.::
 
     brew upgrade ffmpeg --with-freetype
 
@@ -101,17 +126,17 @@ grafanimate
     pip install grafanimate
 
 
-*******
-Details
-*******
+********
+Thoughts
+********
 Animating things in Grafana_ across the time-axis in the spirit
-of the `GeoLoop Panel Plugin`_ has not been unlocked in a general
-way until now.
+of the `GeoLoop Panel Plugin`_ but in a more general way has not
+been unlocked for Grafana yet.
 
 At this programs' core is the code to `set time range in Grafana`_::
 
     timeSrv = angular.element('grafana-app').injector().get('timeSrv');
-    timeSrv.setTime({from: "$date_range_start", to: "$date_range_end"});
+    timeSrv.setTime({from: "2015-10-01", to: "2018-12-31"});
 
 Turtles all the way up, the main rendering work horse is a Firefox Browser
 automated through `Marionette Python Client`_ fame:
@@ -126,10 +151,13 @@ to the user, but this program can be combined with both in order
 to implement more complex animations on top of Grafana.
 
 
+----
+
 *******************
 Project information
 *******************
 ``grafanimate`` is released under the GNU AGPL v3 license.
+
 The code lives on `GitHub <https://github.com/daq-tools/grafanimate>`_ and
 the Python package is published to `PyPI <https://pypi.org/project/grafanimate/>`_.
 

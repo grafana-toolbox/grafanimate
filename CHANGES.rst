@@ -5,6 +5,10 @@ grafanimate changelog
 
 in progress
 ===========
+
+
+2018-12-27 0.3.0
+================
 - Fix missing ``grafana-sidecar.js`` file in Python sdist package
 - Add intervals "secondly", "minutely" and "yearly". Thanks, weef!
 - Improve date formatting and separation of concerns
@@ -13,6 +17,7 @@ in progress
 - Optimize user interface for wide dashboad names
 - Fix stalling on row-type panel objects
 - Don't initially run "onPanelRefresh"?
+- Update documentation
 
 
 2018-12-26 0.2.0
