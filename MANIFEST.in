@@ -1,4 +1,4 @@
 include setup.cfg *.txt *.rst *.md
 exclude .bumpversion.cfg
-recursive-include *.ini *.py *.js
+recursive-include grafanimate *.py *.js
 prune tests

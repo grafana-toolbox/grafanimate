@@ -5,6 +5,7 @@ grafanimate changelog
 
 in progress
 ===========
+- Fix missing ``grafana-sidecar.js`` file in Python sdist package
 
 
 2018-12-26 0.2.0
