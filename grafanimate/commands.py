@@ -119,6 +119,8 @@ def run():
     # Run stop motion animation to produce single artifacts.
     animation.run()
 
+    # Run rendering steps, produce composite artifacts.
     title = grafana.get_dashboard_title()
+    results = storage.produce_artifacts(options['dashboard-uid'], title)
 
     log.info('Produced %s results\n%s', len(results), json.dumps(results, indent=2))

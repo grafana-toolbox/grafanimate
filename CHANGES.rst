@@ -14,6 +14,7 @@ in progress
 - Add Makefile target for uploading to web space
 - Refactor the machinery
 - Get dashboard title from Grafana runtime scope for deriving the output filename from
+- Properly produce .mp4 and .gif artifacts
 
 
 2018-12-27 0.3.0

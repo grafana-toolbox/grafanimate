@@ -2,6 +2,9 @@
 # (c) 2018 Andreas Motl <andreas@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def to_video(source, target):
@@ -13,13 +16,12 @@ def to_video(source, target):
     https://superuser.com/questions/939357/ffmpeg-watermark-on-bottom-right-corner/939386#939386
     """
     #command = "ffmpeg -framerate 4 -pattern_type glob -i '{}' -c:v libx264 -r 30 -pix_fmt yuv420p '{}' -y".format(source, target)
-    command = "ffmpeg -framerate 4 -pattern_type glob -i '{}' -c:v libx264 -vf 'fps=25,format=yuv420p' '{}' -y".format(source, target)
+    # -vf "fps=25,format=yuv420p,drawtext=fontfile=OpenSans-Regular.ttf:text='Title of this Video':fontcolor=white:fontsize=24:x=(w-tw)/2:y=(h/PHI)+th
     #command = "ffmpeg -framerate 4 -pattern_type glob -i '{}' -c:v libx264 -vf 'fps=25,format=yuv420p,drawtext=text=Produced with Grafana and grafanimate:fontsize=11:x=w-tw-30:y=h-th-10:fontcolor=lightgrey:fontfile=/Library/Fonts/Arial.ttf' '{}' -y".format(source, target)
-    print(command)
-    """
-    # -vf "fps=25,format=yuv420p"
-drawtext=fontfile=OpenSans-Regular.ttf:text='Title of this Video':fontcolor=white:fontsize=24:x=(w-tw)/2:y=(h/PHI)+th
-    """
+
+    command = "ffmpeg -framerate 4 -pattern_type glob -i '{}' -c:v libx264 -vf 'fps=25,format=yuv420p' '{}' -y".format(source, target)
+    logger.info('Rendering video: {}'.format(target))
+    logger.debug(command)
     os.system(command)
 
 
@@ -69,6 +71,8 @@ def to_gif(source, target):
     """
 
     command = "ffmpeg -i '{}' -filter_complex 'fps=10,scale=480:-1:flags=lanczos,split [o1] [o2];[o1] palettegen [p]; [o2] fifo [o3];[o3] [p] paletteuse' '{}' -y".format(source, target)
+    logger.info('Rendering GIF: {}'.format(target))
+    logger.debug(command)
     os.system(command)
 
 
@@ -77,20 +81,24 @@ def upload_server(source):
     os.system(command)
 
 
-def run(source, target):
+def render(source, target):
     mp4 = target
-    gif = target.split('.')[0] + '.gif'
-    #print(gif)
-    #return
-
+    suffix = '.' + target.split('.')[-1]
+    gif = mp4.replace(suffix, '.gif')
     to_video(source, mp4)
     to_gif(mp4, gif)
-    upload_server(gif)
-    upload_server(mp4)
+    results = [mp4, gif]
+    return results
+
+
+def run(source, target):
+    render(source, target)
+    #upload_server(gif)
+    #upload_server(mp4)
 
 
 if __name__ == '__main__':
-    run('./var/spool/*_1aOmc1sik_*.png', 'ldi-coverage.mp4')
+    run('./var/spool/*_1aOmc1sik_*.png', './var/results/ldi-coverage.mp4')
 
     #to_video('./var/spool/*_1aOmc1sik_*.png', 'ldi-coverage.mp4')
     #to_gif('ldi-coverage.mp4', 'ldi-coverage.gif')
