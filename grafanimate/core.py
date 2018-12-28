@@ -5,6 +5,7 @@ import logging
 
 from grafanimate.grafana import GrafanaWrapper
 from grafanimate.scenarios import AnimationScenario
+from grafanimate.mediastorage import MediaStorage
 from grafanimate.util import filter_dict
 
 log = logging.getLogger(__name__)
@@ -17,11 +18,16 @@ def make_grafana(url):
     return grafana
 
 
-def make_animation(grafana, options):
+def make_storage(imagefile=None, outputfile=None):
+    return MediaStorage(imagefile=imagefile, outputfile=outputfile)
+
+
+def make_animation(grafana, storage, options):
 
     # Prepare animation.
     scenario = AnimationScenario(
         grafana=grafana,
+        storage=storage,
         dashboard_uid=options['dashboard-uid'],
         options=filter_dict(options, ['panel-id', 'dashboard-view', 'header-layout', 'datetime-format'])
     )
@@ -29,8 +35,8 @@ def make_animation(grafana, options):
         raise NotImplementedError('Animation scenario "{}" not implemented'.format(options.scenario))
 
     # Run animation scenario.
-    func = getattr(scenario, options.scenario)
-    return func
+    scenario.run = getattr(scenario, options.scenario)
+    return scenario
 
 
     # TODO: Introduce ad-hoc mode. In the meanwhile, please use scenario mode.

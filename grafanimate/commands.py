@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 # (c) 2018 Andreas Motl <andreas@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
+import json
 import logging
 from docopt import docopt, DocoptExit
 from grafanimate import __appname__, __version__
-from grafanimate.core import make_grafana, make_animation
+from grafanimate.core import make_grafana, make_animation, make_storage
 from grafanimate.util import normalize_options, setup_logging
 
 log = logging.getLogger(__name__)
@@ -104,7 +105,19 @@ def run():
     if options['dashboard-view'] == 'd-solo' and not options['panel-id']:
         raise DocoptExit('Error: Parameter --panel-id is mandatory for --dashboard-view=d-solo')
 
-    grafana = make_grafana(options['grafana-url'])
-    animation = make_animation(grafana, options)
+    # Define and run Pipeline.
 
-    animation()
+    # Define pipeline elements.
+    grafana = make_grafana(options['grafana-url'])
+    storage = make_storage(
+        imagefile='./var/spool/{uid}/{uid}_{date}.png',
+        outputfile='./var/results/{name}.mp4')
+
+    # Assemble pipeline.
+    animation = make_animation(grafana, storage, options)
+
+    # Run stop motion animation to produce single artifacts.
+    animation.run()
+
+
+    log.info('Produced %s results\n%s', len(results), json.dumps(results, indent=2))

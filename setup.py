@@ -11,6 +11,7 @@ requires = [
     'six==1.11.0',
     'docopt==0.6.2',
     'tqdm==4.28.1',
+    'unidecode==1.0.23',
 
     # Grafana control and animation
     'where==1.0.2',

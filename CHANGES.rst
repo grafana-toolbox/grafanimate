@@ -12,6 +12,7 @@ in progress
 - Pick reasonable timeframe for "cdc_maps" example scenario
 - Improve timing for heavy dashboards
 - Add Makefile target for uploading to web space
+- Refactor the machinery
 
 
 2018-12-27 0.3.0
