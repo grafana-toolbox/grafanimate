@@ -92,7 +92,7 @@ class AnimationScenario(AnimationScenarioBase):
         logger.info('Running scenario cdc_maps')
 
         # CDC, temperatur-sonne-and-niederschlag-karten
-        results = self.engine.run(dtstart=datetime(2018, 1, 1), dtuntil=datetime(2018, 12, 31), interval='hourly')
+        results = self.engine.run(dtstart=datetime(2018, 3, 6, 5, 0, 0), dtuntil=datetime(2018, 3, 10, 23, 59, 59), interval='hourly')
         self.save_items(results)
 
     def ir_sensor_svg_pixmap(self):

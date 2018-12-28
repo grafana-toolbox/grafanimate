@@ -9,6 +9,7 @@ in progress
 - Refactor some parts of the machinery
 - Increase time to wait for Browser starting up
 - Improve interval handling
+- Pick reasonable timeframe for "cdc_maps" example scenario
 
 
 2018-12-27 0.3.0
