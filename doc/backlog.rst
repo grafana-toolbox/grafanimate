@@ -9,6 +9,30 @@ Prio 1
 - [x] Fix missing .js file in Python dist package
 - [x] Add ATTENTION remark to README
 - [x] Improve docs about demo screenshot
+- [o] Add attribution also for non-worldmap dashboards
+- [x] Fix postprocessing errors::
+
+    Input #0, image2, from './var/spool/DLOlE_Rmz/DLOlE_Rmz_*.png':
+      Duration: 00:00:28.75, start: 0.000000, bitrate: N/A
+        Stream #0:0: Video: png, rgba(pc), 1497x483, 4 fps, 4 tbr, 4 tbn, 4 tbc
+    Stream mapping:
+      Stream #0:0 -> #0:0 (png (native) -> h264 (libx264))
+    Press [q] to stop, [?] for help
+
+    [libx264 @ 0x7fcf0c001200] width not divisible by 2 (1497x483)
+    [libx264 @ 0x7fa917001200] height not divisible by 2 (1348x823)
+
+- [o] German date formatting: "Karten (CDC) am 7. März 2018 um 5 Uhr" instead of "Karten (CDC) on 2018-03-07 at 05:00:00"
+- [o] Automatically set height of window based on content
+- [o] Purge spool directory before starting
+- [o] Put total dtstart-dtend into final output filenames
+- [o] Check whether applying filtering by --panel-id actually does _not_ render the other panels
+- [o] Otherwise / also, introduce --panel-whitelist and --panel-blacklist parameters
+
+
+******
+Prio 2
+******
 - [o] Make output directory ``./var/spool`` configurable
 - [o] Set User-Agent appropriately
 - [o] Screenshot by element or fullscreen, reflect in output directory somehow
@@ -29,9 +53,11 @@ Prio 1
 
       Possible workaround: Retrieve correct slug by means of
       http http://localhost:3000/api/dashboards/uid/1aOmc1sik | jq '.meta.slug'
+- [o] Split timerange into even-sized segments with ``rrule(count=N)``
+- [o] Introduce interval specifiers like '1h', '3d', etc.
 
 ******
-Prio 2
+Prio 3
 ******
 - [o] Start- und Endtime in Unix Epoch oder sogar gemischt [weef]
 - [o] Add audio::
@@ -55,7 +81,7 @@ Prio 2
 
 
 ******
-Prio 3
+Prio 4
 ******
 - [o] Repeat the very last frame for some more times.
 - [o] Put Grafana hostname into filename when saving
