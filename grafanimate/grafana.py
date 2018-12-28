@@ -37,7 +37,7 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         self.wait_for_grafana()
 
         # Load Javascript Grafana Sidecar service.
-        with resource_stream('grafanimate', 'grafana-sidecar.js') as f:
+        with resource_stream('grafanimate', 'grafana-studio.js') as f:
             javascript = f.read()
             self.run_javascript(javascript)
 
@@ -75,13 +75,13 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         and wait for all data to load into all panels.
         """
         options = options or {}
-        javascript = mkjscall("grafanaSidecar.openDashboard", uid, options)
+        javascript = mkjscall("grafanaStudio.openDashboard", uid, options)
         log.info('Running Javascript: %s', javascript)
         self.run_javascript(javascript)
         self.wait_all_data_received()
 
     def get_dashboard_title(self):
-        return self.calljs("grafanaSidecar.getDashboardTitle")
+        return self.calljs("grafanaStudio.getDashboardTitle")
 
     def wait_all_data_received(self):
         """
@@ -92,7 +92,7 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         waiter = Wait(self.marionette, timeout=20.0, interval=1.0)
 
         def condition(marionette):
-            return self.calljs("grafanaSidecar.hasAllData")
+            return self.calljs("grafanaStudio.hasAllData")
 
         try:
             waiter.until(condition)
@@ -100,7 +100,7 @@ class GrafanaWrapper(FirefoxMarionetteBase):
             log.warning('Timed out waiting for data: %s. Continuing anyway.', ex)
 
     def clear_all_data_received(self):
-        return self.calljs("grafanaSidecar.hasAllData", False)
+        return self.calljs("grafanaStudio.hasAllData", False)
 
     def timewarp(self, dtstart, dtuntil, interval):
         """
@@ -122,7 +122,7 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         """
         Adjust Grafana time control. This is not synchronous.
         """
-        return self.calljs("grafanaSidecar.setTime", starttime, endtime)
+        return self.calljs("grafanaStudio.setTime", starttime, endtime)
 
     def timerange_get(self):
         """
@@ -134,7 +134,7 @@ class GrafanaWrapper(FirefoxMarionetteBase):
 
         -- https://community.grafana.com/t/how-to-access-time-picker-from-to-within-a-text-panel-and-jquery/6071/3
         """
-        return self.calljs("grafanaSidecar.getTime")
+        return self.calljs("grafanaStudio.getTime")
         raise NotImplemented("timerange_get not implemented yet")
 
     def run_javascript(self, sourcecode):

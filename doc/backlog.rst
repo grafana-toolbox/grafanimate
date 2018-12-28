@@ -73,7 +73,7 @@ Prio 3
     grafanimate http://localhost:3000/d/1aOmc1sik/luftdaten-info-coverage --start=20151001 --interval=1d
 
 - [o] Implement different datetime output and formatting flavours
-- [o] Detect when grafanaSidecar goes away. I.e. when reloading the browser.
+- [o] Detect when ``window.grafanaStudio`` goes away. I.e. when reloading the browser.
 - [o] Improve error handling. Currently croaks with
     - ``from=0&to=0`` or ``from=2018-08-14&to=2018-08-14``
       on "weef-test-ir-sensor-svg-pixmap-for-grafanimate"

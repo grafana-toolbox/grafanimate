@@ -16,7 +16,7 @@ if (Function.prototype.bind) {
 }
 
 
-class GrafanaSidecarSrv {
+class GrafanaStudioSrv {
 
     /** @ngInject */
     constructor($rootScope, $location) {
@@ -33,7 +33,7 @@ class GrafanaSidecarSrv {
         this.onDashboardLoad = this.onDashboardLoad.bind(this);
 
         // FIXME: Maybe stuff this into this.dashboardSrv.dash?
-        //        GrafanaSidecarSrv is actually a singleton, right?
+        //        GrafanaStudioSrv is actually a singleton, right?
 
         // TODO: Create a DashboardController instance per call of "openDashboard" and hold state variables
         //       like "all_data_loaded" or "options" there as they are actually per-dashboard!
@@ -384,11 +384,11 @@ class GrafanaSidecarSrv {
 
 // Register sidecar service with `grafana.core`.
 var grafana_core = angular.module('grafana.core');
-grafana_core.service('grafanaSidecarSrv', GrafanaSidecarSrv);
+grafana_core.service('GrafanaStudioSrv', GrafanaStudioSrv);
 
 // Acquire application element.
 // FIXME: Can we get rid of this as a dependency?
 var grafanaApp = angular.element('grafana-app');
 
 // Put service into global scope.
-window.grafanaSidecar = grafanaApp.injector().get('grafanaSidecarSrv');
+window.grafanaStudio = grafanaApp.injector().get('GrafanaStudioSrv');
