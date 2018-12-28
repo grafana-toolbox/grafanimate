@@ -7,31 +7,20 @@ from datetime import timedelta
 from dateutil.relativedelta import relativedelta
 from dateutil.rrule import rrule, SECONDLY, MINUTELY, HOURLY, DAILY, WEEKLY, MONTHLY, YEARLY
 
-from grafanimate.grafana import GrafanaWrapper
-
 logger = logging.getLogger(__name__)
 
 
 class SequentialAnimation:
 
-    def __init__(self, grafana_url=None, dashboard_uid=None, time_start=None, time_end=None, time_step=None):
+    def __init__(self, grafana, dashboard_uid=None, options=None):
 
-        self.grafana_url = grafana_url
+        self.grafana = grafana
         self.dashboard_uid = dashboard_uid
-
-        self.time_start = time_start
-        # TODO: Default to "now()"
-        self.time_end = time_end
-        self.time_step = time_step
-
-        self.grafana = GrafanaWrapper(grafana_url=self.grafana_url)
-        self.grafana.boot_firefox(headless=False)
-        self.grafana.boot_grafana()
+        self.options = options or None
 
     def start(self):
-
         logger.info('Opening dashboard')
-        self.grafana.open_dashboard(self.dashboard_uid)
+        self.grafana.open_dashboard(self.dashboard_uid, options=self.options)
         logger.info('Dashboard ready')
 
     def run(self, dtstart=None, dtuntil=None, interval=None):
@@ -74,7 +63,7 @@ class SequentialAnimation:
             # Build item model.
             item = munchify({
                 'meta': {
-                    'grafana': self.grafana_url,
+                    'grafana': self.grafana,
                     'dashboard': self.dashboard_uid,
                     'interval': interval,
                 },

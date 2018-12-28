@@ -73,27 +73,50 @@ Usage
 
     Options:
       --grafana-url=<url>           Base URL to Grafana, [default: http://localhost:3000].
-      --scenario=<scenario>         Which scenario to run. Scenarios are defined as methods in file "scenarios.py".
-      --dashboard-uid=<uid>         Grafana dashboard uid
+      --scenario=<scenario>         Which scenario to run. Scenarios are defined as methods.
+      --dashboard-uid=<uid>         Grafana dashboard uid.
+
+    Optional:
+      --panel-id=<id>               Render single panel only by navigating to "panelId=<id>&fullscreen".
+      --dashboard-view=<mode>       Use Grafana's "d-solo" view for rendering single panels without header.
+
+      --header-layout=<layout>      The header rendering subsystem offers different modes
+                                    for amending the vanilla Grafana user interface.
+                                    Multiple modes can be combined.
+                                    [default: large-font]
+
+                                    - no-chrome:            Set kiosk mode, remove sidemenu and more chrome
+                                    - large-font:           Use larger font sizes for title and datetime
+                                    - collapse-datetime:    Collapse datetime into title
+                                    - studio:               Apply studio modifications. This options aggregates
+                                                            "no-chrome", "large-font" and "collapse-datetime".
+
+                                    - no-title:             Turn off title widget
+                                    - no-datetime:          Turn off datetime widget
+
+      --datetime-format=<format>    Datetime format to use with header layouts like "studio".
+                                    Examples: YYYY-MM-DD HH:mm:ss, YYYY, HH:mm.
+
+                                    There are also some format presets available here:
+                                    - human-date:           on 2018-08-14
+                                    - human-time:           at 03:16:05
+                                    - human-datetime:       on 2018-08-14 at 03:16:05
+
+                                    When left empty, the default is determined by the configured interval.
 
       --debug                       Enable debug logging
       -h --help                     Show this screen
 
-      --target=<target>             Data output target (not available yet)
 
-    Examples:
+    Examples for scenario mode. Script your animation in file "scenarios.py".
 
       # Generate sequence of .png files in ./var/spool/ldi_all/1aOmc1sik
       grafanimate --grafana-url=http://localhost:3000/ --scenario=ldi_all --dashboard-uid=1aOmc1sik
 
-
-    Todo: Implement ad-hoc mode.
-    Until then, please use scenario mode.
-    Don't be afraid, it's just some copy/pasting in the scenarios.py file, go ahead.
-
-      --start=<start>               Start time
-      --end=<end>                   End time
-      --interval=<end>              Interval time
+      # Use more parameters to control rendering process.
+      grafanimate \
+        --grafana-url=http://localhost:3000/ --scenario=ir_sensor_svg_pixmap --dashboard-uid=_TbvFUyik \
+        --header-layout=studio --datetime-format=human-time --panel-id=6
 
 
 *****

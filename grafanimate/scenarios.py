@@ -50,11 +50,14 @@ class AnimationScenario(AnimationScenarioBase):
     this is all we got. Enjoy!
     """
 
-    def __init__(self, grafana_url=None, dashboard_uid=None, target=None):
+    def __init__(self, grafana, dashboard_uid=None, target=None, options=None):
 
+        # Dispatch output to different target formats.
+        # FIXME: Not implemented yet.
         self.target = target
 
-        self.engine = SequentialAnimation(grafana_url=grafana_url, dashboard_uid=dashboard_uid)
+        # Start the engines.
+        self.engine = SequentialAnimation(grafana=grafana, dashboard_uid=dashboard_uid, options=options)
         self.engine.start()
 
     def ldi_all(self):
@@ -83,6 +86,13 @@ class AnimationScenario(AnimationScenarioBase):
         self.save_items(results)
 
         results = self.engine.run(dtstart=datetime(2018, 12, 20), dtuntil=datetime.now(), interval='weekly')
+        self.save_items(results)
+
+    def cdc_maps(self):
+        logger.info('Running scenario cdc_maps')
+
+        # CDC, temperatur-sonne-and-niederschlag-karten
+        results = self.engine.run(dtstart=datetime(2018, 1, 1), dtuntil=datetime(2018, 12, 31), interval='hourly')
         self.save_items(results)
 
     def ir_sensor_svg_pixmap(self):

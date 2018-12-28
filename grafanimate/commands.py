@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 # (c) 2018 Andreas Motl <andreas@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
-import sys
 import logging
 from docopt import docopt, DocoptExit
 from grafanimate import __appname__, __version__
-from grafanimate.animations import SequentialAnimation
-from grafanimate.scenarios import AnimationScenario
+from grafanimate.core import make_grafana, make_animation
 from grafanimate.util import normalize_options, setup_logging
 
 log = logging.getLogger(__name__)
@@ -22,7 +20,35 @@ def run():
     Options:
       --grafana-url=<url>           Base URL to Grafana, [default: http://localhost:3000].
       --scenario=<scenario>         Which scenario to run. Scenarios are defined as methods.
-      --dashboard-uid=<uid>         Grafana dashboard uid
+      --dashboard-uid=<uid>         Grafana dashboard uid.
+
+    Optional:
+      --panel-id=<id>               Render single panel only by navigating to "panelId=<id>&fullscreen".
+      --dashboard-view=<mode>       Use Grafana's "d-solo" view for rendering single panels without header.
+
+      --header-layout=<layout>      The header rendering subsystem offers different modes
+                                    for amending the vanilla Grafana user interface.
+                                    Multiple modes can be combined.
+                                    [default: large-font]
+
+                                    - no-chrome:            Set kiosk mode, remove sidemenu and more chrome
+                                    - large-font:           Use larger font sizes for title and datetime
+                                    - collapse-datetime:    Collapse datetime into title
+                                    - studio:               Apply studio modifications. This options aggregates
+                                                            "no-chrome", "large-font" and "collapse-datetime".
+
+                                    - no-title:             Turn off title widget
+                                    - no-datetime:          Turn off datetime widget
+
+      --datetime-format=<format>    Datetime format to use with header layouts like "studio".
+                                    Examples: YYYY-MM-DD HH:mm:ss, YYYY, HH:mm.
+
+                                    There are also some format presets available here:
+                                    - human-date:           on 2018-08-14
+                                    - human-time:           at 03:16:05
+                                    - human-datetime:       on 2018-08-14 at 03:16:05
+
+                                    When left empty, the default is determined by the configured interval.
 
       --debug                       Enable debug logging
       -h --help                     Show this screen
@@ -33,6 +59,10 @@ def run():
       # Generate sequence of .png files in ./var/spool/ldi_all/1aOmc1sik
       grafanimate --grafana-url=http://localhost:3000/ --scenario=ldi_all --dashboard-uid=1aOmc1sik
 
+      # Use more parameters to control rendering process.
+      # grafanimate \\
+      #   --grafana-url=http://localhost:3000/ --scenario=ir_sensor_svg_pixmap --dashboard-uid=_TbvFUyik \\
+      #   --header-layout=studio --datetime-format=human-time --panel-id=6
 
 
     NOT IMPLEMENTED YET
@@ -50,51 +80,31 @@ def run():
 
     """
 
-    # Parse command line arguments
-    options = normalize_options(docopt(run.__doc__, version=__appname__ + ' ' + __version__))
+    # Parse command line arguments.
+    options = docopt(run.__doc__, version=__appname__ + ' ' + __version__)
+    options = normalize_options(options, lists=['header-layout'])
 
-    # Setup logging
+    # Setup logging.
     debug = options.get('debug')
     log_level = logging.INFO
     if debug:
         log_level = logging.DEBUG
     setup_logging(log_level)
 
+    # Debug command line options.
     #import json; log.info('Options: {}'.format(json.dumps(options, indent=4)))
 
     # Sanity checks.
-
     if not options['scenario']:
-        raise DocoptExit('Error: Parameter --dashboard-uid is mandatory')
+        raise DocoptExit('Error: Parameter --scenario is mandatory')
 
     if not options['dashboard-uid']:
         raise DocoptExit('Error: Parameter --dashboard-uid is mandatory')
 
-    # Prepare animation.
-    scenario = AnimationScenario(grafana_url=options['grafana-url'], dashboard_uid=options['dashboard-uid'])
-    if not hasattr(scenario, options.scenario):
-        raise NotImplementedError('Animation scenario "{}" not implemented'.format(options.scenario))
+    if options['dashboard-view'] == 'd-solo' and not options['panel-id']:
+        raise DocoptExit('Error: Parameter --panel-id is mandatory for --dashboard-view=d-solo')
 
-    # Run animation scenario.
-    func = getattr(scenario, options.scenario)
-    func()
+    grafana = make_grafana(options['grafana-url'])
+    animation = make_animation(grafana, options)
 
-
-    # TODO: Introduce ad-hoc mode. In the meanwhile, please use scenario mode.
-    """
-    animator = SequentialAnimation(
-        options['url'],
-        time_start=options.get('start'),
-        time_end=options.get('end', 'now'),
-        time_step=options.get('interval', '1h')
-    )
-    animator.run()
-    """
-
-    # TODO: Parse from ``self.time_start``.
-
-    # 2018-01-01
-    # start_date = datetime(2018, 1, 1)
-
-    # 2018-08-09
-    # start_date = datetime(2018, 8, 9)
+    animation()

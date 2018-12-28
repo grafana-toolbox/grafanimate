@@ -21,12 +21,24 @@ def setup_logging(level=logging.INFO):
     requests_log.setLevel(logging.WARN)
 
 
-def normalize_options(options):
+def normalize_options(options, lists=None):
+    lists = lists or []
     normalized = {}
     for key, value in options.items():
         key = key.strip('--<>')
         normalized[key] = value
+    for key in lists:
+        normalized[key] = read_list(normalized[key])
     return munchify(normalized)
+
+
+def read_list(data, separator=u','):
+    if data is None:
+        return []
+    result = list(map(lambda x: x.strip(), data.split(separator)))
+    if len(result) == 1 and not result[0]:
+        result = []
+    return result
 
 
 def find_program_candidate(candidates):
@@ -60,3 +72,7 @@ def format_date_grafana(date, interval=None):
         pattern = '%Y-%m-%dT%H:%M:%S'
     date_formatted = date.strftime(pattern)
     return date_formatted
+
+
+def filter_dict(data, keys):
+    return {k: v for k, v in data.items() if k in keys}

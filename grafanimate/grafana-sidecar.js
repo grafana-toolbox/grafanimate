@@ -30,9 +30,17 @@ class GrafanaSidecarSrv {
         this.dashboardSrv = this.appElement.injector().get('dashboardSrv');
         this.timeSrv = this.appElement.injector().get('timeSrv');
 
-        this.onDashboardOpen = this.onDashboardOpen.bind(this);
+        this.onDashboardLoad = this.onDashboardLoad.bind(this);
 
+        // FIXME: Maybe stuff this into this.dashboardSrv.dash?
+        //        GrafanaSidecarSrv is actually a singleton, right?
+
+        // TODO: Create a DashboardController instance per call of "openDashboard" and hold state variables
+        //       like "all_data_loaded" or "options" there as they are actually per-dashboard!
+
+        this.options = {};
         this.all_data_loaded = false;
+        this.timerange = null;
     }
 
     hasAllData(value) {
@@ -43,16 +51,47 @@ class GrafanaSidecarSrv {
     }
 
     setTime(from, to) {
-        this.timeSrv.setTime({from: from, to: to});
+        // Internal bookeeping for "collapse-datetime" layout.
+        this.timerange = {from: from, to: to};
+
+        // Propagate to Grafana service.
+        this.timeSrv.setTime(this.timerange);
     }
 
-    setupDashboard(uid) {
-        this.openDashboard(uid).then(this.onDashboardOpen);
+    getTime() {
+        /*
+        For fetching the current timeRange values, use::
+
+            var timeRange = angular.element('grafana-app').injector().get('timeSrv').timeRange();
+            var temp_date_from = new Date(timeRange.from);
+            var temp_date_to = new Date(timeRange.to);
+
+        -- https://community.grafana.com/t/how-to-access-time-picker-from-to-within-a-text-panel-and-jquery/6071/3
+        */
+        var timeRange = this.timeSrv.timeRange();
+        return timeRange;
     }
 
-    openDashboard(uid) {
+    openDashboard(uid, options) {
+        options = options || {};
+        console.info('Opening dashboard', uid, options);
+        //_.(this.options).extend(options);
+        _.extend(this.options, options);
+        this.loadDashboard(uid).then(this.onDashboardLoad);
+    }
 
-        console.info('Opening dashboard', uid);
+    hasHeaderLayout() {
+        var header_layout = this.options['header-layout'];
+        var layouts = Array.prototype.slice.call(arguments);
+        for (var layout of layouts) {
+            if (header_layout.includes(layout)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    loadDashboard(uid) {
 
         var $rootScope = this.$rootScope;
         var $location = this.$location;
@@ -78,10 +117,22 @@ class GrafanaSidecarSrv {
                     _this.hasAllData(true);
                 });
 
+                // Compute dashboard url.
+                var view = 'd';
+                var slug = 'foo';
+                var query = '';
+                if (_this.options['dashboard-view']) {
+                    view = _this.options['dashboard-view'];
+                }
+                if (_this.options['panel-id']) {
+                    query = '?panelId=' + _this.options['panel-id'] + '&fullscreen';
+                }
+                var url = '/' + view + '/' + uid + '/' + slug + query;
+
                 // Trigger the dashboard loading.
                 // https://docs.angularjs.org/api/ng/service/$location#url
                 // https://stackoverflow.com/questions/16450125/angularjs-redirect-from-outside-angular/16450748#16450748
-                $location.url('/d/' + uid);
+                $location.url(url);
 
             });
 
@@ -93,60 +144,8 @@ class GrafanaSidecarSrv {
         return promise;
     }
 
-    setKioskMode() {
-
-        // Enter kiosk/fullscreen mode.
-        this.$rootScope.appEvent('toggle-kiosk-mode');
-
-        // Exit kiosk mode.
-        //this.$rootScope.appEvent('toggle-kiosk-mode', { exit: true });
-    }
-
-    improveDashboardChrome() {
-
-        this.setKioskMode();
-
-        // Top content padding.
-        $('.main-view').css('padding-top', '1rem');
-
-        // Sidemenu and navigation bar, left side.
-        $('.sidemenu').hide();
-        $('.navbar').css('padding-left', '15px');
-
-        // Dashboard title, left side.
-        $('.navbar-page-btn').css('font-size', 'xx-large').css('max-width', '800px');
-
-        // Buttons and clock, right side.
-        $('.navbar-buttons--tv').hide();
-        $('.gf-timepicker-nav-btn').css('height', 'unset');
-        $('.gf-timepicker-nav-btn >').css('font-size', 'xx-large');
-        $('.gf-timepicker-nav-btn .fa-clock-o').css('margin-right', '0.5rem');
-
-    }
-
-    improvePanelChrome() {
-
-        // Disable animated spinner.
-        // TODO: Make controllable by commandline parameter.
-        $('.panel-loading').hide();
-
-        // Remove zoom element from Worldmap Panel.
-        $('.leaflet-control-zoom').hide();
-
-        // Hijack Leaflet attribution area for Grafana and grafanimate.
-        var signature = $('.leaflet-control-attribution');
-        if (!signature.data('manipulated')) {
-            signature.data('manipulated', true);
-            var seperator = ' | ';
-            var grafanimate = $('<a href="https://github.com/daq-tools/grafanimate" title="grafanimate: Animate timeseries data with Grafana">grafanimate</a>');
-            var grafana = $('<a href="https://grafana.com/" title="Grafana: The leading open source software for time series analytics">Grafana</a>');
-            signature.prepend(grafanimate, seperator, grafana, seperator);
-        }
-
-    }
-
-    onDashboardOpen() {
-        console.info('Dashboard opened');
+    onDashboardLoad() {
+        console.info('Dashboard loaded');
 
         // Adjust user interface on dashboard load.
         this.improveDashboardChrome();
@@ -169,7 +168,7 @@ class GrafanaSidecarSrv {
             _this.improvePanelChrome();
 
             // Watch for panel data to arrive.
-            _this.onPanelRefresh();
+            _this.onDashboardRefresh();
 
         });
 
@@ -178,7 +177,7 @@ class GrafanaSidecarSrv {
 
     }
 
-    onPanelRefresh() {
+    onDashboardRefresh() {
         var dashboard = this.dashboardSrv.dash;
 
         // Wait for all panels to receive their data.
@@ -211,6 +210,152 @@ class GrafanaSidecarSrv {
         }).catch(function(error) {
             console.error('Unable to receive data:', error);
         });
+    }
+
+    improveDashboardChrome() {
+
+        if (this.hasHeaderLayout('no-chrome', 'studio')) {
+
+            this.setKioskMode();
+
+            // Add some padding to content top.
+            $('.main-view').css('padding-top', '1rem');
+
+            // Remove left side menu.
+            $('.sidemenu').remove();
+
+            // Adjust navigation bar.
+            //$('.navbar').css('padding-left', '15px');
+            $('.navbar').css({'background': 'unset', 'box-shadow': 'unset', 'border-bottom': 'unset'});
+
+            // Clean up dashboard title widget.
+            $('.navbar-page-btn').find('.fa-caret-down').remove();
+            $('.navbar-page-btn').find('.gicon-dashboard').remove();
+
+            // Clean up navigation buttons.
+            $('.navbar-buttons--tv').remove();
+
+        }
+
+        // Adjust header font size. v1.
+        if (this.hasHeaderLayout('large-font', 'studio')) {
+
+            // Adjust font size of title widget.
+            $('.navbar-page-btn').css('font-size', 'xx-large');
+            $('.navbar-page-btn').parent().css('width', '100%');
+            $('.navbar-page-btn').css('max-width', '100%');
+            //$('.navbar-page-btn').css('width', '600px');
+            //$('.navbar-page-btn').css('max-width', '800px');
+
+            // Adjust font size of datetime widget.
+            $('.gf-timepicker-nav-btn >').css('font-size', 'x-large');
+            $('.gf-timepicker-nav-btn').css('height', 'unset');
+            $('.gf-timepicker-nav-btn .fa-clock-o').css('margin-right', '0.5rem');
+
+
+        }
+
+        // Disable title widget.
+        if (this.hasHeaderLayout('no-title')) {
+            $('.navbar-page-btn').remove();
+        }
+
+        // Disable datetime widget.
+        if (this.hasHeaderLayout('collapse-datetime', 'no-datetime', 'studio')) {
+            $('.gf-timepicker-nav').remove();
+            $('.navbar-buttons').remove();
+
+            // Save original title, for collapsing datetime into title.
+            $('.navbar-page-btn').data('title', $('.navbar-page-btn').text().trim());
+
+            // No clipping, no ellipsis.
+            $('.navbar-page-btn').css('overflow', 'unset').css('text-overflow', 'unset');
+        }
+
+    }
+
+    improvePanelChrome() {
+
+        //log('improvePanelChrome');
+
+        // Remove some elements from user interface on the panel level.
+        if (this.hasHeaderLayout('no-chrome', 'studio')) {
+
+            // Disable animated spinner.
+            // TODO: Make controllable by commandline parameter.
+            $('.panel-loading').remove();
+
+            // Remove zoom element from Worldmap Panel.
+            $('.leaflet-control-zoom').remove();
+
+        }
+
+        // Collapse datetime into title.
+        if (this.hasHeaderLayout('collapse-datetime', 'studio')) {
+
+            // Build title from original one plus start time.
+            var title = $('.navbar-page-btn').data('title');
+
+            // Default datetime format is "on DATE at TIME".
+            // https://english.stackexchange.com/questions/182660/on-vs-at-with-date-and-time/182663#182663
+            var format_human = "on YYYY-MM-DD at HH:mm:ss";
+            var format_default = "YYYY-MM-DD HH:mm:ss";
+
+            // Custom datetime format.
+            var infix = ' at ';
+            var datetime_format = this.options['datetime-format'];
+            if (datetime_format) {
+                var timerange = this.getTime();
+                //log('timerange:', timerange);
+                var dtstart;
+                if (datetime_format == 'human-date') {
+                    infix = '';
+                    dtstart = ' on ' + timerange.from.format('YYYY-MM-DD');
+                } else if (datetime_format == 'human-time') {
+                    infix = '';
+                    dtstart = ' at ' + timerange.from.format('HH:mm:ss');
+                } else if (datetime_format == 'human-datetime') {
+                    infix = '';
+                    dtstart = ' on ' + timerange.from.format('YYYY-MM-DD') + ' at ' + timerange.from.format('HH:mm:ss');
+                } else {
+                    dtstart = timerange.from.format(datetime_format);
+                }
+                title += infix + dtstart;
+
+            } else if (this.timerange) {
+                var dtstart = this.timerange.from;
+                title += infix + dtstart;
+            }
+
+            $('.navbar-page-btn').text(title);
+
+        }
+
+        // Add attribution content.
+        this.addAttribution();
+
+    }
+
+    setKioskMode() {
+
+        // Enter kiosk/fullscreen mode.
+        this.$rootScope.appEvent('toggle-kiosk-mode');
+
+        // Exit kiosk mode.
+        //this.$rootScope.appEvent('toggle-kiosk-mode', { exit: true });
+    }
+
+    addAttribution() {
+        // Hijack Leaflet attribution area for Grafana and grafanimate.
+        // TODO: Use alternative place if there 's not Worldmap in sight.
+        var signature = $('.leaflet-control-attribution');
+        if (!signature.data('manipulated')) {
+            signature.data('manipulated', true);
+            var seperator = ' | ';
+            var grafanimate = $('<a href="https://github.com/daq-tools/grafanimate" title="grafanimate: Animate timeseries data with Grafana">grafanimate</a>');
+            var grafana = $('<a href="https://grafana.com/" title="Grafana: The leading open source software for time series analytics">Grafana</a>');
+            signature.prepend(grafanimate, seperator, grafana, seperator);
+        }
     }
 
 }
