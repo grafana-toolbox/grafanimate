@@ -16,6 +16,7 @@ in progress
 - Get dashboard title from Grafana runtime scope for deriving the output filename from
 - Properly produce .mp4 and .gif artifacts
 - Fix window size wrt. ffmpeg animated gif rendering
+- Add quick hack to remove specific panel from specific dashboard
 
 
 2018-12-27 0.3.0

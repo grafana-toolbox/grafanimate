@@ -108,6 +108,13 @@ class GrafanaSidecarSrv {
 
                     // Sanity check. Has the right dashboard been loaded actually?
                     if (result.dashboard.uid == uid) {
+
+                        // Quick hack to remove specific panel from specific dashboard.
+                        if (uid == 'DLOlE_Rmz') {
+                            result.dashboard.panels.shift();
+                        }
+
+                        // Resolve promise, thus progressing the pipeline.
                         resolve(result);
                     }
                 });
@@ -166,7 +173,7 @@ class GrafanaSidecarSrv {
             _this.improveDashboardChrome();
             _this.improvePanelChrome();
 
-            // Watch for panel data to arrive.
+            // Watch dashboard for panel data to arrive.
             _this.onDashboardRefresh();
 
         });
