@@ -305,8 +305,7 @@ class GrafanaSidecarSrv {
         if (this.hasHeaderLayout('collapse-datetime', 'studio')) {
 
             // Build title from original one plus start time.
-            var dashboard = this.dashboardSrv.dash;
-            var title = dashboard.title;
+            var title = this.getDashboardTitle();
 
             // Custom datetime format.
             var infix = ' at ';
@@ -343,6 +342,13 @@ class GrafanaSidecarSrv {
         // Add attribution content.
         this.addAttribution();
 
+    }
+
+    getDashboardTitle() {
+        // Build title from original one plus start time.
+        var dashboard = this.dashboardSrv.dash;
+        var title = dashboard.meta.folderTitle + ' / ' + dashboard.title;
+        return title;
     }
 
     setKioskMode() {

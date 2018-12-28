@@ -13,6 +13,7 @@ in progress
 - Improve timing for heavy dashboards
 - Add Makefile target for uploading to web space
 - Refactor the machinery
+- Get dashboard title from Grafana runtime scope for deriving the output filename from
 
 
 2018-12-27 0.3.0

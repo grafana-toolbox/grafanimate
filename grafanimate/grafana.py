@@ -59,6 +59,9 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         self.run_javascript(javascript)
         self.wait_all_data_received()
 
+    def get_dashboard_title(self):
+        return self.calljs("grafanaSidecar.getDashboardTitle")
+
     def wait_all_data_received(self):
         """
         Wait for all data to arrive in the dashboard.

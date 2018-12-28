@@ -119,5 +119,6 @@ def run():
     # Run stop motion animation to produce single artifacts.
     animation.run()
 
+    title = grafana.get_dashboard_title()
 
     log.info('Produced %s results\n%s', len(results), json.dumps(results, indent=2))
