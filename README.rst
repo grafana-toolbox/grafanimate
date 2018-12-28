@@ -41,8 +41,10 @@ Screenshot
 ==========
 Coverage of luftdaten.info sensors starting October 2015.
 
-.. image:: https://ptrace.hiveeyes.org/2018-12-26_ldi-coverage.gif
+.. image:: https://ptrace.hiveeyes.org/2018-12-28_luftdaten-info-coverage.gif
+    :target: https://ptrace.hiveeyes.org/2018-12-28_luftdaten-info-coverage.mp4
     :width: 600px
+    :height: 436px
 
 Details
 =======
@@ -90,6 +92,7 @@ Usage
                                     - collapse-datetime:    Collapse datetime into title
                                     - studio:               Apply studio modifications. This options aggregates
                                                             "no-chrome", "large-font" and "collapse-datetime".
+                                    - no-folder:            Don't include foldername in title
 
                                     - no-title:             Turn off title widget
                                     - no-datetime:          Turn off datetime widget

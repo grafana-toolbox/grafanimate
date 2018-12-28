@@ -7,6 +7,11 @@ in progress
 ===========
 
 
+2018-12-28 0.4.1
+================
+- Update documentation
+
+
 2018-12-28 0.4.0
 ================
 - Add parameters ``--panel-id``, ``--header-layout`` and ``--datetime-format``

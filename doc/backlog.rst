@@ -78,6 +78,7 @@ Prio 3
     - ``from=0&to=0`` or ``from=2018-08-14&to=2018-08-14``
       on "weef-test-ir-sensor-svg-pixmap-for-grafanimate"
 - [o] Rename to "Grafana Studio" and publish as regular Grafana Plugin
+- [o] Datetime formats like "between XXX and YYY"
 
 
 ******
