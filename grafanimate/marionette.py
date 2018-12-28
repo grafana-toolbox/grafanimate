@@ -36,7 +36,7 @@ class FirefoxMarionetteBase(object):
         #self.firefox_verbosity = 2
 
         # Timeout configuration
-        self.startup_timeout = 10.0
+        self.startup_timeout = 20.0
         self.socket_timeout = 32.0
         self.page_timeout = 30.0
         self.script_timeout = 20.0
