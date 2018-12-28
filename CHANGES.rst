@@ -8,6 +8,7 @@ in progress
 - Add parameters ``--panel-id``, ``--header-layout`` and ``--datetime-format``
 - Refactor some parts of the machinery
 - Increase time to wait for Browser starting up
+- Improve interval handling
 
 
 2018-12-27 0.3.0

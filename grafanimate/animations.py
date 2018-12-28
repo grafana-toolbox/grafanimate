@@ -32,15 +32,15 @@ class SequentialAnimation:
         #flavor = 'expand'
         flavor = 'window'
 
-        freq, delta = self.get_freq_delta(interval)
+        rr_freq, rr_interval, dtdelta = self.get_freq_delta(interval)
 
         #until = datetime.now()
         if flavor == 'expand':
-            dtuntil += delta
+            dtuntil += dtdelta
 
         # Compute complete date range.
-        logger.info('Creating rrule: dtstart=%s, until=%s, freq=%s', dtstart, dtuntil, freq)
-        daterange = list(rrule(dtstart=dtstart, until=dtuntil, freq=freq))
+        logger.info('Creating rrule: dtstart=%s, until=%s, freq=%s, interval=%s', dtstart, dtuntil, rr_freq, rr_interval)
+        daterange = list(rrule(dtstart=dtstart, until=dtuntil, freq=rr_freq, interval=rr_interval))
         #logger.info('Date range is: %s', daterange)
 
         # Iterate date range.
@@ -52,7 +52,7 @@ class SequentialAnimation:
 
             if flavor == 'window':
                 dtstart = date
-                dtuntil = date + delta
+                dtuntil = date + dtdelta
 
             elif flavor == 'expand':
                 dtuntil = date
@@ -78,45 +78,53 @@ class SequentialAnimation:
 
     def get_freq_delta(self, interval):
 
-        # Second
+        rr_interval = 1
+
+        # Secondly
         if interval == 'secondly':
-            freq = SECONDLY
+            rr_freq = SECONDLY
             delta = timedelta(seconds=1)
 
-        # Minute
+        # Minutely
         elif interval == 'minutely':
-            freq = MINUTELY
+            rr_freq = MINUTELY
             delta = timedelta(minutes=1) - timedelta(seconds=1)
+
+        # Each 10 minutes
+        elif interval == '10min':
+            rr_freq = MINUTELY
+            rr_interval = 10
+            delta = timedelta(minutes=10) - timedelta(seconds=1)
 
         # Hourly
         elif interval == 'hourly':
-            freq = HOURLY
+            rr_freq = HOURLY
             delta = timedelta(hours=1) - timedelta(seconds=1)
 
         # Daily
         elif interval == 'daily':
-            freq = DAILY
+            rr_freq = DAILY
             delta = timedelta(days=1) - timedelta(seconds=1)
 
         # Weekly
         elif interval == 'weekly':
-            freq = WEEKLY
+            rr_freq = WEEKLY
             delta = timedelta(weeks=1) - timedelta(seconds=1)
 
         # Monthly
         elif interval == 'monthly':
-            freq = MONTHLY
+            rr_freq = MONTHLY
             delta = relativedelta(months=+1) - relativedelta(seconds=1)
 
         # Yearly
         elif interval == 'yearly':
-            freq = YEARLY
+            rr_freq = YEARLY
             delta = relativedelta(years=+1) - relativedelta(seconds=1)
 
         else:
             raise ValueError('Unknown interval "{}"'.format(interval))
 
-        return freq, delta
+        return rr_freq, rr_interval, delta
 
     def render(self, dtstart, dtuntil, interval):
 

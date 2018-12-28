@@ -68,7 +68,7 @@ def format_date_human(date, interval=None):
 
 def format_date_grafana(date, interval=None):
     pattern = '%Y-%m-%d'
-    if interval in ['secondly', 'minutely', 'hourly']:
+    if interval in ['secondly', 'minutely', 'hourly'] or interval.endswith('min'):
         pattern = '%Y-%m-%dT%H:%M:%S'
     date_formatted = date.strftime(pattern)
     return date_formatted
