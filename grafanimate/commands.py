@@ -37,6 +37,7 @@ def run():
                                     - collapse-datetime:    Collapse datetime into title
                                     - studio:               Apply studio modifications. This options aggregates
                                                             "no-chrome", "large-font" and "collapse-datetime".
+                                    - no-folder:            Don't include foldername in title
 
                                     - no-title:             Turn off title widget
                                     - no-datetime:          Turn off datetime widget

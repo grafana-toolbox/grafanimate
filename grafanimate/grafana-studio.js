@@ -354,7 +354,10 @@ class GrafanaStudioSrv {
     getDashboardTitle() {
         // Build title from original one plus start time.
         var dashboard = this.dashboardSrv.dash;
-        var title = dashboard.meta.folderTitle + ' / ' + dashboard.title;
+        var title = dashboard.title;
+        if (!this.hasHeaderLayout('no-folder')) {
+            title = dashboard.meta.folderTitle + ' / ' + title;
+        }
         return title;
     }
 

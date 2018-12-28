@@ -17,6 +17,7 @@ in progress
 - Properly produce .mp4 and .gif artifacts
 - Fix window size wrt. ffmpeg animated gif rendering
 - Add quick hack to remove specific panel from specific dashboard
+- Add option --header-layout=no-folder to omit folder name from dashboard title
 
 
 2018-12-27 0.3.0
