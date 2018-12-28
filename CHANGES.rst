@@ -11,6 +11,7 @@ in progress
 - Improve interval handling
 - Pick reasonable timeframe for "cdc_maps" example scenario
 - Improve timing for heavy dashboards
+- Add Makefile target for uploading to web space
 
 
 2018-12-27 0.3.0
