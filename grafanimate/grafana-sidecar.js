@@ -147,11 +147,9 @@ class GrafanaSidecarSrv {
     onDashboardLoad() {
         console.info('Dashboard loaded');
 
-        // Adjust user interface on dashboard load.
-        this.improveDashboardChrome();
-
         // Acquire real dashboard model object.
         var dashboard = this.dashboardSrv.dash;
+        //log('dashboard:', dashboard);
 
         dashboard.events.on('render', function(event) {
             log('================ DASHBOARD RENDER');
@@ -165,6 +163,7 @@ class GrafanaSidecarSrv {
             _this.hasAllData(false);
 
             // Adjust user interface on dashboard refresh.
+            _this.improveDashboardChrome();
             _this.improvePanelChrome();
 
             // Watch for panel data to arrive.
@@ -172,8 +171,17 @@ class GrafanaSidecarSrv {
 
         });
 
-        // FIXME: Really?
-        //_this.onPanelRefresh();
+        // Adjust user interface on dashboard load.
+        // FIXME: This happens too fast. Complex dashboards might not have finished loading here.
+        if (this.hasHeaderLayout('no-chrome', 'studio')) {
+            this.setKioskMode();
+        }
+        //_this.improveDashboardChrome();
+
+        // FIXME: Q: Really?
+        //        A: Yes, seems to be required at least for the "cdc_maps" scenario
+        //           as there won't be any refresh event to catch at first hand.
+        _this.onDashboardRefresh();
 
     }
 
@@ -184,8 +192,12 @@ class GrafanaSidecarSrv {
         var promises = [];
         dashboard.panels.forEach(function(panel) {
 
-            // Skip panels with type==row
-            if (panel.type == 'row') {
+            //log('panel:', panel);
+
+            // Skip panels with type==row or type==text.
+            //var whitelist = ['grafana-worldmap-panel', 'marcuscalidus-svg-panel'];
+            var blacklist = ['row', 'text'];
+            if (blacklist.includes(panel.type)) {
                 return;
             }
 
@@ -204,6 +216,8 @@ class GrafanaSidecarSrv {
 
         // Consolidate all promises into single one.
         // TODO: What about the error case? Should call `.hasAllData(false)`?
+        // TODO: Q: What if promises is an empty array?
+        //       A: It will resolve successfully, which might not be what we want.
         var _this = this;
         Promise.all(promises).then(function(event) {
             _this.$rootScope.$emit('all-data-received', dashboard);
@@ -216,7 +230,7 @@ class GrafanaSidecarSrv {
 
         if (this.hasHeaderLayout('no-chrome', 'studio')) {
 
-            this.setKioskMode();
+            //this.setKioskMode();
 
             // Add some padding to content top.
             $('.main-view').css('padding-top', '1rem');
@@ -265,9 +279,6 @@ class GrafanaSidecarSrv {
             $('.gf-timepicker-nav').remove();
             $('.navbar-buttons').remove();
 
-            // Save original title, for collapsing datetime into title.
-            $('.navbar-page-btn').data('title', $('.navbar-page-btn').text().trim());
-
             // No clipping, no ellipsis.
             $('.navbar-page-btn').css('overflow', 'unset').css('text-overflow', 'unset');
         }
@@ -294,12 +305,8 @@ class GrafanaSidecarSrv {
         if (this.hasHeaderLayout('collapse-datetime', 'studio')) {
 
             // Build title from original one plus start time.
-            var title = $('.navbar-page-btn').data('title');
-
-            // Default datetime format is "on DATE at TIME".
-            // https://english.stackexchange.com/questions/182660/on-vs-at-with-date-and-time/182663#182663
-            var format_human = "on YYYY-MM-DD at HH:mm:ss";
-            var format_default = "YYYY-MM-DD HH:mm:ss";
+            var dashboard = this.dashboardSrv.dash;
+            var title = dashboard.title;
 
             // Custom datetime format.
             var infix = ' at ';
@@ -315,6 +322,8 @@ class GrafanaSidecarSrv {
                     infix = '';
                     dtstart = ' at ' + timerange.from.format('HH:mm:ss');
                 } else if (datetime_format == 'human-datetime') {
+                    // Datetime format naming is "on DATE at TIME".
+                    // https://english.stackexchange.com/questions/182660/on-vs-at-with-date-and-time/182663#182663
                     infix = '';
                     dtstart = ' on ' + timerange.from.format('YYYY-MM-DD') + ' at ' + timerange.from.format('HH:mm:ss');
                 } else {
