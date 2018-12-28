@@ -165,3 +165,9 @@ class FirefoxMarionetteBase(object):
         """
         image = self.marionette.screenshot(element=element, format='binary')
         return image
+
+    def set_window_size(self, width, height):
+        self.marionette.set_window_rect(width=width, height=height)
+
+    def get_window_rect(self):
+        return self.marionette.window_rect

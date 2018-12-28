@@ -15,6 +15,7 @@ in progress
 - Refactor the machinery
 - Get dashboard title from Grafana runtime scope for deriving the output filename from
 - Properly produce .mp4 and .gif artifacts
+- Fix window size wrt. ffmpeg animated gif rendering
 
 
 2018-12-27 0.3.0
