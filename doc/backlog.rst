@@ -16,7 +16,19 @@ Prio 1
 - [o] Check "ir-sensor-svg-pixmap" [weef]
 - [o] Handle error ``--- PANEL DATA-ERROR TypeError: "ctrl.series[0] is undefined"`` on:
       https://swarm.hiveeyes.org/grafana/d/_TbvFUyik/weef-test-ir-sensor-svg-pixmap-for-grafanimate?from=0&to=0&orgId=2&kiosk=tv
+- [o] Render specific panel in fullscreen mode like ``&panelId=6&fullscreen`` [weef]
+- [o] Optionally, also use ``d-solo`` mode for rendering a single panel without any header at all [weef]
+- [o] Remove background header gradient when being in fullscreen mode?
+- [o] Default to "now()" if no dtuntil is given
+- [o] Check which timezone offset gets used when addressing by unqualified timestamp
+- [o] Problem when trying to address Grafana in "d-solo" mode like
+      ``https://swarm.hiveeyes.org/grafana/d-solo/_TbvFUyik?panelId=6&fullscreen``,
+      only works with https://swarm.hiveeyes.org/grafana/d-solo/_TbvFUyik/<slug>.
+      While it will load with an arbitrary slug, it will display two "Dashboard init failed; t.dashboard is undefined"
+      notification popups, which we have to avoid.
 
+      Possible workaround: Retrieve correct slug by means of
+      http http://localhost:3000/api/dashboards/uid/1aOmc1sik | jq '.meta.slug'
 
 ******
 Prio 2
@@ -39,6 +51,7 @@ Prio 2
 - [o] Improve error handling. Currently croaks with
     - ``from=0&to=0`` or ``from=2018-08-14&to=2018-08-14``
       on "weef-test-ir-sensor-svg-pixmap-for-grafanimate"
+- [o] Rename to "Grafana Studio" and publish as regular Grafana Plugin
 
 
 ******
