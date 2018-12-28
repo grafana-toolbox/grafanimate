@@ -53,7 +53,7 @@ class AnimationScenario:
 
         # LDI, growth, with gap at 2018-04-29 - 2018-12-20
         # TODO: Detect empty data from datasource through Grafana Sidecar and skip respective images.
-        results = self.engine.run(dtstart=datetime(2017, 1, 1), dtuntil=datetime(2018, 4, 28), interval='weekly')
+        results = self.engine.run(dtstart=datetime(2017, 1, 1), dtuntil=datetime(2018, 6, 5), interval='weekly')
         self.storage.save_items(results)
 
         results = self.engine.run(dtstart=datetime(2018, 12, 20), dtuntil=datetime.now(), interval='weekly')

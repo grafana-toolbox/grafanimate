@@ -18,6 +18,7 @@ in progress
 - Fix window size wrt. ffmpeg animated gif rendering
 - Add quick hack to remove specific panel from specific dashboard
 - Add option --header-layout=no-folder to omit folder name from dashboard title
+- Reduce gap for scenario "ldi_with_gaps"
 
 
 2018-12-27 0.3.0
