@@ -5,6 +5,10 @@ grafanimate changelog
 
 in progress
 ===========
+
+
+2018-12-28 0.4.0
+================
 - Add parameters ``--panel-id``, ``--header-layout`` and ``--datetime-format``
 - Refactor some parts of the machinery
 - Increase time to wait for Browser starting up
