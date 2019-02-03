@@ -6,6 +6,7 @@ grafanimate changelog
 in progress
 ===========
 - Add "5 minute" and "30 minute" intervals
+- Decrease frame rate to 2 fps when rendering using ffmpeg
 
 
 2018-12-28 0.4.1

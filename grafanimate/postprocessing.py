@@ -19,7 +19,7 @@ def to_video(source, target):
     # -vf "fps=25,format=yuv420p,drawtext=fontfile=OpenSans-Regular.ttf:text='Title of this Video':fontcolor=white:fontsize=24:x=(w-tw)/2:y=(h/PHI)+th
     #command = "ffmpeg -framerate 4 -pattern_type glob -i '{}' -c:v libx264 -vf 'fps=25,format=yuv420p,drawtext=text=Produced with Grafana and grafanimate:fontsize=11:x=w-tw-30:y=h-th-10:fontcolor=lightgrey:fontfile=/Library/Fonts/Arial.ttf' '{}' -y".format(source, target)
 
-    command = "ffmpeg -framerate 4 -pattern_type glob -i '{}' -c:v libx264 -vf 'fps=25,format=yuv420p' '{}' -y".format(source, target)
+    command = "ffmpeg -framerate 2 -pattern_type glob -i '{}' -c:v libx264 -vf 'fps=25,format=yuv420p' '{}' -y".format(source, target)
     logger.info('Rendering video: {}'.format(target))
     logger.debug(command)
     os.system(command)
