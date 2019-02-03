@@ -6,32 +6,33 @@ grafanimate backlog
 ******
 Prio 1
 ******
-- [x] Fix missing .js file in Python dist package
-- [x] Add ATTENTION remark to README
-- [x] Improve docs about demo screenshot
-- [o] Add attribution also for non-worldmap dashboards
-- [x] Fix postprocessing errors::
-
-    Input #0, image2, from './var/spool/DLOlE_Rmz/DLOlE_Rmz_*.png':
-      Duration: 00:00:28.75, start: 0.000000, bitrate: N/A
-        Stream #0:0: Video: png, rgba(pc), 1497x483, 4 fps, 4 tbr, 4 tbn, 4 tbc
-    Stream mapping:
-      Stream #0:0 -> #0:0 (png (native) -> h264 (libx264))
-    Press [q] to stop, [?] for help
-
-    [libx264 @ 0x7fcf0c001200] width not divisible by 2 (1497x483)
-    [libx264 @ 0x7fa917001200] height not divisible by 2 (1348x823)
-
-- [o] German date formatting: "Karten (CDC) am 7. März 2018 um 5 Uhr" instead of "Karten (CDC) on 2018-03-07 at 05:00:00"
-- [o] Automatically set height of window based on content
-- [o] Purge spool directory before starting
-- [o] Put total dtstart-dtend into final output filenames
-- [o] Check whether applying filtering by --panel-id actually does _not_ render the other panels
-- [o] Otherwise / also, introduce --panel-whitelist and --panel-blacklist parameters
 
 
 ******
 Prio 2
+******
+- [o] Add attribution also for non-worldmap dashboards
+- [o] Configurable attribution links
+- [o] German date formatting: "Karten (CDC) am 7. März 2018 um 5 Uhr" instead of "Karten (CDC) on 2018-03-07 at 05:00:00"
+- [o] Automatically set height of window based on content
+- [o] Purge spool directory before starting
+- [o] Put total dtstart-dtend into final output artefact filename(s)
+- [o] Check whether applying filtering by --panel-id actually does _not_ render the other panels
+- [o] Otherwise / also, introduce --panel-whitelist and --panel-blacklist parameters
+- [o] Set title from commandline
+- [o] Don't just use the dashboard title as output filename, also add time range
+- [o] Commandline parameter --attribution for attributing LDI maps from "luftdaten.info" etc.
+- [o] Map center and zoom level like
+    - berlin==52.51204,13.43319,zoom=11
+    - stuttgart==48.77928,9.17721,zoom=11
+    - munich==48.15496,11.54184,zoom=11
+    - europe==47.75,10.00,zoom=5
+- [o] Set title from commandline
+- [o] Autogenerate title from $thing, $location and $time ($what, $where and $when).
+
+
+******
+Prio 3
 ******
 - [o] Make output directory ``./var/spool`` configurable
 - [o] Set User-Agent appropriately
@@ -56,8 +57,9 @@ Prio 2
 - [o] Split timerange into even-sized segments with ``rrule(count=N)``
 - [o] Introduce interval specifiers like '1h', '3d', etc.
 
+
 ******
-Prio 3
+Prio 4
 ******
 - [o] Start- und Endtime in Unix Epoch oder sogar gemischt [weef]
 - [o] Add audio::
@@ -82,7 +84,7 @@ Prio 3
 
 
 ******
-Prio 4
+Prio 5
 ******
 - [o] Repeat the very last frame for some more times.
 - [o] Put Grafana hostname into filename when saving
@@ -109,3 +111,17 @@ Done
 - [x] Toggle fullscreen mode
 - [x] Hide spinner
 - [x] Timing: Wait for data to load after adjusting time control
+- [x] Fix missing .js file in Python dist package
+- [x] Add ATTENTION remark to README
+- [x] Improve docs about demo screenshot
+- [x] Fix postprocessing errors::
+
+    Input #0, image2, from './var/spool/DLOlE_Rmz/DLOlE_Rmz_*.png':
+      Duration: 00:00:28.75, start: 0.000000, bitrate: N/A
+        Stream #0:0: Video: png, rgba(pc), 1497x483, 4 fps, 4 tbr, 4 tbn, 4 tbc
+    Stream mapping:
+      Stream #0:0 -> #0:0 (png (native) -> h264 (libx264))
+    Press [q] to stop, [?] for help
+
+    [libx264 @ 0x7fcf0c001200] width not divisible by 2 (1497x483)
+    [libx264 @ 0x7fa917001200] height not divisible by 2 (1348x823)
