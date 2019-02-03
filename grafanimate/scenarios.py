@@ -42,8 +42,6 @@ class AnimationScenario:
         results = self.engine.run(dtstart=datetime(2017, 1, 1), dtuntil=datetime.now(), interval='weekly')
         self.storage.save_items(results)
 
-        self.storage.save_items(results)
-
     def ldi_with_gaps(self):
         logger.info('Running scenario ldi_with_gaps')
 
@@ -57,6 +55,32 @@ class AnimationScenario:
         self.storage.save_items(results)
 
         results = self.engine.run(dtstart=datetime(2018, 12, 20), dtuntil=datetime.now(), interval='weekly')
+        self.storage.save_items(results)
+
+    def ldi_nye_2017_2018(self):
+        logger.info('Running scenario ldi_nye_2017_2018')
+
+        # LDI, New Year's Eve 2018
+        results = self.engine.run(dtstart=datetime(2017, 12, 31, 21, 0, 0), dtuntil=datetime(2018, 1, 1, 4, 0, 0), interval='10min')
+        self.storage.save_items(results)
+
+    def ldi_nye_2018_2019(self):
+        logger.info('Running scenario ldi_nye_2018_2019')
+
+        # LDI, New Year's Eve 2018/2019
+        results = self.engine.run(dtstart=datetime(2018, 12, 31, 15, 0, 0), dtuntil=datetime(2018, 12, 31, 20, 0, 0), interval='30min')
+        self.storage.save_items(results)
+
+        results = self.engine.run(dtstart=datetime(2018, 12, 31, 20, 0, 0), dtuntil=datetime(2018, 12, 31, 23, 0, 0), interval='10min')
+        self.storage.save_items(results)
+
+        results = self.engine.run(dtstart=datetime(2018, 12, 31, 23, 0, 0), dtuntil=datetime(2019, 1, 1, 1, 0, 0), interval='5min')
+        self.storage.save_items(results)
+
+        results = self.engine.run(dtstart=datetime(2019, 1, 1, 1, 0, 0), dtuntil=datetime(2019, 1, 1, 4, 0, 0), interval='10min')
+        self.storage.save_items(results)
+
+        results = self.engine.run(dtstart=datetime(2019, 1, 1, 4, 0, 0), dtuntil=datetime(2019, 1, 1, 9, 0, 0), interval='30min')
         self.storage.save_items(results)
 
     def cdc_maps(self):

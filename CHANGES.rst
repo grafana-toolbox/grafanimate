@@ -8,6 +8,7 @@ in progress
 - Add "5 minute" and "30 minute" intervals
 - Decrease frame rate to 2 fps when rendering using ffmpeg
 - Add luftdaten.info to attribution area on leaflet map widget
+- Add LDI NYE shot scenario
 
 
 2018-12-28 0.4.1
