@@ -90,11 +90,23 @@ class SequentialAnimation:
             rr_freq = MINUTELY
             delta = timedelta(minutes=1) - timedelta(seconds=1)
 
+        # Each 5 minutes
+        elif interval == '5min':
+            rr_freq = MINUTELY
+            rr_interval = 5
+            delta = timedelta(minutes=5) - timedelta(seconds=1)
+
         # Each 10 minutes
         elif interval == '10min':
             rr_freq = MINUTELY
             rr_interval = 10
             delta = timedelta(minutes=10) - timedelta(seconds=1)
+
+        # Each 30 minutes
+        elif interval == '30min':
+            rr_freq = MINUTELY
+            rr_interval = 30
+            delta = timedelta(minutes=30) - timedelta(seconds=1)
 
         # Hourly
         elif interval == 'hourly':

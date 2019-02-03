@@ -5,6 +5,7 @@ grafanimate changelog
 
 in progress
 ===========
+- Add "5 minute" and "30 minute" intervals
 
 
 2018-12-28 0.4.1
