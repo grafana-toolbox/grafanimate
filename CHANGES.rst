@@ -11,6 +11,7 @@ in progress
 - Add LDI NYE shot scenario
 - Fix missing dependency to the "Munch" package
 - Fix "ptrace" Makefile target for uploading renderings
+- Add "grafana-start" Makefile target
 
 
 2018-12-28 0.4.1

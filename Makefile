@@ -96,3 +96,12 @@ check-ptrace-options:
 		echo "ERROR: 'source' not set"; \
 		exit 1; \
 	fi
+
+
+
+# -------
+# Project
+# -------
+
+grafana-start:
+	grafana-server --config=/usr/local/etc/grafana/grafana.ini --homepath /usr/local/share/grafana cfg:default.paths.logs=/usr/local/var/log/grafana cfg:default.paths.data=/usr/local/var/lib/grafana cfg:default.paths.plugins=/usr/local/var/lib/grafana/plugins
