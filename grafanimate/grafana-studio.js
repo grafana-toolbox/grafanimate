@@ -195,11 +195,20 @@ class GrafanaStudioSrv {
     onDashboardRefresh() {
         var dashboard = this.dashboardSrv.dash;
 
+        var panel_id = this.options['panel-id'];
+
         // Wait for all panels to receive their data.
         var promises = [];
         dashboard.panels.forEach(function(panel) {
 
             //log('panel:', panel);
+
+            // Skip all other panels when specific panel is selected.
+            if (panel_id != undefined) {
+                if (panel.id != panel_id) {
+                    return;
+                }
+            }
 
             // Skip panels with type==row or type==text.
             //var whitelist = ['grafana-worldmap-panel', 'marcuscalidus-svg-panel'];
@@ -210,11 +219,12 @@ class GrafanaStudioSrv {
 
             var promise = new Promise(function(resolve, reject) {
                 panel.events.on('data-received', function() {
-                    //log('--- PANEL DATA-RECEIVED');
+                    log('--- data-received for panel.id:', panel.id);
                     resolve();
                 });
                 panel.events.on('data-error', function(event) {
                     //console.error('--- PANEL DATA-ERROR', event);
+                    console.warn('--- data-error for panel.id:', panel.id);
                     reject(event);
                 });
             });

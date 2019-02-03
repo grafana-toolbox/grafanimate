@@ -12,6 +12,8 @@ in progress
 - Fix missing dependency to the "Munch" package
 - Fix "ptrace" Makefile target for uploading renderings
 - Add "grafana-start" Makefile target
+- Prevent stalling of Grafana Studio Javascript when waiting for data arrival
+  of all panels when actually rendering a single panel only.
 
 
 2018-12-28 0.4.1
