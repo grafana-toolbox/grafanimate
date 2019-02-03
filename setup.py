@@ -9,6 +9,7 @@ requires = [
 
     # Foundation
     'six==1.11.0',
+    'munch==2.3.2',
     'docopt==0.6.2',
     'tqdm==4.28.1',
     'unidecode==1.0.23',
