@@ -75,7 +75,7 @@ ptrace: check-ptrace-options
 	$(eval name           := $(shell basename '$(source)'))
 	$(eval file_name      := $(prefix)_$(name))
 	$(eval file_escaped   := $(shell printf %q "$(file_name)"))
-	$(eval file_url       := $(shell echo -n "$(file_name)" | python -c "import sys, urllib; print urllib.quote(sys.stdin.read())"))
+	$(eval file_url       := $(shell /bin/echo -n "$(file_name)" | python -c "import sys, urllib; print urllib.quote(sys.stdin.read())"))
 
 	$(eval upload_command := scp -P 2707 '$(source)' '$(ptrace_target)$(file_escaped)')
 	$(eval media_url      := $(ptrace_http)$(file_url))
@@ -84,11 +84,12 @@ ptrace: check-ptrace-options
 	@#echo "name:         $(name)"
 	@#echo "file_name:    $(file_name)"
 	@#echo "file_escaped: $(file_escaped)"
+	@#echo "file_url:     $(file_url)"
 	@#echo "command:      $(upload_command)"
 
 	$(upload_command)
 
-	@echo "Access URL: $(media_url)"
+	@echo "Access URL:    $(media_url)"
 
 check-ptrace-options:
 	@if test "$(source)" = ""; then \

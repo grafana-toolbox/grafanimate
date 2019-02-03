@@ -10,6 +10,7 @@ in progress
 - Add luftdaten.info to attribution area on leaflet map widget
 - Add LDI NYE shot scenario
 - Fix missing dependency to the "Munch" package
+- Fix "ptrace" Makefile target for uploading renderings
 
 
 2018-12-28 0.4.1
