@@ -44,7 +44,8 @@ luftdaten.info coverage
 =======================
 .. figure:: https://ptrace.hiveeyes.org/2018-12-28_luftdaten-info-coverage.gif
     :target: https://ptrace.hiveeyes.org/2018-12-28_luftdaten-info-coverage.mp4
-    :width: 600px
+    :width: 645px
+    :height: 412px
 
     Coverage of luftdaten.info sensors starting October 2015 across Europe.
 
@@ -57,7 +58,8 @@ Fine dust pollution on New Year's Eve
 =====================================
 .. figure:: https://ptrace.hiveeyes.org/2019-02-04_M0h7br_ik_2019-01-01T00-15-00.png
     :target: https://ptrace.hiveeyes.org/2019-02-03_particulates-on-new-year-s-eve.mp4
-    :width: 600px
+    :width: 645px
+    :height: 412px
 
     `Animation of fine dust pollution on New Year's Eve 2018 across Europe <https://community.hiveeyes.org/t/animation-der-feinstaubbelastung-an-silvester-2018-mit-grafanimate/1472>`_.
 
@@ -75,7 +77,8 @@ DWD CDC
 =======
 .. figure:: https://ptrace.hiveeyes.org/2019-02-04_DLOlE_Rmz_2018-03-10T13-00-00.png
     :target: https://ptrace.hiveeyes.org/2018-12-28_wetter-dwd-temperatur-sonne-niederschlag-karten-cdc.mp4
-    :width: 600px
+    :width: 714px
+    :height: 414px
 
     `Short weather film about temperature, sun and precipitation based on DWD/CDC data in March 2018 <https://community.hiveeyes.org/t/kurzer-wetterfilm-uber-temperatur-sonne-und-niederschlag-auf-basis-der-dwd-cdc-daten-im-marz-2018/1475>`_.
 
@@ -90,7 +93,8 @@ IR-Sensor SVG-Pixmap
 ====================
 .. figure:: https://ptrace.hiveeyes.org/2019-02-04_acUXbj_mz_2018-08-14T03-16-12.png
     :target: https://ptrace.hiveeyes.org/2019-02-04_ir-sensor-svg-pixmap.mp4
-    :width: 350px
+    :width: 333px
+    :height: 350px
 
     IR-Sensor SVG-Pixmap displaying temperature changes inside a beehive.
 

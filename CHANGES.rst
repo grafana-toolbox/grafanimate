@@ -7,6 +7,11 @@ in progress
 ===========
 
 
+2019-02-04 0.5.1
+================
+- Fix image sizes in README
+
+
 2019-02-04 0.5.0
 ================
 - Add "5 minute" and "30 minute" intervals
