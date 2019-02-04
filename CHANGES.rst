@@ -7,6 +7,11 @@ in progress
 ===========
 
 
+2019-02-04 0.5.5
+================
+- Revert all image size changes leading to effectively nothing
+
+
 2019-02-04 0.5.4
 ================
 - Attempt to fix image sizes in README once more
