@@ -5,6 +5,10 @@ grafanimate changelog
 
 in progress
 ===========
+
+
+2019-02-04 0.5.0
+================
 - Add "5 minute" and "30 minute" intervals
 - Decrease frame rate to 2 fps when rendering using ffmpeg
 - Add luftdaten.info to attribution area on leaflet map widget
