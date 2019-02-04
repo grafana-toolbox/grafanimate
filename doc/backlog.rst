@@ -6,6 +6,17 @@ grafanimate backlog
 ******
 Prio 1
 ******
+- [o] Catch "Dashboard not found" errors.
+- [o] For smoother live view, toggle time **after** data has loaded
+- [o] When slugifying the title, replace ``'`` by empty string.
+- [o] Render as .webm or .ogg?
+- [o] When Browser loses focus and gets it again (or when pressing CMD!?),
+      the title shifts a few cm to the left!
+- [o] Set browser window size
+- [o] Render more things
+    - Cloudiness: https://weather.hiveeyes.org/grafana/d/YVm0P1miz/meteogramm-einer-station-cdc-and-mosmix?refresh=15m&orgId=1&from=now-7d&to=now&var-COMMON_CDC_NAME=Leipzig%2FHalle&var-COMMON_CDC_ID=02932&panelId=50&fullscreen
+    - LDI coverage: ``grafanimate --grafana-url=http://localhost:3000/ --scenario=ldi_with_gaps --dashboard-uid=1aOmc1sik --header-layout=studio,no-folder --datetime-format=human-date``
+- [o] FIXME re. special handling of dashboard DLOlE_Rmz
 
 
 ******
@@ -22,13 +33,14 @@ Prio 2
 - [o] Set title from commandline
 - [o] Don't just use the dashboard title as output filename, also add time range
 - [o] Commandline parameter --attribution for attributing LDI maps from "luftdaten.info" etc.
-- [o] Map center and zoom level like
+- [o] Navigate location of map panels from commandline / profile
     - berlin==52.51204,13.43319,zoom=11
     - stuttgart==48.77928,9.17721,zoom=11
     - munich==48.15496,11.54184,zoom=11
     - europe==47.75,10.00,zoom=5
 - [o] Set title from commandline
 - [o] Autogenerate title from $thing, $location and $time ($what, $where and $when).
+- [o] Output complete embed HTML. Hint: This will require publishing first.
 
 
 ******
@@ -125,3 +137,4 @@ Done
 
     [libx264 @ 0x7fcf0c001200] width not divisible by 2 (1497x483)
     [libx264 @ 0x7fa917001200] height not divisible by 2 (1348x823)
+- [x] Toggle off default attribution to luftdaten.info
