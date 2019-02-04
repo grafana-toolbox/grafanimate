@@ -7,6 +7,13 @@ in progress
 ===========
 
 
+2019-02-04 0.5.2
+================
+- Attempt to fix image sizes in README again, see
+    - https://github.com/github/markup/issues/295
+    - https://github.com/github/markup/issues/1162
+
+
 2019-02-04 0.5.1
 ================
 - Fix image sizes in README
