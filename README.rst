@@ -21,10 +21,8 @@ About
 *****
 `grafanimate` captures screenshots while animating a
 Grafana dashboard by manipulating its `time range control`_,
-i.e. navigating through time.
-
-The result can be saved as a sequence of images, an animated
-gif file or as a video file.
+i.e. navigating through time. The result can be rendered as a
+sequence of png images, an animated gif file and as a video file.
 
 
 .. attention::
@@ -33,31 +31,74 @@ gif file or as a video file.
     and the underlying database machinery. Handle with care!
 
 
-****
-Demo
-****
+********
+Examples
+********
+**Composition**: `The Hiveeyes Project`_. Developing a flexible beehive monitoring infrastructure.
+Clicking on an image will take you to the animated version.
 
-Screenshot
-==========
-Coverage of luftdaten.info sensors starting October 2015.
+.. _The Hiveeyes Project: https://hiveeyes.org/
 
-.. image:: https://ptrace.hiveeyes.org/2018-12-28_luftdaten-info-coverage.gif
+
+luftdaten.info coverage
+=======================
+.. figure:: https://ptrace.hiveeyes.org/2018-12-28_luftdaten-info-coverage.gif
     :target: https://ptrace.hiveeyes.org/2018-12-28_luftdaten-info-coverage.mp4
     :width: 600px
-    :height: 436px
 
-Details
-=======
+    Coverage of luftdaten.info sensors starting October 2015 across Europe.
+
 - **Data source**: `luftdaten.info`_ (LDI)
-- **Production**: `Luftdatenpumpe`_, daily
-
+- **Production**:  `Luftdatenpumpe`_, `LDI data plane v2`_, daily.
 - **Development**: `Erneuerung der Luftdatenpumpe`_. All contributions welcome.
-- **Composition**: `The Hiveeyes Project`_. Developing a flexible beehive monitoring infrastructure.
+
+
+Fine dust pollution on New Year's Eve
+=====================================
+.. figure:: https://ptrace.hiveeyes.org/2019-02-04_M0h7br_ik_2019-01-01T00-15-00.png
+    :target: https://ptrace.hiveeyes.org/2019-02-03_particulates-on-new-year-s-eve.mp4
+    :width: 600px
+
+    `Animation of fine dust pollution on New Year's Eve 2018 across Europe <https://community.hiveeyes.org/t/animation-der-feinstaubbelastung-an-silvester-2018-mit-grafanimate/1472>`_.
+
+- **Data source**: `luftdaten.info`_ (LDI)
+- **Production**:  `Luftdatenpumpe`_, `LDI data plane v2`_, historical.
+- **Development**: `Erneuerung der Luftdatenpumpe`_. All contributions welcome.
 
 .. _luftdaten.info: http://luftdaten.info/
 .. _Luftdatenpumpe: https://github.com/hiveeyes/luftdatenpumpe
 .. _Erneuerung der Luftdatenpumpe: https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199
-.. _The Hiveeyes Project: https://hiveeyes.org/
+.. _LDI data plane v2: https://community.hiveeyes.org/t/ldi-data-plane-v2/1412
+
+
+DWD CDC
+=======
+.. figure:: https://ptrace.hiveeyes.org/2019-02-04_DLOlE_Rmz_2018-03-10T13-00-00.png
+    :target: https://ptrace.hiveeyes.org/2018-12-28_wetter-dwd-temperatur-sonne-niederschlag-karten-cdc.mp4
+    :width: 600px
+
+    `Short weather film about temperature, sun and precipitation based on DWD/CDC data in March 2018 <https://community.hiveeyes.org/t/kurzer-wetterfilm-uber-temperatur-sonne-und-niederschlag-auf-basis-der-dwd-cdc-daten-im-marz-2018/1475>`_.
+
+- **Data source**: `DWD Open Data`_ (DWD)
+- **Production**:  `DWD Climate Data Center (CDC), 10m-Werte: Aktuelle Lufttemperaturen, Sonnenscheindauer & Niederschlag <https://weather.hiveeyes.org/grafana/d/DLOlE_Rmz/temperatur-sonne-and-niederschlag-karten-cdc>`_
+- **Development**: <work in progress>
+
+.. _DWD Open Data: https://opendata.dwd.de/
+
+
+IR-Sensor SVG-Pixmap
+====================
+.. figure:: https://ptrace.hiveeyes.org/2019-02-04_acUXbj_mz_2018-08-14T03-16-12.png
+    :target: https://ptrace.hiveeyes.org/2019-02-04_ir-sensor-svg-pixmap.mp4
+    :width: 350px
+
+    IR-Sensor SVG-Pixmap displaying temperature changes inside a beehive.
+
+- **Data source**: `Clemens Gruber`_ (CG)
+- **Development**: `How to Visualize 2-Dimensional Temperature Data in Grafana <https://community.hiveeyes.org/t/how-to-visualize-2-dimensional-temperature-data-in-grafana/974/15>`_
+
+.. _Clemens Gruber: https://community.hiveeyes.org/u/clemens
+
 
 
 
@@ -116,34 +157,28 @@ Usage
       # Generate sequence of .png files in ./var/spool/ldi_all/1aOmc1sik
       grafanimate --grafana-url=http://localhost:3000/ --scenario=ldi_all --dashboard-uid=1aOmc1sik
 
-      # Use more parameters to control rendering process.
-      grafanimate \
-        --grafana-url=http://localhost:3000/ --scenario=ir_sensor_svg_pixmap --dashboard-uid=_TbvFUyik \
-        --header-layout=studio --datetime-format=human-time --panel-id=6
+      # Use more parameters to control the rendering process.
+      grafanimate --grafana-url=http://localhost:3000/ --scenario=ir_sensor_svg_pixmap --dashboard-uid=_TbvFUyik --header-layout=studio --datetime-format=human-time --panel-id=6
 
 
 *****
 Setup
 *****
 
+Prerequisites
+=============
+This program uses the fine ffmpeg_ for doing the heavy lifting.
 
-ffmpeg
-======
-This programs depends on the ``drawtext`` ffmpeg filter.
-To make this work, ffmpeg must be compiled with ``--with-freetype``.
+.. _ffmpeg: https://ffmpeg.org/
 
--- https://stackoverflow.com/questions/48006872/no-such-filter-drawtext/53702852#53702852
-
-e.g.::
-
-    brew upgrade ffmpeg --with-freetype
 
 grafanimate
 ===========
 .. note::
 
     As Marionette for Firefox is not available for Python 3,
-    this program works with Python 2 only.
+    this program works with Python 2 only. We recommend installing
+    the program into a Python virtualenv.
 
 ::
 
@@ -152,18 +187,25 @@ grafanimate
     pip install grafanimate
 
 
-********
-Thoughts
-********
-Animating things in Grafana_ across the time-axis in the spirit
-of the `GeoLoop Panel Plugin`_ but in a more general way has not
-been unlocked for Grafana yet.
+**********************
+Background and details
+**********************
 
+Introduction
+============
+Animating things in Grafana_ across the time-axis in the spirit
+of the `GeoLoop Panel Plugin`_ hasn't been unlocked for Grafana
+in a more general way yet. Challenge accepted!
+
+Time warp
+=========
 At this programs' core is the code to `set time range in Grafana`_::
 
     timeSrv = angular.element('grafana-app').injector().get('timeSrv');
     timeSrv.setTime({from: "2015-10-01", to: "2018-12-31"});
 
+Rendering engine
+================
 Turtles all the way up, the main rendering work horse is a Firefox Browser
 automated through `Marionette Python Client`_ fame:
 
