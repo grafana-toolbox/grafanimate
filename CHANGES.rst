@@ -14,6 +14,7 @@ in progress
 - Add "grafana-start" Makefile target
 - Prevent stalling of Grafana Studio Javascript when waiting for data arrival
   of all panels when actually rendering a single panel only.
+- Deactivate default attribution of luftdaten.info for map panels
 
 
 2018-12-28 0.4.1
