@@ -110,6 +110,7 @@ class GrafanaStudioSrv {
                     if (result.dashboard.uid == uid) {
 
                         // Quick hack to remove specific panel from specific dashboard.
+                        // FIXME
                         if (uid == 'DLOlE_Rmz') {
                             result.dashboard.panels.shift();
                         }
