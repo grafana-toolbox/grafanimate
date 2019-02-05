@@ -17,6 +17,7 @@ Prio 1
     - Cloudiness: https://weather.hiveeyes.org/grafana/d/YVm0P1miz/meteogramm-einer-station-cdc-and-mosmix?refresh=15m&orgId=1&from=now-7d&to=now&var-COMMON_CDC_NAME=Leipzig%2FHalle&var-COMMON_CDC_ID=02932&panelId=50&fullscreen
     - LDI coverage: ``grafanimate --grafana-url=http://localhost:3000/ --scenario=ldi_with_gaps --dashboard-uid=1aOmc1sik --header-layout=studio,no-folder --datetime-format=human-date``
 - [o] FIXME re. special handling of dashboard DLOlE_Rmz
+- [o] Switch to fullscreen mode before rendering?
 
 
 ******
