@@ -5,6 +5,7 @@ grafanimate changelog
 
 in progress
 ===========
+- Fix attribution signature on worldmap panels
 
 
 2019-02-04 0.5.5

@@ -392,7 +392,7 @@ class GrafanaStudioSrv {
             var grafana = $('<a href="https://grafana.com/" title="Grafana: The leading open source software for time series analytics">Grafana</a>');
             var separator = ' | ';
             //signature.prepend(luftdaten_info, separator, grafanimate, separator, grafana, separator);
-            signature.prepend(separator, grafanimate, separator, grafana, separator);
+            signature.prepend(grafanimate, separator, grafana, separator);
         }
     }
 
