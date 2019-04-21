@@ -84,9 +84,15 @@ def create_dope_sheet_blueprint():
     yesterday = now - timedelta(days=1)
     tomorrow = now + timedelta(days=1)
 
-    print('Sliding')
+    print('Sliding forward')
     intervals = SlidingPeriodicInterval(start=yesterday, stop=tomorrow, every=timedelta(days=1))
     print_intervals(intervals)
+
+    # Just reversing the list of intervals yields deterministic results as it is literally
+    # just the opposite of sliding forward without any different computation involved.
+    print('Sliding reverse')
+    intervals = SlidingPeriodicInterval(start=yesterday, stop=tomorrow, every=timedelta(days=1))
+    print_intervals(reversed(list(intervals)))
 
     print('Cumulative I')
     intervals = CumulativePeriodicInterval(start=yesterday, stop=tomorrow, every=timedelta(days=1))
