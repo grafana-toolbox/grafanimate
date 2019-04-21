@@ -94,6 +94,14 @@ class AnimationScenario:
 
         self.storage.save_items(results)
 
+    def uba_ldi_dwd_maps(self):
+        logger.info('Running scenario uba_ldi_dwd_maps')
+
+        # Labor: Studio / UBA/LDI/DWD-Studio [dev!]
+        results = self.engine.run(dtstart=datetime(2018, 10, 6, 5, 0, 0), dtuntil=datetime(2018, 10, 10, 23, 59, 59), interval='hourly')
+
+        self.storage.save_items(results)
+
     def ir_sensor_svg_pixmap(self):
         """
         dtstart: 2018-08-14 03:16:00

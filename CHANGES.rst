@@ -6,6 +6,7 @@ grafanimate changelog
 in progress
 ===========
 - Fix attribution signature on worldmap panels
+- Add scenario for UBA.LDI.DWD maps
 
 
 2019-02-04 0.5.5
