@@ -7,6 +7,7 @@ in progress
 ===========
 - Fix attribution signature on worldmap panels
 - Add scenario for UBA.LDI.DWD maps
+- Add dope sheet blueprint generator spike
 
 
 2019-02-04 0.5.5

@@ -18,6 +18,7 @@ requires = [
     'where==1.0.2',
     'marionette_driver==2.7.0',
     'python-dateutil==2.7.5',
+    'datetime-interval==0.2',
     #'Pillow==5.2.0',
 
 ]
