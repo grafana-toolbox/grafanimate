@@ -10,7 +10,10 @@ Improving time range control for "grafanimate"
 
 Introduction
 ============
-https://community.hiveeyes.org/t/improving-time-range-control-for-grafanimate/1783/13
+- https://community.hiveeyes.org/t/improving-time-range-control-for-grafanimate/1783/13
+- https://en.wikipedia.org/wiki/Dope_sheet
+- https://en.wikipedia.org/wiki/Exposure_sheet
+- https://en.wikipedia.org/wiki/Animation#Stop_motion_animation
 
 Running
 =======
@@ -53,7 +56,7 @@ class SlidingPeriodicInterval:
         cursor = Interval(start=self.start, duration=self.every)
         yield cursor
 
-        while cursor.end <= self.stop:
+        while cursor.end < self.stop:
             cursor += self.every
             yield cursor
 
@@ -66,10 +69,11 @@ class CumulativePeriodicInterval:
         self.every = every
 
     def __iter__(self):
+
         cursor = Interval(start=self.start, duration=self.every)
         yield cursor
 
-        while cursor.end <= self.stop:
+        while cursor.end < self.stop:
             cursor.end += self.every
             yield cursor
 
@@ -79,26 +83,31 @@ def print_intervals(intervals):
         print('{} - {}'.format(interval.start, interval.end))
 
 
+def print_header(title):
+    print
+    print '#', title
+
+
 def create_dope_sheet_blueprint():
     now = datetime.now()
     yesterday = now - timedelta(days=1)
     tomorrow = now + timedelta(days=1)
 
-    print('Sliding forward')
+    print_header('Sliding forward')
     intervals = SlidingPeriodicInterval(start=yesterday, stop=tomorrow, every=timedelta(days=1))
     print_intervals(intervals)
 
     # Just reversing the list of intervals yields deterministic results as it is literally
     # just the opposite of sliding forward without any different computation involved.
-    print('Sliding reverse')
+    print_header('Sliding reverse')
     intervals = SlidingPeriodicInterval(start=yesterday, stop=tomorrow, every=timedelta(days=1))
     print_intervals(reversed(list(intervals)))
 
-    print('Cumulative I')
+    print_header('Cumulative I (unaligned)')
     intervals = CumulativePeriodicInterval(start=yesterday, stop=tomorrow, every=timedelta(days=1))
     print_intervals(intervals)
 
-    print('Cumulative II')
+    print_header('Cumulative II (aligned)')
     now_aligned_to_hour = now - timedelta(minutes=now.minute, seconds=now.second, microseconds=now.microsecond)
     intervals = CumulativePeriodicInterval(start=now_aligned_to_hour, stop=now_aligned_to_hour + timedelta(hours=2), every=timedelta(minutes=15))
     print_intervals(intervals)
