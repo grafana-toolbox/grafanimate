@@ -17,7 +17,7 @@ class MediaStorage:
         for item in results:
             #logger.info('item: %s', item)
             printable = item.copy()
-            printable.data.image = printable.data.image[:23] + '...'
+            printable.data.image = printable.data.image[:23] + b'...'
             logger.debug('Item: %s', printable)
             self.save_item(item)
 
@@ -33,7 +33,7 @@ class MediaStorage:
         ensure_directory(imagefile)
 
         # Store image.
-        with open(imagefile, 'w') as f:
+        with open(imagefile, 'wb') as f:
             f.write(item.data.image)
 
         logger.info('Saved frame to {}. Size: {}'.format(imagefile, len(item.data.image)))

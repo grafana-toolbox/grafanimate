@@ -38,7 +38,7 @@ class GrafanaWrapper(FirefoxMarionetteBase):
 
         # Load Javascript Grafana Sidecar service.
         with resource_stream('grafanimate', 'grafana-studio.js') as f:
-            javascript = f.read()
+            javascript = f.read().decode("utf-8")
             self.run_javascript(javascript)
 
     def fix_window_size(self):
@@ -76,7 +76,6 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         """
         options = options or {}
         javascript = mkjscall("grafanaStudio.openDashboard", uid, options)
-        log.info('Running Javascript: %s', javascript)
         self.run_javascript(javascript)
         self.wait_all_data_received()
 
