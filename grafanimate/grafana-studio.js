@@ -388,7 +388,7 @@ class GrafanaStudioSrv {
         if (!signature.data('manipulated')) {
             signature.data('manipulated', true);
             var luftdaten_info = $('<a href="https://luftdaten.info/" title="luftdaten.info – Feinstaub selber messen &#8211; Open Data und Citizen Science aus Stuttgart">luftdaten.info</a>');
-            var grafanimate = $('<a href="https://github.com/daq-tools/grafanimate" title="grafanimate: Animate timeseries data with Grafana">grafanimate</a>');
+            var grafanimate = $('<a href="https://github.com/panodata/grafanimate" title="grafanimate: Animate timeseries data with Grafana">grafanimate</a>');
             var grafana = $('<a href="https://grafana.com/" title="Grafana: The leading open source software for time series analytics">Grafana</a>');
             var separator = ' | ';
             //signature.prepend(luftdaten_info, separator, grafanimate, separator, grafana, separator);

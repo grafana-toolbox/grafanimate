@@ -250,7 +250,7 @@ Project information
 *******************
 ``grafanimate`` is released under the GNU AGPL v3 license.
 
-The code lives on `GitHub <https://github.com/daq-tools/grafanimate>`_ and
+The code lives on `GitHub <https://github.com/panodata/grafanimate>`_ and
 the Python package is published to `PyPI <https://pypi.org/project/grafanimate/>`_.
 
 The software has been tested on Python 2.7.
