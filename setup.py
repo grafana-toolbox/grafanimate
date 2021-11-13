@@ -8,16 +8,16 @@ README = open(os.path.join(here, 'README.rst')).read()
 requires = [
 
     # Foundation
-    'six==1.11.0',
-    'munch==2.3.2',
-    'docopt==0.6.2',
-    'tqdm==4.28.1',
-    'unidecode==1.0.23',
+    #'six==1.11.0',
+    'munch>=2.3,<3',
+    'docopt>=0.6,<1',
+    'tqdm>=4,<5',
+    'unidecode>=1,<2',
 
     # Grafana control and animation
-    'where==1.0.2',
-    'marionette_driver==2.7.0',
-    'python-dateutil==2.7.5',
+    'where>=1,<2',
+    'marionette_driver>=3,<4',
+    'python-dateutil>=2.7,<3',
     'datetime-interval==0.2',
     #'Pillow==5.2.0',
 
@@ -34,6 +34,10 @@ setup(name='grafanimate',
       license="AGPL 3, EUPL 1.2",
       classifiers=[
         "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "License :: OSI Approved :: GNU Affero General Public License v3",
         "License :: OSI Approved :: European Union Public Licence 1.2 (EUPL 1.2)",
         "Development Status :: 4 - Beta",
