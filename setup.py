@@ -24,7 +24,9 @@ requires = [
 ]
 
 extras = {
-    'test': [],
+    'test': [
+      'pytest>=6,<7',
+    ],
 }
 
 setup(name='grafanimate',
