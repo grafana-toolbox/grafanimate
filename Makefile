@@ -20,6 +20,13 @@ setup-virtualenv:
 	$(pip) install --quiet --editable=.[test]
 
 
+# ----
+# Test
+# ----
+test: setup-virtualenv
+	$(pytest) -vvv tests
+
+
 # -------
 # Release
 # -------

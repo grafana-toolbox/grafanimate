@@ -72,6 +72,11 @@ Here we go::
 .. note:: We absolutely recommend installing the program into a Python virtualenv.
 
 
+Run tests::
+
+    make test
+
+
 *****
 Usage
 *****
