@@ -7,23 +7,31 @@ from datetime import timedelta
 from dateutil.relativedelta import relativedelta
 from dateutil.rrule import rrule, SECONDLY, MINUTELY, HOURLY, DAILY, WEEKLY, MONTHLY, YEARLY
 
+from grafanimate.grafana import GrafanaWrapper
+
 logger = logging.getLogger(__name__)
 
 
 class SequentialAnimation:
 
-    def __init__(self, grafana, dashboard_uid=None, options=None):
+    def __init__(self, grafana: GrafanaWrapper, dashboard_uid=None, options=None):
 
         self.grafana = grafana
         self.dashboard_uid = dashboard_uid
         self.options = options or None
 
     def start(self):
-        logger.info('Opening dashboard')
+        self.log('Opening dashboard')
         self.grafana.open_dashboard(self.dashboard_uid, options=self.options)
-        logger.info('Dashboard ready')
+        self.log('Dashboard ready')
+
+    def log(self, message):
+        logger.info(message)
+        self.grafana.console_info(message)
 
     def run(self, dtstart=None, dtuntil=None, interval=None):
+
+        self.log("Animation started")
 
         if dtstart > dtuntil:
             message = 'Timestamp dtstart={} is after dtuntil={}'.format(dtstart, dtuntil)
@@ -46,6 +54,7 @@ class SequentialAnimation:
         # Iterate date range.
         for date in daterange:
 
+            logger.info("=" * 42)
             logger.info('Datetime step: %s', date)
 
             # Compute start and end dates based on flavor.
@@ -75,6 +84,8 @@ class SequentialAnimation:
             })
 
             yield item
+
+        self.log("Animation finished")
 
     def get_freq_delta(self, interval):
 

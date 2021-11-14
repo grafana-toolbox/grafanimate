@@ -11,7 +11,7 @@ from grafanimate.util import filter_dict
 log = logging.getLogger(__name__)
 
 
-def make_grafana(url):
+def make_grafana(url) -> GrafanaWrapper:
     grafana = GrafanaWrapper(baseurl=url)
     grafana.boot_firefox(headless=False)
     grafana.boot_grafana()
@@ -22,7 +22,7 @@ def make_storage(imagefile=None, outputfile=None):
     return MediaStorage(imagefile=imagefile, outputfile=outputfile)
 
 
-def make_animation(grafana, storage, options):
+def make_animation(grafana: GrafanaWrapper, storage, options):
 
     # Prepare animation.
     scenario = AnimationScenario(
