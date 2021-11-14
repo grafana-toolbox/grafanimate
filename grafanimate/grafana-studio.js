@@ -27,10 +27,27 @@ class GrafanaStudioSrv {
         this.$location = $location;
 
         this.appElement = angular.element('grafana-app');
+
+        // Get references to Grafana components.
+        // public/app/angular/registerComponents.ts
+        // public/app/angular/AngularApp.ts
         this.dashboardSrv = this.appElement.injector().get('dashboardSrv');
         this.timeSrv = this.appElement.injector().get('timeSrv');
+        this.contextSrv = this.appElement.injector().get('contextSrv');
+        //this.locationSrv = this.appElement.injector().get('locationSrv');
+
+        // Debugging.
+        /*
+        log("$rootScope:", this.$rootScope);
+        log("$location:", this.$location);
+        log("appElement:", this.appElement);
+        log("dashboardSrv:", this.dashboardSrv);
+        log("timeSrv:", this.timeSrv);
+        log("contextSrv:", this.contextSrv);
+        */
 
         this.onDashboardLoad = this.onDashboardLoad.bind(this);
+        this.waitForDashboard = this.waitForDashboard.bind(this);
 
         // FIXME: Maybe stuff this into this.dashboardSrv.dash?
         //        GrafanaStudioSrv is actually a singleton, right?
@@ -91,6 +108,28 @@ class GrafanaStudioSrv {
         return false;
     }
 
+    waitForDashboard(uid, resolve, reject) {
+        log("waitForDashboard");
+        var dashboard = this.dashboardSrv.getCurrent();
+        if (dashboard) {
+
+            // Sanity check. Has the right dashboard been loaded actually?
+            if (dashboard.uid == uid) {
+
+                // Quick hack to remove specific panel from specific dashboard.
+                // FIXME
+                if (uid == 'DLOlE_Rmz') {
+                    dashboard.panels.shift();
+                }
+
+                // Resolve promise, thus progressing the pipeline.
+                resolve(dashboard);
+                return;
+            }
+        }
+        setTimeout(this.waitForDashboard, 100, uid, resolve, reject);
+    }
+
     loadDashboard(uid) {
 
         var $rootScope = this.$rootScope;
@@ -101,27 +140,12 @@ class GrafanaStudioSrv {
             // Wait for dashboard being loaded.
             $rootScope.$apply(function($rootScope) {
 
-                log('openDashboard: Installing event handlers');
+                log('loadDashboard: Installing event handlers');
 
-                $rootScope.$on('dashboard-fetch-end', function(event, result) {
-                    log('DASHBOARD LOADED', event, result);
-
-                    // Sanity check. Has the right dashboard been loaded actually?
-                    if (result.dashboard.uid == uid) {
-
-                        // Quick hack to remove specific panel from specific dashboard.
-                        // FIXME
-                        if (uid == 'DLOlE_Rmz') {
-                            result.dashboard.panels.shift();
-                        }
-
-                        // Resolve promise, thus progressing the pipeline.
-                        resolve(result);
-                    }
-                });
+                _this.waitForDashboard(uid, resolve, reject);
 
                 $rootScope.$on('all-data-received', function(event, result) {
-                    //log('DASHBOARD ALL-DATA-RECEIVED', event, result);
+                    //log("Received 'all-data-received' event", event, result);
                     _this.hasAllData(true);
                 });
 
@@ -140,6 +164,9 @@ class GrafanaStudioSrv {
                 // Trigger the dashboard loading.
                 // https://docs.angularjs.org/api/ng/service/$location#url
                 // https://stackoverflow.com/questions/16450125/angularjs-redirect-from-outside-angular/16450748#16450748
+                // TODO: If you need to automatically navigate the user to a new place in the application this should
+                //       be done via the LocationSrv and it will make sure to update the application state accordingly.
+                //       https://grafana.com/docs/grafana/latest/packages_api/runtime/locationsrv/
                 $location.url(url);
 
             });
@@ -153,10 +180,10 @@ class GrafanaStudioSrv {
     }
 
     onDashboardLoad() {
-        console.info('Dashboard loaded');
+        console.info('onDashboardLoad');
 
         // Acquire real dashboard model object.
-        var dashboard = this.dashboardSrv.dash;
+        var dashboard = this.dashboardSrv.getCurrent();
         //log('dashboard:', dashboard);
 
         dashboard.events.on('render', function(event) {
@@ -194,15 +221,18 @@ class GrafanaStudioSrv {
     }
 
     onDashboardRefresh() {
-        var dashboard = this.dashboardSrv.dash;
 
+        //console.info('onDashboardRefresh');
+
+        var dashboard = this.dashboardSrv.getCurrent();
         var panel_id = this.options['panel-id'];
 
         // Wait for all panels to receive their data.
         var promises = [];
         dashboard.panels.forEach(function(panel) {
 
-            //log('panel:', panel);
+            //log("Installing event handlers for panel:", panel);
+            //log("STATE:", panel.getState());
 
             // Skip all other panels when specific panel is selected.
             if (panel_id != undefined) {
@@ -219,6 +249,7 @@ class GrafanaStudioSrv {
             }
 
             var promise = new Promise(function(resolve, reject) {
+                // TODO: Maybe use the `render` event?
                 panel.events.on('data-received', function() {
                     log('--- data-received for panel.id:', panel.id);
                     resolve();
@@ -231,6 +262,7 @@ class GrafanaStudioSrv {
             });
             promises.push(promise);
         });
+        //log("promises:", promises);
 
         // Consolidate all promises into single one.
         // TODO: What about the error case? Should call `.hasAllData(false)`?
@@ -364,7 +396,7 @@ class GrafanaStudioSrv {
 
     getDashboardTitle() {
         // Build title from original one plus start time.
-        var dashboard = this.dashboardSrv.dash;
+        var dashboard = this.dashboardSrv.getCurrent();
         var title = dashboard.title;
         if (!this.hasHeaderLayout('no-folder')) {
             title = dashboard.meta.folderTitle + ' / ' + title;
