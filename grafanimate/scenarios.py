@@ -5,6 +5,7 @@ import logging
 from datetime import datetime
 
 from grafanimate.animations import SequentialAnimation
+from grafanimate.grafana import GrafanaWrapper
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,7 @@ class AnimationScenario:
     this is all we got. Enjoy!
     """
 
-    def __init__(self, grafana, storage, dashboard_uid=None, target=None, options=None):
+    def __init__(self, grafana: GrafanaWrapper, storage, dashboard_uid=None, target=None, options=None):
 
         self.grafana = grafana
         self.storage = storage
