@@ -62,7 +62,7 @@ def run():
       grafanimate --grafana-url=http://localhost:3000/ --scenario=ldi_all --dashboard-uid=1aOmc1sik
 
       # Use more parameters to control the rendering process.
-      grafanimate --grafana-url=http://localhost:3000/ --scenario=ir_sensor_svg_pixmap --dashboard-uid=_TbvFUyik --header-layout=studio --datetime-format=human-time --panel-id=6
+      grafanimate --grafana-url=http://localhost:3000/ --scenario=ir_sensor_svg_pixmap --dashboard-uid=acUXbj_mz --header-layout=studio --datetime-format=human-time --panel-id=6
 
 
     NOT IMPLEMENTED YET
