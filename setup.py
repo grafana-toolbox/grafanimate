@@ -8,7 +8,6 @@ README = open(os.path.join(here, 'README.rst')).read()
 requires = [
 
     # Foundation
-    #'six==1.11.0',
     'munch>=2.3,<3',
     'docopt>=0.6,<1',
     'tqdm>=4,<5',
