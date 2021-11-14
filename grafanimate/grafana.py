@@ -3,6 +3,8 @@
 # License: GNU Affero General Public License, Version 3
 import json
 import logging
+import time
+
 from pkg_resources import resource_stream
 from marionette_driver import Wait
 from marionette_driver.errors import TimeoutException
@@ -66,6 +68,7 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         """
         log.info('Waiting for Grafana to load')
         element = self.wait_for_element_tag("grafana-app")
+        time.sleep(0.3)
         log.info('Grafana loaded')
         return element
 
@@ -88,7 +91,7 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         """
 
         log.info('Waiting for "all-data-received" event')
-        waiter = Wait(self.marionette, timeout=20.0, interval=1.0)
+        waiter = Wait(self.marionette, timeout=20.0, interval=0.1)
 
         def condition(marionette):
             return self.calljs("grafanaStudio.hasAllData", silent=True)
