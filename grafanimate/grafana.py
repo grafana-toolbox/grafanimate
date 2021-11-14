@@ -91,7 +91,7 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         waiter = Wait(self.marionette, timeout=20.0, interval=1.0)
 
         def condition(marionette):
-            return self.calljs("grafanaStudio.hasAllData")
+            return self.calljs("grafanaStudio.hasAllData", silent=True)
 
         try:
             waiter.until(condition)
@@ -136,7 +136,7 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         return self.calljs("grafanaStudio.getTime")
         raise NotImplemented("timerange_get not implemented yet")
 
-    def run_javascript(self, sourcecode):
+    def run_javascript(self, sourcecode, silent=False):
         """
         Run the designated Javascript code directly in the scope
         of the application under test. Don't use any sandboxing.
@@ -145,17 +145,24 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         """
         # https://github.com/mozilla/geckodriver/issues/1067#issuecomment-347180427
         # https://github.com/devtools-html/har-export-trigger/issues/27#issuecomment-424777524
-        log.debug('Running Javascript: %s', sourcecode)
+        if not silent:
+            log.debug('Running Javascript: %s', sourcecode)
         return self.marionette.execute_script(sourcecode, sandbox=None, new_sandbox=False)
 
-    def calljs(self, name, *args):
-        return self.run_javascript(mkjscall(name, *args))
+    def calljs(self, name, *args, silent=False):
+        return self.run_javascript(mkjscall(name, *args), silent=silent)
 
     def console_log(self, message):
         """
         Write a message to the Browser console.
         """
         return self.calljs("console.log", message)
+
+    def console_info(self, message):
+        """
+        Write a message to the Browser console.
+        """
+        return self.calljs("console.info", message)
 
     def wait_for_map(self):
         """
@@ -181,4 +188,3 @@ def mkjscall(name, *arguments, **flags):
 
 def mkjsargs(*arguments):
     return json.dumps(arguments).strip('[]')
-
