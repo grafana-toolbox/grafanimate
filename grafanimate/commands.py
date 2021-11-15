@@ -6,7 +6,7 @@ import logging
 from docopt import docopt, DocoptExit
 from grafanimate import __appname__, __version__
 from grafanimate.core import make_grafana, make_animation, make_storage
-from grafanimate.util import normalize_options, setup_logging
+from grafanimate.util import normalize_options, setup_logging, asbool
 
 log = logging.getLogger(__name__)
 
@@ -25,6 +25,10 @@ def run():
 
     Optional:
       --exposure-time=<seconds>     How long to wait for each frame to complete rendering. [default: 0.5]
+      --use-panel-events            Whether to enable using Grafana's panel events. [default: false]
+                                    Caveat: Used to work properly with Angular-based panels like `graph`.
+                                            Stopped working with React-based panels like `timeseries`.
+
       --panel-id=<id>               Render single panel only by navigating to "panelId=<id>&fullscreen".
       --dashboard-view=<mode>       Use Grafana's "d-solo" view for rendering single panels without header.
 
@@ -106,11 +110,14 @@ def run():
         raise DocoptExit('Error: Parameter --panel-id is mandatory for --dashboard-view=d-solo')
 
     options['exposure-time'] = float(options['exposure-time'])
+    options['use-panel-events'] = asbool(options['use-panel-events'])
+    if options['use-panel-events']:
+        options['exposure-time'] = 0
 
     # Define and run Pipeline.
 
     # Define pipeline elements.
-    grafana = make_grafana(options['grafana-url'])
+    grafana = make_grafana(options['grafana-url'], options['use-panel-events'])
     storage = make_storage(
         imagefile='./var/spool/{uid}/{uid}_{date}.png',
         outputfile='./var/results/{name}.mp4')
