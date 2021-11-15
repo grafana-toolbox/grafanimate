@@ -3,6 +3,8 @@
 # License: GNU Affero General Public License, Version 3
 import logging
 
+from furl import furl
+
 from grafanimate.grafana import GrafanaWrapper
 from grafanimate.scenarios import AnimationScenario
 from grafanimate.mediastorage import MediaStorage
@@ -12,9 +14,23 @@ log = logging.getLogger(__name__)
 
 
 def make_grafana(url, use_panel_events) -> GrafanaWrapper:
-    grafana = GrafanaWrapper(baseurl=url, use_panel_events=use_panel_events)
+
+    do_login = False
+    url = furl(url)
+    if url.username:
+        do_login = True
+        username = url.username
+        password = url.password
+        url.username = None
+        url.password = None
+
+    grafana = GrafanaWrapper(baseurl=str(url), use_panel_events=use_panel_events)
     grafana.boot_firefox(headless=False)
     grafana.boot_grafana()
+
+    if do_login:
+        grafana.login(username, password)
+
     return grafana
 
 

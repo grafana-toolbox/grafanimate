@@ -27,6 +27,7 @@ class GrafanaStudioSrv {
         // Get references to Grafana components.
         // public/app/angular/registerComponents.ts
         // public/app/angular/AngularApp.ts
+        this.backendSrv = this.appElement.injector().get('backendSrv');
         this.dashboardSrv = this.appElement.injector().get('dashboardSrv');
         this.timeSrv = this.appElement.injector().get('timeSrv');
         this.contextSrv = this.appElement.injector().get('contextSrv');
@@ -36,6 +37,7 @@ class GrafanaStudioSrv {
         log("$rootScope:", this.$rootScope);
         log("$location:", this.$location);
         log("appElement:", this.appElement);
+        log("backendSrv:", this.backendSrv);
         log("dashboardSrv:", this.dashboardSrv);
         log("timeSrv:", this.timeSrv);
         log("contextSrv:", this.contextSrv);
@@ -53,6 +55,30 @@ class GrafanaStudioSrv {
         this.options = {};
         this.all_data_loaded = false;
         this.timerange = null;
+
+    }
+
+    login(username, password) {
+        log("Invoking login");
+
+        // https://github.com/grafana/grafana/blob/v8.2.4/public/app/core/components/Login/LoginCtrl.tsx#L85-L106
+        this.backendSrv
+          .post('/login', {user: username, password: password})
+          .then((result) => {
+            log("Login succeeded:", result);
+
+            // Variant 1: Use window.location.href to force page reload
+            //window.location.assign(grafanaBootData.settings.appSubUrl + '/');
+
+            // Variant 2: Just hide the alert popup.
+            var login_alert = $(".page-alert-list").findByContentText("Logged in");
+            login_alert.hide();
+          })
+          .catch((ex) => {
+            console.error("Login failed:", ex);
+            // TODO: Propagate error and quit Firefox?
+          });
+
     }
 
     hasAllData(value) {
