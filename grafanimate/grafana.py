@@ -42,10 +42,12 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         # Wait for Grafana application to load.
         self.wait_for_grafana()
 
-        # Load Javascript Grafana Sidecar service.
-        with resource_stream('grafanimate', 'grafana-studio.js') as f:
-            javascript = f.read().decode("utf-8")
-            self.run_javascript(javascript)
+        # Load Javascript for GrafanaStudio sidecar service.
+        jsfiles = ["grafana-util.js", "grafana-studio.js"]
+        for jsfile in jsfiles:
+            with resource_stream('grafanimate', jsfile) as f:
+                javascript = f.read().decode("utf-8")
+                self.run_javascript(javascript)
 
     def fix_window_size(self):
         """
