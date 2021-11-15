@@ -61,13 +61,17 @@ def run():
       -h --help                     Show this screen
 
 
-    Examples for scenario mode. Script your animation in file "scenarios.py".
+    Examples for scenario mode. Script your animation in file `scenarios.py`. The output files
+    will be saved at `./var/spool/{scenario}/{dashboard-uid}`.
 
-      # Generate sequence of .png files in ./var/spool/ldi_all/1aOmc1sik
-      grafanimate --grafana-url=http://localhost:3000/ --scenario=ldi_all --dashboard-uid=1aOmc1sik
+      # Use freely accessible `play.grafana.org` for demo purposes.
+      grafanimate --grafana-url=https://play.grafana.org/ --dashboard-uid=000000012 --scenario=playdemo
+
+      # Example for generating Luftdaten.info graph & map.
+      grafanimate --grafana-url=http://localhost:3000/ --dashboard-uid=1aOmc1sik --scenario=ldi_all
 
       # Use more parameters to control the rendering process.
-      grafanimate --grafana-url=http://localhost:3000/ --scenario=ir_sensor_svg_pixmap --dashboard-uid=acUXbj_mz --header-layout=studio --datetime-format=human-time --panel-id=6
+      grafanimate --grafana-url=http://localhost:3000/ --dashboard-uid=acUXbj_mz --scenario=ir_sensor_svg_pixmap --header-layout=studio --datetime-format=human-time --panel-id=6
 
 
     NOT IMPLEMENTED YET
@@ -77,7 +81,7 @@ def run():
     Examples: Ad hoc mode.
 
     Until implemented, please use scenario mode.
-    Don't be afraid, it's just some copy/pasting in the "scenarios.py" file, go ahead.
+    Don't be afraid, it's just some copy/pasting in the `scenarios.py` file, go ahead.
 
       --start=<start>               Start time
       --end=<end>                   End time
@@ -119,8 +123,8 @@ def run():
     # Define pipeline elements.
     grafana = make_grafana(options['grafana-url'], options['use-panel-events'])
     storage = make_storage(
-        imagefile='./var/spool/{uid}/{uid}_{date}.png',
-        outputfile='./var/results/{name}.mp4')
+        imagefile='./var/spool/{scenario}/{uid}/{uid}_{dtstart}_{dtuntil}.png',
+        outputfile='./var/results/{uid}-{name}.mp4')
 
     # Assemble pipeline.
     animation = make_animation(grafana, storage, options)
@@ -130,6 +134,7 @@ def run():
 
     # Run rendering steps, produce composite artifacts.
     title = grafana.get_dashboard_title()
-    results = storage.produce_artifacts(options['dashboard-uid'], title)
+    path = "./var/spool/{scenario}/{uid}/{uid}_*.png".format(scenario=options.scenario, uid=options["dashboard-uid"])
+    results = storage.produce_artifacts(path=path, uid=options['dashboard-uid'], name=title)
 
     log.info('Produced %s results\n%s', len(results), json.dumps(results, indent=2))
