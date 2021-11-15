@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 # (c) 2018 Andreas Motl <andreas@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
+import logging
+
 from grafanimate import postprocessing
-from grafanimate.scenarios import logger
 from grafanimate.util import format_date_human, slug, ensure_directory
+
+logger = logging.getLogger(__name__)
 
 
 class MediaStorage:
@@ -25,9 +28,12 @@ class MediaStorage:
 
         # Compute image sequence file name.
         imagefile = self.imagefile_template.format(
+            scenario=item.meta.scenario,
             interval=item.meta.interval,
             uid=item.meta.dashboard,
-            date=format_date_human(item.data.dtstart))
+            dtstart=format_date_human(item.data.dtstart),
+            dtuntil=format_date_human(item.data.dtuntil),
+        )
 
         # Ensure directory exists.
         ensure_directory(imagefile)
@@ -38,7 +44,7 @@ class MediaStorage:
 
         logger.info('Saved frame to {}. Size: {}'.format(imagefile, len(item.data.image)))
 
-    def produce_artifacts(self, uid, name=None):
+    def produce_artifacts(self, path, uid=None, name=None):
         # TODO: Can use dashboard title as output filename here?
         # TODO: Can put dtstart into filename?
 
@@ -46,12 +52,13 @@ class MediaStorage:
         name = name or uid
 
         # Compute path to sequence images.
-        imagefile_pattern = self.imagefile_template.format(uid=uid, date='*')
+        #imagefile_pattern = self.imagefile_template.format(uid=uid, dtstart='*', dtuntil='*')
+        imagefile_pattern = path
 
         # Compute output file name.
         if name:
             name = slug(name)
-        outputfile = self.outputfile_template.format(name=name)
+        outputfile = self.outputfile_template.format(name=name, uid=uid)
 
         # Produce output artifacts.
         ensure_directory(outputfile)

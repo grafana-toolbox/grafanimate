@@ -75,6 +75,7 @@ class SequentialAnimation:
             item = munchify({
                 'meta': {
                     'grafana': self.grafana,
+                    'scenario': self.options["scenario"],
                     'dashboard': self.dashboard_uid,
                     'interval': interval,
                 },
