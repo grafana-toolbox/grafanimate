@@ -10,6 +10,7 @@ from dateutil.relativedelta import relativedelta
 from dateutil.rrule import rrule, SECONDLY, MINUTELY, HOURLY, DAILY, WEEKLY, MONTHLY, YEARLY
 
 from grafanimate.grafana import GrafanaWrapper
+from grafanimate.model import NavigationFlavor
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +32,7 @@ class SequentialAnimation:
         logger.info(message)
         self.grafana.console_info(message)
 
-    def run(self, dtstart=None, dtuntil=None, interval=None):
+    def run(self, dtstart=None, dtuntil=None, interval=None, flavor: NavigationFlavor = NavigationFlavor.WINDOW):
 
         self.log("Animation started")
 
@@ -39,13 +40,10 @@ class SequentialAnimation:
             message = 'Timestamp dtstart={} is after dtuntil={}'.format(dtstart, dtuntil)
             raise ValueError(message)
 
-        #flavor = 'expand'
-        flavor = 'window'
-
         rr_freq, rr_interval, dtdelta = self.get_freq_delta(interval)
 
         #until = datetime.now()
-        if flavor == 'expand':
+        if flavor == NavigationFlavor.EXPAND:
             dtuntil += dtdelta
 
         # Compute complete date range.
@@ -61,11 +59,11 @@ class SequentialAnimation:
 
             # Compute start and end dates based on flavor.
 
-            if flavor == 'window':
+            if flavor == NavigationFlavor.WINDOW:
                 dtstart = date
                 dtuntil = date + dtdelta
 
-            elif flavor == 'expand':
+            elif flavor == NavigationFlavor.EXPAND:
                 dtuntil = date
 
             # Render image.
