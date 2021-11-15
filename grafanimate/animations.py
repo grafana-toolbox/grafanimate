@@ -2,6 +2,8 @@
 # (c) 2018 Andreas Motl <andreas@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
 import logging
+import time
+
 from munch import munchify
 from datetime import timedelta
 from dateutil.relativedelta import relativedelta
@@ -84,6 +86,10 @@ class SequentialAnimation:
             })
 
             yield item
+
+            if self.options["exposure-time"] > 0:
+                logger.info("Waiting for {} seconds (exposure time)".format(self.options["exposure-time"]))
+                time.sleep(self.options["exposure-time"])
 
         self.log("Animation finished")
 
