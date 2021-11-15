@@ -78,6 +78,11 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         log.info('Grafana loaded')
         return element
 
+    def login(self, username, password):
+        log.info("Logging in")
+        javascript = mkjscall("grafanaStudio.login", username, password)
+        self.run_javascript(javascript)
+
     def open_dashboard(self, uid, options=None):
         """
         Open a Grafana Dashboard with the designated uid

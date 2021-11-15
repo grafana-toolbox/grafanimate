@@ -10,6 +10,7 @@ in progress
 - Add dope sheet blueprint generator spike
 - Modernize to Python 3
 - Add compatibility with Grafana 6, 7 and 8
+- Add possibility to login to protected Grafana instances
 
 
 2019-02-04 0.5.5

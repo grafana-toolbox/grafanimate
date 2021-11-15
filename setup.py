@@ -12,6 +12,7 @@ requires = [
     'docopt>=0.6,<1',
     'tqdm>=4,<5',
     'unidecode>=1,<2',
+    'furl>=2,<3',
 
     # Grafana control and animation
     'where>=1,<2',
