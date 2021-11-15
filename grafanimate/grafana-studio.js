@@ -438,11 +438,11 @@ class GrafanaStudioSrv {
 
 // Register sidecar service with `grafana.core`.
 var grafana_core = angular.module('grafana.core');
-grafana_core.service('GrafanaStudioSrv', GrafanaStudioSrv);
+grafana_core.service('grafanaStudioSrv', GrafanaStudioSrv);
 
 // Acquire application element.
 // FIXME: Can we get rid of this as a dependency?
 var grafanaApp = angular.element('grafana-app');
 
 // Put service into global scope.
-window.grafanaStudio = grafanaApp.injector().get('GrafanaStudioSrv');
+window.grafanaStudio = grafanaApp.injector().get('grafanaStudioSrv');
