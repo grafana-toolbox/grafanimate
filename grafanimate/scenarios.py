@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class AnimationScenario:
     """
-    Run different anmiation scenarios/sequences.
+    Run different animation scenarios/sequences.
 
     As the ad-hoc interface is not finished yet,
     this is all we got. Enjoy!
@@ -31,6 +31,20 @@ class AnimationScenario:
         # Start the engines.
         self.engine = SequentialAnimation(grafana=grafana, dashboard_uid=dashboard_uid, options=options)
         self.engine.start()
+
+    def playdemo(self):
+        """
+        Run demo on `play.grafana.org`.
+
+        Example::
+
+            grafanimate --grafana-url=https://play.grafana.org/ --dashboard-uid=000000012 --scenario=playdemo
+        """
+        logger.info('Running scenario playdemo')
+
+        results = self.engine.run(dtstart=datetime(2021, 11, 14, 2, 0, 0), dtuntil=datetime(2021, 11, 14, 4, 16, 36), interval='5min')
+        #results = self.engine.run(dtstart=datetime(2021, 11, 14, 2, 0, 0), dtuntil=datetime(2021, 11, 14, 2, 16, 36), interval='5min')
+        self.storage.save_items(results)
 
     def ldi_all(self):
         logger.info('Running scenario ldi_all')
