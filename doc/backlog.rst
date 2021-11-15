@@ -7,11 +7,11 @@ grafanimate backlog
 Prio 1
 ******
 - [x] Modernize to Python 3 and Grafana 7/8
-- [o] Add possibility to authenticate with Grafana
+- [x] Add possibility to authenticate with Grafana
+- [o] Add parameter to toggle between flavor = 'window|expand' in ``animations.py``
 - [o] Standalone scenario recipes. TOML?
-- [o] Clear event handlers after usage
-- [o] Add cmdline parameter to toggle between flavor = 'window|expand'
-- [o] Avoid collisions in output directory
+- [o] Clear Javascript event handlers after usage, maybe using ``scope.$on('$destroy', ...)``
+- [o] Avoid collisions in output directory, e.g. take ``flavor`` into account
 
 
 ********

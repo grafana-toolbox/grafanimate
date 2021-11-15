@@ -95,10 +95,18 @@ Usage
 
     Options:
       --grafana-url=<url>           Base URL to Grafana, [default: http://localhost:3000].
-      --scenario=<scenario>         Which scenario to run. Scenarios are defined as methods.
+                                    If your Grafana instance is protected, please specify credentials
+                                    within the URL, e.g. https://user:pass@www.example.org/grafana.
+      --scenario=<scenario>         Which scenario to run. Scenarios are defined as methods within the
+                                    `scenarios.py` file.
       --dashboard-uid=<uid>         Grafana dashboard uid.
 
     Optional:
+      --exposure-time=<seconds>     How long to wait for each frame to complete rendering. [default: 0.5]
+      --use-panel-events            Whether to enable using Grafana's panel events. [default: false]
+                                    Caveat: Used to work properly with Angular-based panels like `graph`.
+                                            Stopped working with React-based panels like `timeseries`.
+
       --panel-id=<id>               Render single panel only by navigating to "panelId=<id>&fullscreen".
       --dashboard-view=<mode>       Use Grafana's "d-solo" view for rendering single panels without header.
 
@@ -131,13 +139,17 @@ Usage
       -h --help                     Show this screen
 
 
-    Examples for scenario mode. Script your animation in file "scenarios.py".
+    Examples for scenario mode. Script your animation in file `scenarios.py`. The output files
+    will be saved at `./var/spool/{scenario}/{dashboard-uid}`.
 
-      # Generate sequence of .png files in ./var/spool/ldi_all/1aOmc1sik
-      grafanimate --grafana-url=http://localhost:3000/ --scenario=ldi_all --dashboard-uid=1aOmc1sik
+      # Use freely accessible `play.grafana.org` for demo purposes.
+      grafanimate --grafana-url=https://play.grafana.org/ --dashboard-uid=000000012 --scenario=playdemo
+
+      # Example for generating Luftdaten.info graph & map.
+      grafanimate --grafana-url=http://localhost:3000/ --dashboard-uid=1aOmc1sik --scenario=ldi_all
 
       # Use more parameters to control the rendering process.
-      grafanimate --grafana-url=http://localhost:3000/ --scenario=ir_sensor_svg_pixmap --dashboard-uid=acUXbj_mz --header-layout=studio --datetime-format=human-time --panel-id=6
+      grafanimate --grafana-url=http://localhost:3000/ --dashboard-uid=acUXbj_mz --scenario=ir_sensor_svg_pixmap --header-layout=studio --datetime-format=human-time --panel-id=6
 
 
 *******
@@ -261,8 +273,6 @@ Project information
 
 The code lives on `GitHub <https://github.com/panodata/grafanimate>`_ and
 the Python package is published to `PyPI <https://pypi.org/project/grafanimate/>`_.
-
-The software has been tested on Python 2.7.
 
 
 Contributing
