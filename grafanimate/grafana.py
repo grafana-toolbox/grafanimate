@@ -19,8 +19,9 @@ class GrafanaWrapper(FirefoxMarionetteBase):
     https://marionette-client.readthedocs.io/en/master/interactive.html
     """
 
-    def __init__(self, baseurl=None):
+    def __init__(self, baseurl=None, use_panel_events=False):
         self.baseurl = baseurl
+        self.use_panel_events = use_panel_events
         log.info('Starting GrafanaWrapper on %s', baseurl)
         FirefoxMarionetteBase.__init__(self)
 
@@ -80,10 +81,11 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         options = options or {}
         javascript = mkjscall("grafanaStudio.openDashboard", uid, options)
         self.run_javascript(javascript)
-        self.wait_all_data_received()
+        self.wait_for_frame_finished()
 
-    def get_dashboard_title(self):
-        return self.calljs("grafanaStudio.getDashboardTitle")
+    def wait_for_frame_finished(self):
+        if self.use_panel_events:
+            return self.wait_all_data_received()
 
     def wait_all_data_received(self):
         """
@@ -118,7 +120,7 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         # Perform timewarp.
         self.clear_all_data_received()
         self.timerange_set(format_date_grafana(dtstart, interval), format_date_grafana(dtuntil, interval))
-        self.wait_all_data_received()
+        self.wait_for_frame_finished()
 
     def timerange_set(self, starttime, endtime):
         """

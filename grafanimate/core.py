@@ -11,8 +11,8 @@ from grafanimate.util import filter_dict
 log = logging.getLogger(__name__)
 
 
-def make_grafana(url) -> GrafanaWrapper:
-    grafana = GrafanaWrapper(baseurl=url)
+def make_grafana(url, use_panel_events) -> GrafanaWrapper:
+    grafana = GrafanaWrapper(baseurl=url, use_panel_events=use_panel_events)
     grafana.boot_firefox(headless=False)
     grafana.boot_grafana()
     return grafana
@@ -29,7 +29,7 @@ def make_animation(grafana: GrafanaWrapper, storage, options):
         grafana=grafana,
         storage=storage,
         dashboard_uid=options['dashboard-uid'],
-        options=filter_dict(options, ['panel-id', 'dashboard-view', 'header-layout', 'datetime-format', 'exposure-time'])
+        options=filter_dict(options, ['panel-id', 'dashboard-view', 'header-layout', 'datetime-format', 'exposure-time', 'use-panel-events'])
     )
     if not hasattr(scenario, options.scenario):
         raise NotImplementedError('Animation scenario "{}" not implemented'.format(options.scenario))

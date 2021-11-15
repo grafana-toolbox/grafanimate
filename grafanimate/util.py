@@ -104,3 +104,16 @@ def ensure_directory(path):
     directory = os.path.dirname(path)
     if not os.path.exists(directory):
         os.makedirs(directory)
+
+
+def asbool(obj):
+    # from sqlalchemy.util.asbool
+    if isinstance(obj, str):
+        obj = obj.strip().lower()
+        if obj in ["true", "yes", "on", "y", "t", "1"]:
+            return True
+        elif obj in ["false", "no", "off", "n", "f", "0"]:
+            return False
+        else:
+            raise ValueError("String is not true/false: %r" % obj)
+    return bool(obj)
