@@ -6,6 +6,17 @@ grafanimate backlog
 ******
 Prio 1
 ******
+- [x] Modernize to Python 3 and Grafana 7/8
+- [o] Add possibility to authenticate with Grafana
+- [o] Standalone scenario recipes. TOML?
+- [o] Clear event handlers after usage
+- [o] Add cmdline parameter to toggle between flavor = 'window|expand'
+- [o] Avoid collisions in output directory
+
+
+********
+Prio 1.5
+********
 - [o] Catch "Dashboard not found" errors.
 - [o] For smoother live view, toggle time **after** data has loaded
 - [o] When slugifying the title, replace ``'`` by empty string.
