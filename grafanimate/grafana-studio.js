@@ -21,7 +21,10 @@ class GrafanaStudioSrv {
     /** @ngInject */
     constructor($rootScope, $location) {
 
-        console.info('Booting Grafana Sidecar service');
+        console.info('Starting GrafanaStudio sidecar service');
+
+        this.grafanaVersion = window.grafanaBootData.settings.buildInfo.version;
+        log("Grafana version:", this.grafanaVersion);
 
         this.$rootScope = $rootScope;
         this.$location = $location;
@@ -145,7 +148,7 @@ class GrafanaStudioSrv {
                 _this.waitForDashboard(uid, resolve, reject);
 
                 $rootScope.$on('all-data-received', function(event, result) {
-                    //log("Received 'all-data-received' event", event, result);
+                    log("Received 'all-data-received' event", event, result);
                     _this.hasAllData(true);
                 });
 
@@ -167,12 +170,13 @@ class GrafanaStudioSrv {
                 // TODO: If you need to automatically navigate the user to a new place in the application this should
                 //       be done via the LocationSrv and it will make sure to update the application state accordingly.
                 //       https://grafana.com/docs/grafana/latest/packages_api/runtime/locationsrv/
+                //       https://community.grafana.com/t/how-can-i-change-template-varibale-in-a-react-plugin-in-grafana-7-0/31345/2
                 $location.url(url);
 
             });
 
             // Time out this promise after a while.
-            setTimeout(reject, 10000, 'Timeout while fetching dashboard ' + uid);
+            setTimeout(reject, 10000, 'Timeout while loading dashboard ' + uid);
 
         });
 
@@ -180,7 +184,7 @@ class GrafanaStudioSrv {
     }
 
     onDashboardLoad() {
-        console.info('onDashboardLoad');
+        log('onDashboardLoad');
 
         // Acquire real dashboard model object.
         var dashboard = this.dashboardSrv.getCurrent();
@@ -222,17 +226,15 @@ class GrafanaStudioSrv {
 
     onDashboardRefresh() {
 
-        //console.info('onDashboardRefresh');
+        log('onDashboardRefresh');
 
         var dashboard = this.dashboardSrv.getCurrent();
         var panel_id = this.options['panel-id'];
 
         // Wait for all panels to receive their data.
         var promises = [];
+        var skipped = [];
         dashboard.panels.forEach(function(panel) {
-
-            //log("Installing event handlers for panel:", panel);
-            //log("STATE:", panel.getState());
 
             // Skip all other panels when specific panel is selected.
             if (panel_id != undefined) {
@@ -243,10 +245,13 @@ class GrafanaStudioSrv {
 
             // Skip panels with type==row or type==text.
             //var whitelist = ['grafana-worldmap-panel', 'marcuscalidus-svg-panel'];
-            var blacklist = ['row', 'text'];
+            var blacklist = ['row', 'text', 'timeseries', 'dashlist'];
             if (blacklist.includes(panel.type)) {
+                skipped.push({id: panel.id, type: panel.type});
                 return;
             }
+
+            log("Installing event handlers for panel:", panel);
 
             var promise = new Promise(function(resolve, reject) {
                 // TODO: Maybe use the `render` event?
@@ -262,7 +267,8 @@ class GrafanaStudioSrv {
             });
             promises.push(promise);
         });
-        //log("promises:", promises);
+        log("Will not install event handlers for panels:", skipped);
+        log("Promises for panel event handlers:", promises);
 
         // Consolidate all promises into single one.
         // TODO: What about the error case? Should call `.hasAllData(false)`?

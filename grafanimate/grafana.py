@@ -157,23 +157,27 @@ class GrafanaWrapper(FirefoxMarionetteBase):
     def calljs(self, name, *args, silent=False):
         return self.run_javascript(mkjscall(name, *args), silent=silent)
 
+    def get_dashboard_title(self):
+        return self.calljs("grafanaStudio.getDashboardTitle")
+
     def console_log(self, message):
         """
-        Write a message to the Browser console.
+        Write a message to the Browser console (console.log).
         """
-        return self.calljs("console.log", message)
+        return self.calljs("console.log", message, silent=True)
 
     def console_info(self, message):
         """
-        Write a message to the Browser console.
+        Write a message to the Browser console (console.info).
         """
-        return self.calljs("console.info", message)
+        return self.calljs("console.info", message, silent=True)
 
     def wait_for_map(self):
         """
         Wait for map element <panel-plugin-grafana-worldmap-panel ...> to appear.
         """
         log.debug('Waiting for map element to appear in DOM')
+        # TODO: Make naming more universal.
         element = self.wait_for_element_tag("panel-plugin-grafana-worldmap-panel")
         log.info('Finished waiting for map element')
         log.info(element)

@@ -101,7 +101,8 @@ def run():
     setup_logging(log_level)
 
     # Debug command line options.
-    #import json; log.info('Options: {}'.format(json.dumps(options, indent=4)))
+    if debug:
+        log.info('Options: {}'.format(json.dumps(options, indent=4)))
 
     # Sanity checks.
     if not options['scenario']:
