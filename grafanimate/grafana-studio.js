@@ -1,5 +1,5 @@
 // -*- coding: utf-8 -*-
-// (c) 2018 Andreas Motl <andreas@hiveeyes.org>
+// (c) 2018-2021 Andreas Motl <andreas.motl@panodata.org>
 // License: GNU Affero General Public License, Version 3
 
 /*
@@ -7,13 +7,6 @@
 >
 > -- https://github.com/grafana/grafana/issues/2122
 */
-
-// http://stackoverflow.com/questions/5538972/console-log-apply-not-working-in-ie9/5539378#5539378
-if (Function.prototype.bind) {
-    var log = Function.prototype.bind.call(console.log, console);
-} else {
-    var log = function() {};
-}
 
 
 class GrafanaStudioSrv {
@@ -37,7 +30,6 @@ class GrafanaStudioSrv {
         this.dashboardSrv = this.appElement.injector().get('dashboardSrv');
         this.timeSrv = this.appElement.injector().get('timeSrv');
         this.contextSrv = this.appElement.injector().get('contextSrv');
-        //this.locationSrv = this.appElement.injector().get('locationSrv');
 
         // Debugging.
         /*
@@ -148,7 +140,7 @@ class GrafanaStudioSrv {
                 _this.waitForDashboard(uid, resolve, reject);
 
                 $rootScope.$on('all-data-received', function(event, result) {
-                    log("Received 'all-data-received' event", event, result);
+                    //log("Received 'all-data-received' event", event, result);
                     _this.hasAllData(true);
                 });
 
@@ -267,8 +259,12 @@ class GrafanaStudioSrv {
             });
             promises.push(promise);
         });
-        log("Will not install event handlers for panels:", skipped);
-        log("Promises for panel event handlers:", promises);
+        if (skipped.length) {
+            log("Will not install event handlers for panels:", skipped);
+        }
+        if (promises.length) {
+            log("Promises for panel event handlers:", promises);
+        }
 
         // Consolidate all promises into single one.
         // TODO: What about the error case? Should call `.hasAllData(false)`?
@@ -437,11 +433,10 @@ class GrafanaStudioSrv {
 }
 
 // Register sidecar service with `grafana.core`.
-var grafana_core = angular.module('grafana.core');
-grafana_core.service('grafanaStudioSrv', GrafanaStudioSrv);
+let coreModule = angular.module('grafana.core');
+coreModule.service('grafanaStudioSrv', GrafanaStudioSrv);
 
 // Acquire application element.
-// FIXME: Can we get rid of this as a dependency?
 var grafanaApp = angular.element('grafana-app');
 
 // Put service into global scope.
