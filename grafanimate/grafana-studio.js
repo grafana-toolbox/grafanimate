@@ -254,9 +254,9 @@ class GrafanaStudioSrv {
             log("Installing event handlers for panel:", panel);
 
             var promise = new Promise(function(resolve, reject) {
-                // TODO: Maybe use the `render` event?
-                panel.events.on('data-received', function() {
-                    log('--- data-received for panel.id:', panel.id);
+                // Previously, we used the `data-received` and `data-frames-received` events.
+                panel.events.on('render', function() {
+                    log('--- render for panel.id:', panel.id);
                     resolve();
                 });
                 panel.events.on('data-error', function(event) {
