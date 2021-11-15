@@ -8,6 +8,8 @@ in progress
 - Fix attribution signature on worldmap panels
 - Add scenario for UBA.LDI.DWD maps
 - Add dope sheet blueprint generator spike
+- Modernize to Python 3
+- Add compatibility with Grafana 6, 7 and 8
 
 
 2019-02-04 0.5.5
