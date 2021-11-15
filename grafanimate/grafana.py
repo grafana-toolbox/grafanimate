@@ -32,9 +32,12 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         log.info('Starting Grafana at {}'.format(self.baseurl))
 
         self.fix_window_size()
+        self.navigate(self.baseurl)
+
+    def navigate(self, url):
 
         # Navigate to resource URL.
-        self.marionette.navigate(self.baseurl)
+        self.marionette.navigate(url)
 
         # Wait for Grafana application to load.
         self.wait_for_grafana()
