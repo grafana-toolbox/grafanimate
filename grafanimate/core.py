@@ -29,7 +29,7 @@ def make_animation(grafana: GrafanaWrapper, storage, options):
         grafana=grafana,
         storage=storage,
         dashboard_uid=options['dashboard-uid'],
-        options=filter_dict(options, ['panel-id', 'dashboard-view', 'header-layout', 'datetime-format'])
+        options=filter_dict(options, ['panel-id', 'dashboard-view', 'header-layout', 'datetime-format', 'exposure-time'])
     )
     if not hasattr(scenario, options.scenario):
         raise NotImplementedError('Animation scenario "{}" not implemented'.format(options.scenario))

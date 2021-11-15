@@ -24,6 +24,7 @@ def run():
       --dashboard-uid=<uid>         Grafana dashboard uid.
 
     Optional:
+      --exposure-time=<seconds>     How long to wait for each frame to complete rendering. [default: 0.5]
       --panel-id=<id>               Render single panel only by navigating to "panelId=<id>&fullscreen".
       --dashboard-view=<mode>       Use Grafana's "d-solo" view for rendering single panels without header.
 
@@ -103,6 +104,8 @@ def run():
 
     if options['dashboard-view'] == 'd-solo' and not options['panel-id']:
         raise DocoptExit('Error: Parameter --panel-id is mandatory for --dashboard-view=d-solo')
+
+    options['exposure-time'] = float(options['exposure-time'])
 
     # Define and run Pipeline.
 
