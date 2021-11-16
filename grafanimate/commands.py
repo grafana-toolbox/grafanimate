@@ -3,12 +3,17 @@
 # License: GNU Affero General Public License, Version 3
 import json
 import logging
+import os
+from pathlib import Path
 
 from docopt import DocoptExit, docopt
 
 from grafanimate import __appname__, __version__
-from grafanimate.core import get_scenario, make_grafana, make_storage, run_animation
-from grafanimate.util import asbool, normalize_options, setup_logging, slug
+from grafanimate.core import get_scenario, make_grafana, run_animation_scenario
+from grafanimate.media import produce_artifacts
+from grafanimate.model import RenderingOptions
+from grafanimate.spool import TemporaryStorage
+from grafanimate.util import asbool, normalize_options, setup_logging
 
 log = logging.getLogger(__name__)
 
@@ -32,14 +37,16 @@ def run():
                                     - `--scenario=grafanimate/scenarios.py:playdemo` (file, symbol)
                                     - `--scenario=playdemo` (built-in)
 
+      --output=<path>               Output path. Required.
+                                    Optionally, use environment variable `GRAFANIMATE_OUTPUT` instead.
+
       --grafana-url=<url>           Base URL to Grafana.
                                     If your Grafana instance is protected, please specify credentials
                                     within the URL, e.g. https://user:pass@www.example.org/grafana.
 
       --dashboard-uid=<uid>         Grafana dashboard UID.
 
-    Optional:
-      --exposure-time=<seconds>     How long to wait for each frame to complete rendering. [default: 0.5]
+    Layout and scene options:
       --use-panel-events            Whether to enable using Grafana's panel events. [default: false]
                                     Caveat: Used to work properly with Angular-based panels like `graph`.
                                             Stopped working with React-based panels like `timeseries`.
@@ -72,6 +79,19 @@ def run():
 
                                     When left empty, the default is determined by the configured interval.
 
+    Capturing options:
+      --exposure-time=<seconds>     How long to wait for each frame to complete rendering. [default: 0.5]
+
+    Rendering options:
+      --video-framerate=<rate>      Framerate to apply when recording the video. This value will get propagated
+                                    to ffmpeg's `-framerate` parameter. [default: 2]
+      --video-fps=<fps>             Frames per second to apply when recording the video. This value will get
+                                    propagated into ffmpeg's output encoding options. [default: 25]
+      --gif-fps=<fps>               Frames per second to apply when recording the animated gif, propagated into
+                                    ffmpeg's `-filter_complex` options. [default: 10]
+      --gif-width=<pixel>           Width of the gif in pixels. [default: 480]
+
+
       --debug                       Enable debug logging
       -h --help                     Show this screen
 
@@ -80,9 +100,10 @@ def run():
     will be saved at `./var/spool/{scenario}/{dashboard-uid}`.
 
       # Use freely accessible `play.grafana.org` for demo purposes.
-      grafanimate --grafana-url=https://play.grafana.org/ --dashboard-uid=000000012 --scenario=playdemo
+      grafanimate --scenario=playdemo --output=./animations
 
       # Example for generating Luftdaten.info graph & map.
+      export GRAFANIMATE_OUTPUT=./animations
       grafanimate --grafana-url=http://localhost:3000/ --dashboard-uid=1aOmc1sik --scenario=ldi_all
 
       # Use more parameters to control the rendering process.
@@ -109,6 +130,12 @@ def run():
     if not options["scenario"]:
         raise DocoptExit("Error: Parameter --scenario is mandatory")
 
+    output_path = options.output
+    if not output_path:
+        output_path = os.environ.get("GRAFANIMATE_OUTPUT")
+    if not output_path:
+        raise DocoptExit("Error: Parameter --output or environment variable GRAFANIMATE_OUTPUT is mandatory")
+
     if options["dashboard-view"] == "d-solo" and not options["panel-id"]:
         raise DocoptExit("Error: Parameter --panel-id is mandatory for --dashboard-view=d-solo")
 
@@ -116,6 +143,14 @@ def run():
     options["use-panel-events"] = asbool(options["use-panel-events"])
     if options["use-panel-events"]:
         options["exposure-time"] = 0
+
+    # Prepare rendering options.
+    render_options = RenderingOptions(
+        video_framerate=int(options.video_framerate),
+        video_fps=int(options.video_fps),
+        gif_fps=int(options.gif_fps),
+        gif_width=int(options.gif_width),
+    )
 
     # Load scene.
     scenario = get_scenario(options["scenario"])
@@ -135,18 +170,15 @@ def run():
 
     # Define pipeline elements.
     grafana = make_grafana(scenario.grafana_url, options["use-panel-events"])
-    storage = make_storage(
-        imagefile="./var/spool/{scenario}/{uid}/{uid}_{dtstart}_{dtuntil}.png",
-        outputfile="./var/results/{scenario}--{name}--{uid}.mp4",
-    )
 
     # Assemble pipeline.
     # Run stop motion animation to produce single artifacts.
-    run_animation(grafana=grafana, storage=storage, scenario=scenario, options=options)
+    storage: TemporaryStorage = run_animation_scenario(scenario=scenario, grafana=grafana, options=options)
+
+    # Define output filename pattern.
+    output = Path(output_path) / "{scenario}--{title}--{uid}.mp4"
 
     # Run rendering steps, produce composite artifacts.
-    title = grafana.get_dashboard_title()
-    path = "./var/spool/{scenario}/{uid}/{uid}_*.png".format(scenario=slug(options.scenario), uid=scenario.dashboard_uid)
-    results = storage.produce_artifacts(path=path, scenario=options.scenario, uid=scenario.dashboard_uid, name=title)
-
+    scenario.dashboard_title = grafana.get_dashboard_title()
+    results = produce_artifacts(input=storage.workdir, output=output, scenario=scenario, options=render_options)
     log.info("Produced %s results\n%s", len(results), json.dumps(results, indent=2))

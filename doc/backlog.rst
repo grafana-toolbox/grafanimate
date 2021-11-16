@@ -19,7 +19,9 @@ Prio 1
 - [x] Rename ``AnimationStep`` to ``AnimationSequence``
 - [x] Optionally obtain timestamps as strings (ISO/RFC), maybe also as integers (Epoch)?
 - [x] Start- und Endtime in Unix Epoch oder sogar gemischt [weef]
-- [o] Run ``black`` and ``isort``. Maybe also some Javascript formatter?
+- [x] Run ``black``, ``isort`` and ``prettier``
+- [x] Make it possible to adjust ``--framerate`` parameter
+- [x] Delete `spool` folder on each run / use temporary one
 - [o] Improve README
 - [o] Release 0.6.0
 

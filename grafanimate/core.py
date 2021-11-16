@@ -8,11 +8,10 @@ import pkg_resources
 from furl import furl
 from munch import Munch
 
-import grafanimate.scenarios
 from grafanimate.animations import SequentialAnimation
 from grafanimate.grafana import GrafanaWrapper
-from grafanimate.mediastorage import MediaStorage
 from grafanimate.model import AnimationScenario, AnimationSequence
+from grafanimate.spool import TemporaryStorage
 from grafanimate.util import as_list, filter_dict, import_module
 
 log = logging.getLogger(__name__)
@@ -39,27 +38,25 @@ def make_grafana(url, use_panel_events) -> GrafanaWrapper:
     return grafana
 
 
-def make_storage(imagefile=None, outputfile=None) -> MediaStorage:
-    return MediaStorage(imagefile=imagefile, outputfile=outputfile)
-
-
-def get_scenario(label: str) -> AnimationScenario:
+def get_scenario(source: str) -> AnimationScenario:
     """
     Resolve scenario from Python module or file.
     """
 
     # If it's not a full-qualified reference, fall back to trying the built-in scenario methods.
-    modname, _, symbol = label.partition(":")
+    modname, _, symbol = source.partition(":")
     if not symbol:
         symbol = modname
         modname = "grafanimate.scenarios"
 
     # Load module and resolve symbol.
     module = load_module(modname)
-    scenario = resolve_reference(module, symbol)
+    scenario: AnimationScenario = resolve_reference(module, symbol)
 
     if scenario is None:
-        raise NotImplementedError('Animation scenario "{}" not found or implemented'.format(label))
+        raise NotImplementedError('Animation scenario "{}" not found or implemented'.format(source))
+
+    scenario.source = source
 
     return scenario
 
@@ -83,9 +80,11 @@ def resolve_reference(module, symbol):
     return reference
 
 
-def run_animation(grafana: GrafanaWrapper, storage: MediaStorage, scenario: AnimationScenario, options: Munch):
+def run_animation_scenario(scenario: AnimationScenario, grafana: GrafanaWrapper, options: Munch) -> TemporaryStorage:
 
     log.info("Running animation scenario {}".format(scenario))
+
+    storage = TemporaryStorage()
 
     # Define options to be propagated to the Javascript client domain.
     animation_options = filter_dict(
@@ -110,6 +109,10 @@ def run_animation(grafana: GrafanaWrapper, storage: MediaStorage, scenario: Anim
         results = animation.run(step)
         storage.save_items(results)
 
+    return storage
+
+
+def run_animation_adhoc():
     # TODO: Introduce ad-hoc mode. In the meanwhile, please use scenario mode.
     """
     animator = SequentialAnimation(
@@ -120,3 +123,4 @@ def run_animation(grafana: GrafanaWrapper, storage: MediaStorage, scenario: Anim
     )
     animator.run()
     """
+    pass
