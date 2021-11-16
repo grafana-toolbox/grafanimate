@@ -3,6 +3,7 @@
 # License: GNU Affero General Public License, Version 3
 import logging
 import time
+from operator import attrgetter
 
 from munch import munchify
 from datetime import timedelta
@@ -10,7 +11,7 @@ from dateutil.relativedelta import relativedelta
 from dateutil.rrule import rrule, SECONDLY, MINUTELY, HOURLY, DAILY, WEEKLY, MONTHLY, YEARLY
 
 from grafanimate.grafana import GrafanaWrapper
-from grafanimate.model import NavigationFlavor
+from grafanimate.model import NavigationFlavor, AnimationStep
 
 logger = logging.getLogger(__name__)
 
@@ -32,9 +33,12 @@ class SequentialAnimation:
         logger.info(message)
         self.grafana.console_info(message)
 
-    def run(self, dtstart=None, dtuntil=None, interval=None, flavor: NavigationFlavor = NavigationFlavor.WINDOW):
+    def run(self, step: AnimationStep):
 
         self.log("Animation started")
+
+        # Destructure `step` instance.
+        dtstart, dtuntil, interval, flavor = attrgetter("dtstart", "dtuntil", "interval", "flavor")(step)
 
         if dtstart > dtuntil:
             message = 'Timestamp dtstart={} is after dtuntil={}'.format(dtstart, dtuntil)

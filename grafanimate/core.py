@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
-# (c) 2018 Andreas Motl <andreas@hiveeyes.org>
+# (c) 2018-2021 Andreas Motl <andreas@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
 import logging
 
 from furl import furl
+from munch import Munch
 
+from grafanimate.animations import SequentialAnimation
 from grafanimate.grafana import GrafanaWrapper
-from grafanimate.scenarios import AnimationScenario
+from grafanimate.model import AnimationScenario
+from grafanimate.scenarios import BuiltinScenarios
 from grafanimate.mediastorage import MediaStorage
-from grafanimate.util import filter_dict
+from grafanimate.util import filter_dict, as_list
 
 log = logging.getLogger(__name__)
 
@@ -34,26 +37,39 @@ def make_grafana(url, use_panel_events) -> GrafanaWrapper:
     return grafana
 
 
-def make_storage(imagefile=None, outputfile=None):
+def make_storage(imagefile=None, outputfile=None) -> MediaStorage:
     return MediaStorage(imagefile=imagefile, outputfile=outputfile)
 
 
-def make_animation(grafana: GrafanaWrapper, storage, options):
+def get_scenario(label: str) -> AnimationScenario:
 
-    # Prepare animation.
-    scenario = AnimationScenario(
-        grafana=grafana,
-        storage=storage,
-        dashboard_uid=options['dashboard-uid'],
-        options=filter_dict(options, ['panel-id', 'dashboard-view', 'header-layout', 'datetime-format', 'exposure-time', 'use-panel-events', 'scenario'])
-    )
-    if not hasattr(scenario, options.scenario):
-        raise NotImplementedError('Animation scenario "{}" not implemented'.format(options.scenario))
+    scenario = None
 
-    # Run animation scenario.
-    scenario.run = getattr(scenario, options.scenario)
+    # 1. Try built-in scenario methods.
+    builtins = BuiltinScenarios()
+    func = getattr(builtins, label, None)
+    if callable(func):
+        scenario = AnimationScenario(steps=as_list(func()))
+
+    if scenario is None:
+        raise NotImplementedError('Animation scenario "{}" not found or implemented'.format(label))
+
     return scenario
 
+
+def run_animation(grafana: GrafanaWrapper, storage: MediaStorage, scenario: AnimationScenario, options: Munch):
+
+    # Define options to be propagated to the Javascript client domain.
+    animation_options = filter_dict(options, ['panel-id', 'dashboard-view', 'header-layout', 'datetime-format', 'exposure-time', 'use-panel-events', 'scenario'])
+
+    # Start the engines.
+    animation = SequentialAnimation(grafana=grafana, dashboard_uid=options['dashboard-uid'], options=animation_options)
+    animation.start()
+
+    # Run animation scenario.
+    for step in scenario.steps:
+        results = animation.run(step)
+        storage.save_items(results)
 
     # TODO: Introduce ad-hoc mode. In the meanwhile, please use scenario mode.
     """

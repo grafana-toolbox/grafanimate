@@ -19,6 +19,7 @@ def to_video(source, target):
     # -vf "fps=25,format=yuv420p,drawtext=fontfile=OpenSans-Regular.ttf:text='Title of this Video':fontcolor=white:fontsize=24:x=(w-tw)/2:y=(h/PHI)+th
     #command = "ffmpeg -framerate 4 -pattern_type glob -i '{}' -c:v libx264 -vf 'fps=25,format=yuv420p,drawtext=text=Produced with Grafana and grafanimate:fontsize=11:x=w-tw-30:y=h-th-10:fontcolor=lightgrey:fontfile=/Library/Fonts/Arial.ttf' '{}' -y".format(source, target)
 
+    # TODO: Expose `-framerate` and `fps` values.
     command = "ffmpeg -framerate 2 -pattern_type glob -i '{}' -c:v libx264 -vf 'fps=25,format=yuv420p' '{}' -y".format(source, target)
     logger.info('Rendering video: {}'.format(target))
     logger.debug(command)
@@ -70,6 +71,7 @@ def to_gif(source, target):
     ffmpeg -i dwd-cdc-2018-08.mov -filter_complex 'fps=10,scale=480:-1:flags=lanczos,split [o1] [o2];[o1] palettegen [p]; [o2] fifo [o3];[o3] [p] paletteuse' dwd-cdc-2018-08-v2.gif -y
     """
 
+    # TODO: Expose `fps` and `scale` values.
     command = "ffmpeg -i '{}' -filter_complex 'fps=10,scale=480:-1:flags=lanczos,split [o1] [o2];[o1] palettegen [p]; [o2] fifo [o3];[o3] [p] paletteuse' '{}' -y".format(source, target)
     logger.info('Rendering GIF: {}'.format(target))
     logger.debug(command)

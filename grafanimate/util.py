@@ -117,3 +117,22 @@ def asbool(obj):
         else:
             raise ValueError("String is not true/false: %r" % obj)
     return bool(obj)
+
+
+def is_sequence(seq):
+    # From `numpy.distutils.misc_util`
+    if isinstance(seq, str):
+        return False
+    try:
+        len(seq)
+    except Exception:
+        return False
+    return True
+
+
+def as_list(seq):
+    # From `numpy.distutils.misc_util`
+    if is_sequence(seq):
+        return list(seq)
+    else:
+        return [seq]
