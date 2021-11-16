@@ -1,0 +1,8 @@
+[tool.isort]
+profile = "black"
+src_paths = ["grafanimate", "tests"]
+
+[tool.black]
+line-length = 121
+#include = '\.pyi?$'
+src_paths = ["grafanimate", "tests"]

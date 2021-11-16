@@ -12,6 +12,8 @@ $(eval pip          := $(venvpath)/bin/pip)
 $(eval python       := $(venvpath)/bin/python)
 $(eval pytest       := $(venvpath)/bin/pytest)
 $(eval bumpversion  := $(venvpath)/bin/bumpversion)
+$(eval black        := $(venvpath)/bin/black)
+$(eval isort        := $(venvpath)/bin/isort)
 
 
 # Setup Python virtualenv
@@ -25,6 +27,10 @@ setup-virtualenv:
 # ----
 test: setup-virtualenv
 	$(pytest) -vvv tests
+
+format: install-releasetools
+	$(isort) .
+	$(black) .
 
 
 # -------

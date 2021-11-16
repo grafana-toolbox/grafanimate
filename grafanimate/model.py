@@ -2,12 +2,12 @@
 # (c) 2021 Andreas Motl <andreas.motl@panodata.org>
 # License: GNU Affero General Public License, Version 3
 import dataclasses
-
-import dateutil.parser
-from dataclass_property import dataclass
 from datetime import datetime
 from enum import Enum
 from typing import List, Optional, Union
+
+import dateutil.parser
+from dataclass_property import dataclass
 
 
 class SequencingMode(Enum):

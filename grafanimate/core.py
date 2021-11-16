@@ -11,9 +11,9 @@ from munch import Munch
 import grafanimate.scenarios
 from grafanimate.animations import SequentialAnimation
 from grafanimate.grafana import GrafanaWrapper
-from grafanimate.model import AnimationScenario, AnimationSequence
 from grafanimate.mediastorage import MediaStorage
-from grafanimate.util import filter_dict, as_list, import_module
+from grafanimate.model import AnimationScenario, AnimationSequence
+from grafanimate.util import as_list, filter_dict, import_module
 
 log = logging.getLogger(__name__)
 
@@ -88,7 +88,18 @@ def run_animation(grafana: GrafanaWrapper, storage: MediaStorage, scenario: Anim
     log.info("Running animation scenario {}".format(scenario))
 
     # Define options to be propagated to the Javascript client domain.
-    animation_options = filter_dict(options, ['panel-id', 'dashboard-view', 'header-layout', 'datetime-format', 'exposure-time', 'use-panel-events', 'scenario'])
+    animation_options = filter_dict(
+        options,
+        [
+            "panel-id",
+            "dashboard-view",
+            "header-layout",
+            "datetime-format",
+            "exposure-time",
+            "use-panel-events",
+            "scenario",
+        ],
+    )
 
     # Start the engines.
     animation = SequentialAnimation(grafana=grafana, dashboard_uid=scenario.dashboard_uid, options=animation_options)

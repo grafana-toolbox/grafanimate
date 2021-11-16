@@ -1,27 +1,24 @@
 #  -*- coding: utf-8 -*-
 # (c) 2018 Andreas Motl <andreas@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
-import re
-import os
-import sys
-import socket
 import logging
+import os
+import re
+import socket
+import sys
+from contextlib import closing
 from pathlib import Path
 
 from munch import munchify
-from contextlib import closing
 from unidecode import unidecode
 
 
 def setup_logging(level=logging.INFO):
-    log_format = '%(asctime)-10s [%(name)-30s] %(levelname)-7s: %(message)s'
-    logging.basicConfig(
-        format=log_format,
-        stream=sys.stderr,
-        level=level)
+    log_format = "%(asctime)-10s [%(name)-30s] %(levelname)-7s: %(message)s"
+    logging.basicConfig(format=log_format, stream=sys.stderr, level=level)
 
     # TODO: Control debug logging of HTTP requests through yet another commandline option "--debug-http" or "--debug-requests"
-    requests_log = logging.getLogger('requests')
+    requests_log = logging.getLogger("requests")
     requests_log.setLevel(logging.WARN)
 
 
@@ -29,14 +26,14 @@ def normalize_options(options, lists=None):
     lists = lists or []
     normalized = {}
     for key, value in options.items():
-        key = key.strip('--<>')
+        key = key.strip("--<>")
         normalized[key] = value
     for key in lists:
         normalized[key] = read_list(normalized[key])
     return munchify(normalized)
 
 
-def read_list(data, separator=u','):
+def read_list(data, separator=","):
     if data is None:
         return []
     result = list(map(lambda x: x.strip(), data.split(separator)))
@@ -62,18 +59,18 @@ def check_socket(host, port):
 
 
 def format_date_human(date, interval=None):
-    #pattern = '%Y-%m-%d'
-    pattern = '%Y-%m-%dT%H-%M-%S'
-    #if interval in ['secondly', 'minutely', 'hourly']:
+    # pattern = '%Y-%m-%d'
+    pattern = "%Y-%m-%dT%H-%M-%S"
+    # if interval in ['secondly', 'minutely', 'hourly']:
     #    pattern = '%Y-%m-%dT%H-%M-%S'
     date_formatted = date.strftime(pattern)
     return date_formatted
 
 
 def format_date_grafana(date, interval=None):
-    pattern = '%Y-%m-%d'
-    if interval in ['secondly', 'minutely', 'hourly'] or interval.endswith('min'):
-        pattern = '%Y-%m-%dT%H:%M:%S'
+    pattern = "%Y-%m-%d"
+    if interval in ["secondly", "minutely", "hourly"] or interval.endswith("min"):
+        pattern = "%Y-%m-%dT%H:%M:%S"
     date_formatted = date.strftime(pattern)
     return date_formatted
 
@@ -99,7 +96,7 @@ def slug(text):
 
     Stolen from beetsplug.lyrics.
     """
-    return re.sub(r'\W+', '-', unidecode(text).lower().strip()).strip('-')
+    return re.sub(r"\W+", "-", unidecode(text).lower().strip()).strip("-")
 
 
 def ensure_directory(path):

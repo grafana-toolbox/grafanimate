@@ -3,10 +3,12 @@
 # License: GNU Affero General Public License, Version 3
 import json
 import logging
-from docopt import docopt, DocoptExit
+
+from docopt import DocoptExit, docopt
+
 from grafanimate import __appname__, __version__
-from grafanimate.core import make_grafana, make_storage, get_scenario, run_animation
-from grafanimate.util import normalize_options, setup_logging, asbool, slug
+from grafanimate.core import get_scenario, make_grafana, make_storage, run_animation
+from grafanimate.util import asbool, normalize_options, setup_logging, slug
 
 log = logging.getLogger(__name__)
 
@@ -89,11 +91,11 @@ def run():
     """
 
     # Parse command line arguments.
-    options = docopt(run.__doc__, version=__appname__ + ' ' + __version__)
-    options = normalize_options(options, lists=['header-layout'])
+    options = docopt(run.__doc__, version=__appname__ + " " + __version__)
+    options = normalize_options(options, lists=["header-layout"])
 
     # Setup logging.
-    debug = options.get('debug')
+    debug = options.get("debug")
     log_level = logging.INFO
     if debug:
         log_level = logging.DEBUG
@@ -101,41 +103,42 @@ def run():
 
     # Debug command line options.
     if debug:
-        log.info('Options: {}'.format(json.dumps(options, indent=4)))
+        log.info("Options: {}".format(json.dumps(options, indent=4)))
 
     # Sanity checks.
-    if not options['scenario']:
-        raise DocoptExit('Error: Parameter --scenario is mandatory')
+    if not options["scenario"]:
+        raise DocoptExit("Error: Parameter --scenario is mandatory")
 
-    if options['dashboard-view'] == 'd-solo' and not options['panel-id']:
-        raise DocoptExit('Error: Parameter --panel-id is mandatory for --dashboard-view=d-solo')
+    if options["dashboard-view"] == "d-solo" and not options["panel-id"]:
+        raise DocoptExit("Error: Parameter --panel-id is mandatory for --dashboard-view=d-solo")
 
-    options['exposure-time'] = float(options['exposure-time'])
-    options['use-panel-events'] = asbool(options['use-panel-events'])
-    if options['use-panel-events']:
-        options['exposure-time'] = 0
+    options["exposure-time"] = float(options["exposure-time"])
+    options["use-panel-events"] = asbool(options["use-panel-events"])
+    if options["use-panel-events"]:
+        options["exposure-time"] = 0
 
     # Load scene.
-    scenario = get_scenario(options['scenario'])
+    scenario = get_scenario(options["scenario"])
 
     # Resolve URL to Grafana, either from command line (precedence), or from scenario file.
-    if options['grafana-url']:
-        scenario.grafana_url = options['grafana-url']
+    if options["grafana-url"]:
+        scenario.grafana_url = options["grafana-url"]
     if not scenario.grafana_url:
         scenario.grafana_url = "http://localhost:3000"
 
     # The dashboard UID can be defined either in the scenario or via command line.
     # Command line takes precedence.
-    if options['dashboard-uid']:
-        scenario.dashboard_uid = options['dashboard-uid']
+    if options["dashboard-uid"]:
+        scenario.dashboard_uid = options["dashboard-uid"]
     if not scenario.dashboard_uid:
         raise KeyError("Dashboard UID is mandatory, either supply it on the command line or via scenario file")
 
     # Define pipeline elements.
-    grafana = make_grafana(scenario.grafana_url, options['use-panel-events'])
+    grafana = make_grafana(scenario.grafana_url, options["use-panel-events"])
     storage = make_storage(
-        imagefile='./var/spool/{scenario}/{uid}/{uid}_{dtstart}_{dtuntil}.png',
-        outputfile='./var/results/{scenario}--{name}--{uid}.mp4')
+        imagefile="./var/spool/{scenario}/{uid}/{uid}_{dtstart}_{dtuntil}.png",
+        outputfile="./var/results/{scenario}--{name}--{uid}.mp4",
+    )
 
     # Assemble pipeline.
     # Run stop motion animation to produce single artifacts.
@@ -146,4 +149,4 @@ def run():
     path = "./var/spool/{scenario}/{uid}/{uid}_*.png".format(scenario=slug(options.scenario), uid=scenario.dashboard_uid)
     results = storage.produce_artifacts(path=path, scenario=options.scenario, uid=scenario.dashboard_uid, name=title)
 
-    log.info('Produced %s results\n%s', len(results), json.dumps(results, indent=2))
+    log.info("Produced %s results\n%s", len(results), json.dumps(results, indent=2))

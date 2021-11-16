@@ -5,9 +5,10 @@ import json
 import logging
 import time
 
-from pkg_resources import resource_stream
 from marionette_driver import Wait
 from marionette_driver.errors import TimeoutException
+from pkg_resources import resource_stream
+
 from grafanimate.marionette import FirefoxMarionetteBase
 from grafanimate.util import format_date_grafana
 
@@ -22,14 +23,14 @@ class GrafanaWrapper(FirefoxMarionetteBase):
     def __init__(self, baseurl=None, use_panel_events=False):
         self.baseurl = baseurl
         self.use_panel_events = use_panel_events
-        log.info('Starting GrafanaWrapper on %s', baseurl)
+        log.info("Starting GrafanaWrapper on %s", baseurl)
         FirefoxMarionetteBase.__init__(self)
 
     def boot_grafana(self):
         """
         Navigate to Grafana application and inject Grafana Sidecar service.
         """
-        log.info('Starting Grafana at {}'.format(self.baseurl))
+        log.info("Starting Grafana at {}".format(self.baseurl))
 
         self.fix_window_size()
         self.navigate(self.baseurl)
@@ -45,7 +46,7 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         # Load Javascript for GrafanaStudio sidecar service.
         jsfiles = ["grafana-util.js", "grafana-studio.js"]
         for jsfile in jsfiles:
-            with resource_stream('grafanimate', jsfile) as f:
+            with resource_stream("grafanimate", jsfile) as f:
                 javascript = f.read().decode("utf-8")
                 self.run_javascript(javascript)
 
@@ -62,20 +63,20 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         [libx264 @ 0x7fa917001200] height not divisible by 2 (1348x823)
         """
         window_size = self.get_window_rect()
-        if window_size['width'] % 2:
-            window_size['width'] -= 1
-        if window_size['height'] % 2:
-            window_size['height'] -= 1
-        self.set_window_size(window_size['width'], window_size['height'])
+        if window_size["width"] % 2:
+            window_size["width"] -= 1
+        if window_size["height"] % 2:
+            window_size["height"] -= 1
+        self.set_window_size(window_size["width"], window_size["height"])
 
     def wait_for_grafana(self):
         """
         Wait for element <grafana-app> to appear.
         """
-        log.info('Waiting for Grafana to load')
+        log.info("Waiting for Grafana to load")
         element = self.wait_for_element_tag("grafana-app")
         time.sleep(0.3)
-        log.info('Grafana loaded')
+        log.info("Grafana loaded")
         return element
 
     def login(self, username, password):
@@ -111,7 +112,7 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         try:
             waiter.until(condition)
         except TimeoutException as ex:
-            log.warning('Timed out waiting for data: %s. Continuing anyway.', ex)
+            log.warning("Timed out waiting for data: %s. Continuing anyway.", ex)
 
     def clear_all_data_received(self):
         return self.calljs("grafanaStudio.hasAllData", False)
@@ -123,7 +124,7 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         """
 
         # Notify user.
-        message = 'Timewarp to {} -> {}'.format(dtstart, dtuntil)
+        message = "Timewarp to {} -> {}".format(dtstart, dtuntil)
         log.info(message)
         self.console_log(message)
 
@@ -161,7 +162,7 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         # https://github.com/mozilla/geckodriver/issues/1067#issuecomment-347180427
         # https://github.com/devtools-html/har-export-trigger/issues/27#issuecomment-424777524
         if not silent:
-            log.debug('Running Javascript: %s', sourcecode)
+            log.debug("Running Javascript: %s", sourcecode)
         return self.marionette.execute_script(sourcecode, sandbox=None, new_sandbox=False)
 
     def calljs(self, name, *args, silent=False):
@@ -186,24 +187,24 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         """
         Wait for map element <panel-plugin-grafana-worldmap-panel ...> to appear.
         """
-        log.debug('Waiting for map element to appear in DOM')
+        log.debug("Waiting for map element to appear in DOM")
         # TODO: Make naming/addressing more universal.
         element = self.wait_for_element_tag("panel-plugin-grafana-worldmap-panel")
-        log.info('Finished waiting for map element')
+        log.info("Finished waiting for map element")
         log.info(element)
         return element
 
 
 def mkjscall(name, *arguments, **flags):
-    flags.setdefault('add_return', True)
-    tpl = '{return}{name}({arguments});'
+    flags.setdefault("add_return", True)
+    tpl = "{return}{name}({arguments});"
     tplvars = {
-        'return': flags['add_return'] and 'return ' or '',
-        'name': name,
-        'arguments': mkjsargs(*arguments),
+        "return": flags["add_return"] and "return " or "",
+        "name": name,
+        "arguments": mkjsargs(*arguments),
     }
     return tpl.format(**tplvars)
 
 
 def mkjsargs(*arguments):
-    return json.dumps(arguments).strip('[]')
+    return json.dumps(arguments).strip("[]")
