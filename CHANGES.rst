@@ -17,6 +17,7 @@ in progress
 - Optionally define ``grafana_url`` and ``dashboard_uid`` within scenario file.
   Corresponding command line parameters ``--grafana-url`` and ``--dashboard-uid``
   still take preference.
+- When parsing timestamps, allow ISO8801/RFC3339 and Epoch time (``dtstart`` and ``dtuntil``)
 
 
 2019-02-04 0.5.5

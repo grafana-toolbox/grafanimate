@@ -13,6 +13,7 @@ requires = [
     'tqdm>=4,<5',
     'unidecode>=1,<2',
     'furl>=2,<3',
+    'dataclass-property>=1,<2',
 
     # Grafana control and animation
     'where>=1,<2',
