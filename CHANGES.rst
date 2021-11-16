@@ -5,6 +5,10 @@ grafanimate changelog
 
 in progress
 ===========
+
+
+2021-11-17 0.6.0
+================
 - Fix attribution signature on worldmap panels
 - Add scenario for UBA.LDI.DWD maps
 - Add dope sheet blueprint generator spike
