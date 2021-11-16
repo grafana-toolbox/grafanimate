@@ -14,6 +14,9 @@ in progress
 - Add possibility to control the navigation flavor (window, expand)
 - Introduce data model for animation scenarios
 - Allow loading scenarios from arbitrary Python modules and files
+- Optionally define ``grafana_url`` and ``dashboard_uid`` within scenario file.
+  Corresponding command line parameters ``--grafana-url`` and ``--dashboard-uid``
+  still take preference.
 
 
 2019-02-04 0.5.5

@@ -13,7 +13,7 @@ from grafanimate.animations import SequentialAnimation
 from grafanimate.grafana import GrafanaWrapper
 from grafanimate.model import AnimationScenario, AnimationStep
 from grafanimate.mediastorage import MediaStorage
-from grafanimate.util import filter_dict, as_list, load_module
+from grafanimate.util import filter_dict, as_list, import_module
 
 log = logging.getLogger(__name__)
 
@@ -44,30 +44,19 @@ def make_storage(imagefile=None, outputfile=None) -> MediaStorage:
 
 
 def get_scenario(label: str) -> AnimationScenario:
+    """
+    Resolve scenario from Python module or file.
+    """
 
-    scenario = None
+    # If it's not a full-qualified reference, fall back to trying the built-in scenario methods.
+    modname, _, symbol = label.partition(":")
+    if not symbol:
+        symbol = modname
+        modname = "grafanimate.scenarios"
 
-    # 1. Try built-in scenario methods.
-    builtins = grafanimate.scenarios
-    func = getattr(builtins, label, None)
-    if callable(func):
-        scenario = AnimationScenario(steps=as_list(func()))
-
-    # 2. Try to resolve from Python module.
-    else:
-        modname, _, symbol = label.partition(":")
-
-        if Path(modname).exists():
-            module = load_module("<unknown>", modname)
-        else:
-            module = pkg_resources.EntryPoint(None, modname).resolve()
-        reference = getattr(module, symbol)
-        if callable(reference):
-            reference = reference()
-        if isinstance(reference, AnimationScenario):
-            scenario = reference
-        elif isinstance(reference, (AnimationStep, list)):
-            scenario = AnimationScenario(steps=as_list(reference))
+    # Load module and resolve symbol.
+    module = load_module(modname)
+    scenario = resolve_reference(module, symbol)
 
     if scenario is None:
         raise NotImplementedError('Animation scenario "{}" not found or implemented'.format(label))
@@ -75,13 +64,34 @@ def get_scenario(label: str) -> AnimationScenario:
     return scenario
 
 
+def load_module(modname):
+    if Path(modname).exists():
+        module = import_module("<unknown>", modname)
+    else:
+        module = pkg_resources.EntryPoint(None, modname).resolve()
+    return module
+
+
+def resolve_reference(module, symbol):
+    reference = getattr(module, symbol, None)
+    if callable(reference):
+        reference = reference()
+    if isinstance(reference, AnimationScenario):
+        pass
+    elif isinstance(reference, (AnimationStep, list)):
+        reference = AnimationScenario(steps=as_list(reference))
+    return reference
+
+
 def run_animation(grafana: GrafanaWrapper, storage: MediaStorage, scenario: AnimationScenario, options: Munch):
+
+    log.info("Running animation scenario {}".format(scenario))
 
     # Define options to be propagated to the Javascript client domain.
     animation_options = filter_dict(options, ['panel-id', 'dashboard-view', 'header-layout', 'datetime-format', 'exposure-time', 'use-panel-events', 'scenario'])
 
     # Start the engines.
-    animation = SequentialAnimation(grafana=grafana, dashboard_uid=options['dashboard-uid'], options=animation_options)
+    animation = SequentialAnimation(grafana=grafana, dashboard_uid=scenario.dashboard_uid, options=animation_options)
     animation.start()
 
     # Run animation scenario.

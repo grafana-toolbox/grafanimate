@@ -28,7 +28,7 @@ class MediaStorage:
 
         # Compute image sequence file name.
         imagefile = self.imagefile_template.format(
-            scenario=item.meta.scenario,
+            scenario=slug(item.meta.scenario),
             interval=item.meta.interval,
             uid=item.meta.dashboard,
             dtstart=format_date_human(item.data.dtstart),
@@ -44,12 +44,13 @@ class MediaStorage:
 
         logger.info('Saved frame to {}. Size: {}'.format(imagefile, len(item.data.image)))
 
-    def produce_artifacts(self, path, uid=None, name=None):
+    def produce_artifacts(self, path, scenario=None, uid=None, name=None):
         # TODO: Can use dashboard title as output filename here?
         # TODO: Can put dtstart into filename?
 
         #uid = self.dashboard_uid
         name = name or uid
+        scenario = slug(scenario.replace(".py", ""))
 
         # Compute path to sequence images.
         #imagefile_pattern = self.imagefile_template.format(uid=uid, dtstart='*', dtuntil='*')
@@ -58,7 +59,7 @@ class MediaStorage:
         # Compute output file name.
         if name:
             name = slug(name)
-        outputfile = self.outputfile_template.format(name=name, uid=uid)
+        outputfile = self.outputfile_template.format(scenario=scenario, name=name, uid=uid)
 
         # Produce output artifacts.
         ensure_directory(outputfile)

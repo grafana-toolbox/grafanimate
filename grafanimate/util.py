@@ -140,7 +140,7 @@ def as_list(seq):
         return [seq]
 
 
-def load_module(name: str, path: str):
+def import_module(name: str, path: str):
     """
     Import Python module from file.
     """

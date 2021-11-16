@@ -16,7 +16,7 @@ The parameter `flavor` can has two values (defaulting to `window`):
 import logging
 from datetime import datetime
 
-from grafanimate.model import NavigationFlavor, AnimationStep
+from grafanimate.model import NavigationFlavor, AnimationStep, AnimationScenario
 
 logger = logging.getLogger(__name__)
 
@@ -30,11 +30,17 @@ def playdemo():
         grafanimate --grafana-url=https://play.grafana.org/ --dashboard-uid=000000012 --scenario=playdemo
     """
     logger.info('Running scenario playdemo')
-    return AnimationStep(
-        dtstart=datetime(2021, 11, 14, 2, 0, 0),
-        dtuntil=datetime(2021, 11, 14, 4, 16, 36),
-        interval='5min',
-        flavor=NavigationFlavor.EXPAND)
+    return AnimationScenario(
+        grafana_url="https://play.grafana.org/",
+        dashboard_uid="000000012",
+        steps=[
+            AnimationStep(
+                dtstart=datetime(2021, 11, 14, 2, 0, 0),
+                dtuntil=datetime(2021, 11, 14, 4, 16, 36),
+                interval='5min',
+                flavor=NavigationFlavor.EXPAND)
+        ]
+    )
 
 
 def ldi_all():

@@ -6,7 +6,7 @@ import logging
 from docopt import docopt, DocoptExit
 from grafanimate import __appname__, __version__
 from grafanimate.core import make_grafana, make_storage, get_scenario, run_animation
-from grafanimate.util import normalize_options, setup_logging, asbool
+from grafanimate.util import normalize_options, setup_logging, asbool, slug
 
 log = logging.getLogger(__name__)
 
@@ -19,7 +19,7 @@ def run():
       grafanimate (-h | --help)
 
     Options:
-      --grafana-url=<url>           Base URL to Grafana, [default: http://localhost:3000].
+      --grafana-url=<url>           Base URL to Grafana.
                                     If your Grafana instance is protected, please specify credentials
                                     within the URL, e.g. https://user:pass@www.example.org/grafana.
 
@@ -130,6 +130,13 @@ def run():
 
     # Load scene.
     scenario = get_scenario(options['scenario'])
+
+    # Resolve URL to Grafana, either from command line (precedence), or from scenario file.
+    if options['grafana-url']:
+        scenario.grafana_url = options['grafana-url']
+    if not scenario.grafana_url:
+        scenario.grafana_url = "http://localhost:3000"
+
     # The dashboard UID can be defined either in the scenario or via command line.
     # Command line takes precedence.
     if options['dashboard-uid']:
@@ -138,10 +145,10 @@ def run():
         raise KeyError("Dashboard UID is mandatory, either supply it on the command line or via scenario file")
 
     # Define pipeline elements.
-    grafana = make_grafana(options['grafana-url'], options['use-panel-events'])
+    grafana = make_grafana(scenario.grafana_url, options['use-panel-events'])
     storage = make_storage(
         imagefile='./var/spool/{scenario}/{uid}/{uid}_{dtstart}_{dtuntil}.png',
-        outputfile='./var/results/{uid}-{name}.mp4')
+        outputfile='./var/results/{scenario}--{name}--{uid}.mp4')
 
     # Assemble pipeline.
     # Run stop motion animation to produce single artifacts.
@@ -149,7 +156,7 @@ def run():
 
     # Run rendering steps, produce composite artifacts.
     title = grafana.get_dashboard_title()
-    path = "./var/spool/{scenario}/{uid}/{uid}_*.png".format(scenario=options.scenario, uid=options["dashboard-uid"])
-    results = storage.produce_artifacts(path=path, uid=options['dashboard-uid'], name=title)
+    path = "./var/spool/{scenario}/{uid}/{uid}_*.png".format(scenario=slug(options.scenario), uid=scenario.dashboard_uid)
+    results = storage.produce_artifacts(path=path, scenario=options.scenario, uid=scenario.dashboard_uid, name=title)
 
     log.info('Produced %s results\n%s', len(results), json.dumps(results, indent=2))

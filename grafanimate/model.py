@@ -23,4 +23,5 @@ class AnimationStep:
 @dataclasses.dataclass
 class AnimationScenario:
     steps: List[AnimationStep]
+    grafana_url: Optional[str] = None
     dashboard_uid: Optional[str] = None
