@@ -11,7 +11,7 @@ in progress
 - Modernize to Python 3
 - Add compatibility with Grafana 6, 7 and 8
 - Add possibility to login to protected Grafana instances
-- Add possibility to control the navigation flavor (window, expand)
+- Add possibility to control the sequencing mode (window vs. cumulative)
 - Introduce data model for animation scenarios
 - Allow loading scenarios from arbitrary Python modules and files
 - Optionally define ``grafana_url`` and ``dashboard_uid`` within scenario file.
