@@ -54,3 +54,13 @@ class AnimationScenario:
     steps: List[AnimationSequence]
     grafana_url: Optional[str] = None
     dashboard_uid: Optional[str] = None
+    dashboard_title: Optional[str] = None
+    source: Optional[str] = None
+
+
+@dataclasses.dataclass
+class RenderingOptions:
+    video_framerate: int = 2
+    video_fps: int = 25
+    gif_fps: int = 10
+    gif_width: int = 480

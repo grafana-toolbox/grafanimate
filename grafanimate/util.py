@@ -27,9 +27,9 @@ def normalize_options(options, lists=None):
     normalized = {}
     for key, value in options.items():
         key = key.strip("--<>")
-        normalized[key] = value
+        normalized[key] = normalized[key.replace("-", "_")] = value
     for key in lists:
-        normalized[key] = read_list(normalized[key])
+        normalized[key] = normalized[key.replace("-", "_")] = read_list(normalized[key])
     return munchify(normalized)
 
 
