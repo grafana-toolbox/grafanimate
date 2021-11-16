@@ -30,7 +30,7 @@ extras = {
 
 setup(
     name="grafanimate",
-    version="0.5.5",
+    version="0.6.0",
     description="Animate timeseries data with Grafana",
     long_description=README,
     license="AGPL 3, EUPL 1.2",
