@@ -9,14 +9,14 @@ this is all we got. Enjoy!
 
 The parameters `dtstart`, `dtuntil` and `interval` should explain themselves.
 
-The parameter `flavor` can has two values (defaulting to `window`):
+The parameter `mode` can has two values (defaulting to `window`):
 - "window" will slide a window through the defined time range
-- "expand" will use a fixed start time and stepwise expand the end time
+- "cumulative" will use a fixed start time and stepwise expand the end time by `interval`
 """
 import logging
 from datetime import datetime
 
-from grafanimate.model import NavigationFlavor, AnimationStep, AnimationScenario
+from grafanimate.model import SequencingMode, AnimationStep, AnimationScenario
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ def playdemo():
                 dtstart=datetime(2021, 11, 14, 2, 0, 0),
                 dtuntil=datetime(2021, 11, 14, 4, 16, 36),
                 interval='5min',
-                flavor=NavigationFlavor.EXPAND)
+                mode=SequencingMode.CUMULATIVE)
         ]
     )
 

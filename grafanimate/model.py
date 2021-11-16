@@ -7,9 +7,9 @@ from enum import Enum
 from typing import List, Optional
 
 
-class NavigationFlavor(Enum):
+class SequencingMode(Enum):
     WINDOW = "window"
-    EXPAND = "expand"
+    CUMULATIVE = "cumulative"
 
 
 @dataclasses.dataclass
@@ -17,7 +17,7 @@ class AnimationStep:
     dtstart: datetime
     dtuntil: datetime
     interval: str
-    flavor: Optional[NavigationFlavor] = NavigationFlavor.WINDOW
+    mode: Optional[SequencingMode] = SequencingMode.WINDOW
 
 
 @dataclasses.dataclass

@@ -11,7 +11,7 @@ from dateutil.relativedelta import relativedelta
 from dateutil.rrule import rrule, SECONDLY, MINUTELY, HOURLY, DAILY, WEEKLY, MONTHLY, YEARLY
 
 from grafanimate.grafana import GrafanaWrapper
-from grafanimate.model import NavigationFlavor, AnimationStep
+from grafanimate.model import SequencingMode, AnimationStep
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ class SequentialAnimation:
         self.log("Animation started")
 
         # Destructure `step` instance.
-        dtstart, dtuntil, interval, flavor = attrgetter("dtstart", "dtuntil", "interval", "flavor")(step)
+        dtstart, dtuntil, interval, mode = attrgetter("dtstart", "dtuntil", "interval", "mode")(step)
 
         if dtstart > dtuntil:
             message = 'Timestamp dtstart={} is after dtuntil={}'.format(dtstart, dtuntil)
@@ -47,7 +47,7 @@ class SequentialAnimation:
         rr_freq, rr_interval, dtdelta = self.get_freq_delta(interval)
 
         #until = datetime.now()
-        if flavor == NavigationFlavor.EXPAND:
+        if mode == SequencingMode.CUMULATIVE:
             dtuntil += dtdelta
 
         # Compute complete date range.
@@ -61,13 +61,13 @@ class SequentialAnimation:
             logger.info("=" * 42)
             logger.info('Datetime step: %s', date)
 
-            # Compute start and end dates based on flavor.
+            # Compute start and end dates based on mode.
 
-            if flavor == NavigationFlavor.WINDOW:
+            if mode == SequencingMode.WINDOW:
                 dtstart = date
                 dtuntil = date + dtdelta
 
-            elif flavor == NavigationFlavor.EXPAND:
+            elif mode == SequencingMode.CUMULATIVE:
                 dtuntil = date
 
             # Render image.
