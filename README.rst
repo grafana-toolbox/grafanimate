@@ -97,8 +97,17 @@ Usage
       --grafana-url=<url>           Base URL to Grafana, [default: http://localhost:3000].
                                     If your Grafana instance is protected, please specify credentials
                                     within the URL, e.g. https://user:pass@www.example.org/grafana.
-      --scenario=<scenario>         Which scenario to run. Scenarios are defined as methods within the
-                                    `scenarios.py` file.
+
+      --scenario=<scenario>         Which scenario to run. Built-in scenarios are defined within the
+                                    `scenarios.py` file, however you can easily define scenarios in
+                                    custom Python files.
+
+                                    Scenarios can be referenced by arbitrary entrypoints, like:
+
+                                    - ``--scenario=grafanimate.scenarios:playdemo``    (module, symbol)
+                                    - ``--scenario=grafanimate/scenarios.py:playdemo`` (file, symbol)
+                                    - ``--scenario=playdemo`` (built-in)
+
       --dashboard-uid=<uid>         Grafana dashboard uid.
 
     Optional:

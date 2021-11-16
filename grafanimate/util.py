@@ -6,6 +6,8 @@ import os
 import sys
 import socket
 import logging
+from pathlib import Path
+
 from munch import munchify
 from contextlib import closing
 from unidecode import unidecode
@@ -136,3 +138,24 @@ def as_list(seq):
         return list(seq)
     else:
         return [seq]
+
+
+def load_module(name: str, path: str):
+    """
+    Import Python module from file.
+    """
+
+    # Use absolute path.
+    modulefile = Path(path).absolute()
+
+    # Import module.
+    # https://stackoverflow.com/a/67692
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(name, modulefile)
+    if spec is None:
+        raise FileNotFoundError(f"Unable to find module file {modulefile}")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    return mod
