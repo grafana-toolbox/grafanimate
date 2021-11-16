@@ -11,6 +11,7 @@ Prio 1
 - [x] Add parameter to toggle between flavor = 'window|expand' in ``animations.py``
 - [x] Standalone scenario recipes. TOML?
 - [x] Load scenarios from arbitrary modules and files.
+- [x] Optionally use ``url`` from scenario
 - [o] Clear Javascript event handlers after usage, maybe using ``scope.$on('$destroy', ...)``
 - [o] Avoid collisions in output directory, e.g. take ``flavor`` into account
 

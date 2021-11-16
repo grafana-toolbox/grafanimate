@@ -94,7 +94,7 @@ Usage
       grafanimate (-h | --help)
 
     Options:
-      --grafana-url=<url>           Base URL to Grafana, [default: http://localhost:3000].
+      --grafana-url=<url>           Base URL to Grafana.
                                     If your Grafana instance is protected, please specify credentials
                                     within the URL, e.g. https://user:pass@www.example.org/grafana.
 
