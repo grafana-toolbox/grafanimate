@@ -30,15 +30,59 @@ def playdemo():
         grafanimate --grafana-url=https://play.grafana.org/ --dashboard-uid=000000012 --scenario=playdemo
     """
     logger.info('Running scenario playdemo')
+
     return AnimationScenario(
         grafana_url="https://play.grafana.org/",
         dashboard_uid="000000012",
         steps=[
             AnimationStep(
                 dtstart=datetime(2021, 11, 14, 2, 0, 0),
-                dtuntil=datetime(2021, 11, 14, 4, 16, 36),
+
+                # Produce video with reasonable duration.
+                # dtuntil=datetime(2021, 11, 14, 4, 16, 36),
+
+                # Produce very short video.
+                dtuntil=datetime(2021, 11, 14, 2, 16, 36),
+
                 interval='5min',
-                mode=SequencingMode.CUMULATIVE)
+                mode=SequencingMode.CUMULATIVE,
+            ),
+        ]
+    )
+
+
+def playdemo_advanced():
+    """
+    Run demo on `play.grafana.org`.
+
+    Example::
+
+        grafanimate --grafana-url=https://play.grafana.org/ --dashboard-uid=000000012 --scenario=playdemo_advanced
+    """
+    logger.info('Running scenario playdemo')
+
+    return AnimationScenario(
+        grafana_url="https://play.grafana.org/",
+        dashboard_uid="000000012",
+        steps=[
+            AnimationStep(
+                dtstart=datetime(2021, 11, 14, 2, 0, 0),
+                dtuntil=datetime(2021, 11, 14, 2, 16, 36),
+                interval='5min',
+                mode=SequencingMode.CUMULATIVE,
+            ),
+            AnimationStep(
+                dtstart="2021-11-15T02:12:05Z",
+                dtuntil="2021-11-15T02:37:36Z",
+                interval='5min',
+                mode=SequencingMode.CUMULATIVE,
+            ),
+            AnimationStep(
+                dtstart=1637091011,
+                dtuntil=1637091911,
+                interval='5min',
+                mode=SequencingMode.CUMULATIVE,
+            ),
         ]
     )
 
