@@ -32,6 +32,10 @@ format: install-releasetools
 	$(isort) .
 	$(black) .
 
+format-js:
+	brew install prettier
+	prettier --write grafanimate
+
 
 # -------
 # Release
