@@ -52,7 +52,7 @@ class GrafanaWrapper(FirefoxMarionetteBase):
 
     def fix_window_size(self):
         """
-        Work around ffmpeg errors like::
+        Work around FFmpeg errors like::
 
           Input #0, image2, from './var/spool/DLOlE_Rmz/DLOlE_Rmz_*.png':
             Duration: 00:00:28.75, start: 0.000000, bitrate: N/A

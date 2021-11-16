@@ -30,11 +30,11 @@ Animate timeseries data with Grafana.
 *****
 About
 *****
-`grafanimate` captures screenshots while animating a
-Grafana dashboard by manipulating its `time range control`_,
-i.e. navigating through time. The result can be rendered as a
-sequence of png images, an animated gif file and as a video file.
 
+``grafanimate`` captures screenshots while animating a Grafana dashboard by
+manipulating its `time range control`_, i.e. navigating through time. The
+result can be rendered as a sequence of png images, an animated gif file,
+and as a video file.
 
 .. attention::
 
@@ -48,117 +48,87 @@ Setup
 
 Prerequisites
 =============
-This program uses the fine ffmpeg_ for doing the heavy lifting.
 
-.. _ffmpeg: https://ffmpeg.org/
+This program uses the fine FFmpeg_ program for doing the heavy lifting within
+in its postprocessing subsystem.
 
 
 grafanimate
 ===========
 
-You most probably want to install ``grafanimate`` from source, because you
-currently will need to edit the ``grafanimate/scenarios.py`` file to define
-your own animations.
+::
 
-Here we go::
-
-    # Acquire sources.
-    git clone https://github.com/panodata/grafanimate
-    cd grafanimate
-
-    # Create and activate virtualenv.
-    python3 -m venv .venv
-    source .venv/bin/activate
-
-    # Install package in "editable" mode.
-    pip install --editable=.
-
-.. note:: We absolutely recommend installing the program into a Python virtualenv.
+    pip install grafanimate
 
 
-Run tests::
+.. note::
 
-    make test
+    We absolutely recommend installing this program into a Python virtualenv::
+
+        python3 -m venv .venv
+        source .venv/bin/activate
+        pip install grafanimate
 
 
 *****
 Usage
 *****
+
+Synopsis
+========
 ::
 
-    $ grafanimate --help
+    grafanimate --scenario=playdemo --output=./animations
 
-    Usage:
-      grafanimate [options] [--target=<target>]...
-      grafanimate --version
-      grafanimate (-h | --help)
+Introduction
+============
 
-    Options:
-      --grafana-url=<url>           Base URL to Grafana.
-                                    If your Grafana instance is protected, please specify credentials
-                                    within the URL, e.g. https://user:pass@www.example.org/grafana.
+``grafanimate`` works by operating on animations defined within description
+files, written in Python. It offers convenient data types, ``AnimationScenario``
+and ``AnimationSequence``, for outlining an animation scenario made of multiple
+sequences.
 
-      --scenario=<scenario>         Which scenario to run. Built-in scenarios are defined within the
-                                    `scenarios.py` file, however you can easily define scenarios in
-                                    custom Python files.
+::
 
-                                    Scenarios can be referenced by arbitrary entrypoints, like:
+    AnimationScenario(
+        grafana_url="https://play.grafana.org/",
+        dashboard_uid="000000012",
+        steps=[
+            AnimationSequence(
+                dtstart="2021-11-15T02:12:05Z",
+                dtuntil="2021-11-15T02:37:36Z",
+                interval="5min",
+                mode=SequencingMode.CUMULATIVE,
+            ),
+        ],
+    )
 
-                                    - ``--scenario=grafanimate.scenarios:playdemo``    (module, symbol)
-                                    - ``--scenario=grafanimate/scenarios.py:playdemo`` (file, symbol)
-                                    - ``--scenario=playdemo`` (built-in)
+Please have a look at `scenarios.py`_ for a full description file containing
+multiple scenarios.
 
-      --dashboard-uid=<uid>         Grafana dashboard uid.
+For getting a detailed and descriptive overview about all available command
+line options, please invoke::
 
-    Optional:
-      --exposure-time=<seconds>     How long to wait for each frame to complete rendering. [default: 0.5]
-      --use-panel-events            Whether to enable using Grafana's panel events. [default: false]
-                                    Caveat: Used to work properly with Angular-based panels like `graph`.
-                                            Stopped working with React-based panels like `timeseries`.
+    grafanimate --help
 
-      --panel-id=<id>               Render single panel only by navigating to "panelId=<id>&fullscreen".
-      --dashboard-view=<mode>       Use Grafana's "d-solo" view for rendering single panels without header.
+Examples
+========
 
-      --header-layout=<layout>      The header rendering subsystem offers different modes
-                                    for amending the vanilla Grafana user interface.
-                                    Multiple modes can be combined.
-                                    [default: large-font]
+Examples for scenario mode. Script your animations in file ``scenarios.py`` or
+any other Python module or file.
 
-                                    - no-chrome:            Set kiosk mode, remove sidemenu and more chrome
-                                    - large-font:           Use larger font sizes for title and datetime
-                                    - collapse-datetime:    Collapse datetime into title
-                                    - studio:               Apply studio modifications. This options aggregates
-                                                            "no-chrome", "large-font" and "collapse-datetime".
-                                    - no-folder:            Don't include foldername in title
+::
 
-                                    - no-title:             Turn off title widget
-                                    - no-datetime:          Turn off datetime widget
+    # Use freely accessible `play.grafana.org` for demo purposes.
+    grafanimate --scenario=playdemo --output=./animations
 
-      --datetime-format=<format>    Datetime format to use with header layouts like "studio".
-                                    Examples: YYYY-MM-DD HH:mm:ss, YYYY, HH:mm.
+    # Example for generating Luftdaten.info graph & map.
+    export GRAFANIMATE_OUTPUT=./animations
+    grafanimate --grafana-url=http://localhost:3000/ --dashboard-uid=1aOmc1sik --scenario=ldi_all
 
-                                    There are also some format presets available here:
-                                    - human-date:           on 2018-08-14
-                                    - human-time:           at 03:16:05
-                                    - human-datetime:       on 2018-08-14 at 03:16:05
-
-                                    When left empty, the default is determined by the configured interval.
-
-      --debug                       Enable debug logging
-      -h --help                     Show this screen
-
-
-    Examples for scenario mode. Script your animation in file `scenarios.py`. The output files
-    will be saved at `./var/spool/{scenario}/{dashboard-uid}`.
-
-      # Use freely accessible `play.grafana.org` for demo purposes.
-      grafanimate --grafana-url=https://play.grafana.org/ --dashboard-uid=000000012 --scenario=playdemo
-
-      # Example for generating Luftdaten.info graph & map.
-      grafanimate --grafana-url=http://localhost:3000/ --dashboard-uid=1aOmc1sik --scenario=ldi_all
-
-      # Use more parameters to control the rendering process.
-      grafanimate --grafana-url=http://localhost:3000/ --dashboard-uid=acUXbj_mz --scenario=ir_sensor_svg_pixmap --header-layout=studio --datetime-format=human-time --panel-id=6
+    # Use more parameters to control the rendering process.
+    grafanimate --grafana-url=http://localhost:3000/ --dashboard-uid=acUXbj_mz --scenario=ir_sensor_svg_pixmap \
+        --header-layout=studio --datetime-format=human-time --panel-id=6
 
 
 *******
@@ -240,7 +210,6 @@ IR-Sensor SVG-Pixmap
 
 
 
-
 **********************
 Background and details
 **********************
@@ -275,10 +244,30 @@ to implement more complex animations on top of Grafana.
 
 ----
 
+***********
+Development
+***********
+
+::
+
+    # Acquire sources.
+    git clone https://github.com/panodata/grafanimate
+    cd grafanimate
+
+    # Create and activate virtualenv.
+    python3 -m venv .venv
+    source .venv/bin/activate
+
+    # Install package in "editable" mode.
+    pip install --editable=.
+
+    # Run tests.
+    make test
+
+
 *******************
 Project information
 *******************
-``grafanimate`` is released under the GNU AGPL v3 license.
 
 The code lives on `GitHub <https://github.com/panodata/grafanimate>`_ and
 the Python package is published to `PyPI <https://pypi.org/project/grafanimate/>`_.
@@ -290,32 +279,31 @@ We are always happy to receive code contributions, ideas, suggestions
 and problem reports from the community.
 Spend some time taking a look around, locate a bug, design issue or
 spelling mistake and then send us a pull request or create an issue.
+You can also `discuss grafanimate`_ on our forum, you are welcome to join.
+
+
+Acknowledgements
+================
+Thanks to all the contributors who helped to co-create and conceive this
+program in one way or another. You know who you are.
+
+Also thanks to all the people working on Python, Grafana, Firefox, FFmpeg,
+and the countless other software components this program is based upon.
 
 
 License
 =======
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation; either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program; if not, see:
-<http://www.gnu.org/licenses/agpl-3.0.txt>,
-or write to the Free Software Foundation,
-Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+``grafanimate`` is licensed under the terms of the GNU AGPL v3 license.
 
 
 
-.. _Grafana: https://grafana.com/
+.. _discuss grafanimate: https://community.panodata.org/t/grafanimate/205
+.. _FFmpeg: https://ffmpeg.org/
 .. _GeoLoop Panel Plugin: https://grafana.com/plugins/citilogics-geoloop-panel
-.. _time range control: http://docs.grafana.org/reference/timerange/
+.. _Grafana: https://grafana.com/
+.. _Marionette Python Client: https://marionette-client.readthedocs.io/
 .. _Playlists: http://docs.grafana.org/reference/playlist/
+.. _scenarios.py: https://github.com/panodata/grafanimate/blob/main/grafanimate/scenarios.py
 .. _Scripted Dashboards: http://docs.grafana.org/reference/scripting/
 .. _set time range in Grafana: https://stackoverflow.com/questions/48264279/how-to-set-time-range-in-grafana-dashboard-from-text-panels/52492205#52492205
-.. _Marionette Python Client: https://marionette-client.readthedocs.io/
+.. _time range control: http://docs.grafana.org/reference/timerange/

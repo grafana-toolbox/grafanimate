@@ -35,7 +35,7 @@ def playdemo():
         steps=[
             AnimationSequence(
                 dtstart=datetime(2021, 11, 14, 2, 0, 0),
-                # Produce video with reasonable duration.
+                # Produce video with reasonable duration to explore different rendering options.
                 dtuntil=datetime(2021, 11, 14, 4, 16, 36),
                 # Produce very short video.
                 # dtuntil=datetime(2021, 11, 14, 2, 16, 36),

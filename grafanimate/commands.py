@@ -84,11 +84,11 @@ def run():
 
     Rendering options:
       --video-framerate=<rate>      Framerate to apply when recording the video. This value will get propagated
-                                    to ffmpeg's `-framerate` parameter. [default: 2]
+                                    to FFmpeg's `-framerate` parameter. [default: 2]
       --video-fps=<fps>             Frames per second to apply when recording the video. This value will get
-                                    propagated into ffmpeg's output encoding options. [default: 25]
+                                    propagated into FFmpeg's output encoding options. [default: 25]
       --gif-fps=<fps>               Frames per second to apply when recording the animated gif, propagated into
-                                    ffmpeg's `-filter_complex` options. [default: 10]
+                                    FFmpeg's `-filter_complex` options. [default: 10]
       --gif-width=<pixel>           Width of the gif in pixels. [default: 480]
 
 
@@ -168,17 +168,16 @@ def run():
     if not scenario.dashboard_uid:
         raise KeyError("Dashboard UID is mandatory, either supply it on the command line or via scenario file")
 
-    # Define pipeline elements.
+    # Open a Grafana site in Firefox, using Marionette.
     grafana = make_grafana(scenario.grafana_url, options["use-panel-events"])
 
-    # Assemble pipeline.
-    # Run stop motion animation to produce single artifacts.
+    # Invoke pipeline: Run stop motion animation, producing single frames.
     storage: TemporaryStorage = run_animation_scenario(scenario=scenario, grafana=grafana, options=options)
 
     # Define output filename pattern.
     output = Path(output_path) / "{scenario}--{title}--{uid}.mp4"
 
-    # Run rendering steps, produce composite artifacts.
+    # Run rendering steps, produce composite media artifacts.
     scenario.dashboard_title = grafana.get_dashboard_title()
     results = produce_artifacts(input=storage.workdir, output=output, scenario=scenario, options=render_options)
     log.info("Produced %s results\n%s", len(results), json.dumps(results, indent=2))

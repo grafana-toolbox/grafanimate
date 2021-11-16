@@ -18,6 +18,7 @@ in progress
   Corresponding command line parameters ``--grafana-url`` and ``--dashboard-uid``
   still take preference.
 - When parsing timestamps, allow ISO8801/RFC3339 and Epoch time (``dtstart`` and ``dtuntil``)
+- Improve documentation
 
 
 2019-02-04 0.5.5
@@ -50,7 +51,7 @@ in progress
 2019-02-04 0.5.0
 ================
 - Add "5 minute" and "30 minute" intervals
-- Decrease frame rate to 2 fps when rendering using ffmpeg
+- Decrease frame rate to 2 fps when rendering using FFmpeg
 - Add luftdaten.info to attribution area on leaflet map widget
 - Add LDI NYE shot scenario
 - Fix missing dependency to the "Munch" package
@@ -79,7 +80,7 @@ in progress
 - Refactor the machinery
 - Get dashboard title from Grafana runtime scope for deriving the output filename from
 - Properly produce .mp4 and .gif artifacts
-- Fix window size wrt. ffmpeg animated gif rendering
+- Fix window size wrt. FFmpeg animated gif rendering
 - Add quick hack to remove specific panel from specific dashboard
 - Add option --header-layout=no-folder to omit folder name from dashboard title
 - Reduce gap for scenario "ldi_with_gaps"

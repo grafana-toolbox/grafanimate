@@ -157,8 +157,8 @@ Prio 5
       place is added to map for the first time?
 - [o] Add counter element
 - [o] Use https://grafana.com/plugins/ryantxu-ajax-panel to show other content
-- [o] Install ffmpeg with ``drawtext`` filter
-    To make this work, ffmpeg must be compiled with ``--with-freetype``.
+- [o] Install FFmpeg with ``drawtext`` filter
+    To make this work, FFmpeg must be compiled with ``--with-freetype``.
 
     -- https://stackoverflow.com/questions/48006872/no-such-filter-drawtext/53702852#53702852
 

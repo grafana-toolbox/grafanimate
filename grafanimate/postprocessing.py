@@ -33,7 +33,7 @@ class MediaProducer:
 
     def to_gif(self, source, target):
         """
-        # High Quality Gifs with FFMPEG
+        # High Quality Gifs with FFmpeg
         # https://medium.com/@colten_jackson/doing-the-gif-thing-on-debian-82b9760a8483
         ::
 
@@ -46,16 +46,16 @@ class MediaProducer:
         > I think the -1 in the video filters refers to the height and basically means ‘preserve aspect ratio’.
         > So, in this case, 320:-1 means scale to: w=320, h=320/CurrentWidth*CurrentHeight
 
-        # How to make GIFs with FFMPEG
+        # How to make GIFs with FFmpeg
         https://engineering.giphy.com/how-to-make-gifs-with-ffmpeg/
 
-        # How do I convert a video to GIF using ffmpeg, with reasonable quality?
+        # How do I convert a video to GIF using FFmpeg, with reasonable quality?
         https://superuser.com/questions/556029/how-do-i-convert-a-video-to-gif-using-ffmpeg-with-reasonable-quality
 
         # High quality GIF with FFmpeg
         http://blog.pkh.me/p/21-high-quality-gif-with-ffmpeg.html
 
-        # FFMPEG gif script for bash
+        # FFmpeg gif script for bash
         https://github.com/thevangelist/FFMPEG-gif-script-for-bash
 
         > Here is a better version with fifo filter to avoid Buffer queue overflow when using paletteuse filter.
