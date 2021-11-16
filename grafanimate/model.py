@@ -16,7 +16,7 @@ class SequencingMode(Enum):
 
 
 @dataclass
-class AnimationStep:
+class AnimationSequence:
     interval: str
     mode: Optional[SequencingMode] = SequencingMode.WINDOW
     milliseconds: int = 0
@@ -51,6 +51,6 @@ class AnimationStep:
 
 @dataclasses.dataclass
 class AnimationScenario:
-    steps: List[AnimationStep]
+    steps: List[AnimationSequence]
     grafana_url: Optional[str] = None
     dashboard_uid: Optional[str] = None

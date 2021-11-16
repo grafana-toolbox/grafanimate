@@ -16,7 +16,7 @@ Prio 1
 - [x] When no dashboard UID is specified, we get ``var/spool/playdemo/None/``.
 - [x] Rename ``NavigationFlavor`` to ``SequencingMode``
 - [x] Rename ``SequencingMode.EXPAND`` to ``SequencingMode.CUMULATIVE``
-- [o] Rename ``AnimationStep`` to ``AnimationSequence``
+- [x] Rename ``AnimationStep`` to ``AnimationSequence``
 - [x] Optionally obtain timestamps as strings (ISO/RFC), maybe also as integers (Epoch)?
 - [x] Start- und Endtime in Unix Epoch oder sogar gemischt [weef]
 - [o] Run ``black`` and ``isort``. Maybe also some Javascript formatter?

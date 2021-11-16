@@ -11,7 +11,7 @@ from munch import Munch
 import grafanimate.scenarios
 from grafanimate.animations import SequentialAnimation
 from grafanimate.grafana import GrafanaWrapper
-from grafanimate.model import AnimationScenario, AnimationStep
+from grafanimate.model import AnimationScenario, AnimationSequence
 from grafanimate.mediastorage import MediaStorage
 from grafanimate.util import filter_dict, as_list, import_module
 
@@ -78,7 +78,7 @@ def resolve_reference(module, symbol):
         reference = reference()
     if isinstance(reference, AnimationScenario):
         pass
-    elif isinstance(reference, (AnimationStep, list)):
+    elif isinstance(reference, (AnimationSequence, list)):
         reference = AnimationScenario(steps=as_list(reference))
     return reference
 

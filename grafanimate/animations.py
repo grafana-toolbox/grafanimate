@@ -11,7 +11,7 @@ from dateutil.relativedelta import relativedelta
 from dateutil.rrule import rrule, SECONDLY, MINUTELY, HOURLY, DAILY, WEEKLY, MONTHLY, YEARLY
 
 from grafanimate.grafana import GrafanaWrapper
-from grafanimate.model import SequencingMode, AnimationStep
+from grafanimate.model import SequencingMode, AnimationSequence
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +33,7 @@ class SequentialAnimation:
         logger.info(message)
         self.grafana.console_info(message)
 
-    def run(self, step: AnimationStep):
+    def run(self, step: AnimationSequence):
 
         self.log("Starting animation: {}".format(step))
 
