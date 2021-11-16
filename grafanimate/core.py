@@ -2,16 +2,18 @@
 # (c) 2018-2021 Andreas Motl <andreas@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
 import logging
+from pathlib import Path
 
+import pkg_resources
 from furl import furl
 from munch import Munch
 
+import grafanimate.scenarios
 from grafanimate.animations import SequentialAnimation
 from grafanimate.grafana import GrafanaWrapper
-from grafanimate.model import AnimationScenario
-from grafanimate.scenarios import BuiltinScenarios
+from grafanimate.model import AnimationScenario, AnimationStep
 from grafanimate.mediastorage import MediaStorage
-from grafanimate.util import filter_dict, as_list
+from grafanimate.util import filter_dict, as_list, load_module
 
 log = logging.getLogger(__name__)
 
@@ -46,10 +48,26 @@ def get_scenario(label: str) -> AnimationScenario:
     scenario = None
 
     # 1. Try built-in scenario methods.
-    builtins = BuiltinScenarios()
+    builtins = grafanimate.scenarios
     func = getattr(builtins, label, None)
     if callable(func):
         scenario = AnimationScenario(steps=as_list(func()))
+
+    # 2. Try to resolve from Python module.
+    else:
+        modname, _, symbol = label.partition(":")
+
+        if Path(modname).exists():
+            module = load_module("<unknown>", modname)
+        else:
+            module = pkg_resources.EntryPoint(None, modname).resolve()
+        reference = getattr(module, symbol)
+        if callable(reference):
+            reference = reference()
+        if isinstance(reference, AnimationScenario):
+            scenario = reference
+        elif isinstance(reference, (AnimationStep, list)):
+            scenario = AnimationScenario(steps=as_list(reference))
 
     if scenario is None:
         raise NotImplementedError('Animation scenario "{}" not found or implemented'.format(label))

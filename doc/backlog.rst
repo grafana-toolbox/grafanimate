@@ -9,7 +9,8 @@ Prio 1
 - [x] Modernize to Python 3 and Grafana 7/8
 - [x] Add possibility to authenticate with Grafana
 - [x] Add parameter to toggle between flavor = 'window|expand' in ``animations.py``
-- [o] Standalone scenario recipes. TOML?
+- [x] Standalone scenario recipes. TOML?
+- [x] Load scenarios from arbitrary modules and files.
 - [o] Clear Javascript event handlers after usage, maybe using ``scope.$on('$destroy', ...)``
 - [o] Avoid collisions in output directory, e.g. take ``flavor`` into account
 
