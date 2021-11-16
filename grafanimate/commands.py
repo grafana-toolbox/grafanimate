@@ -19,9 +19,6 @@ def run():
       grafanimate (-h | --help)
 
     Options:
-      --grafana-url=<url>           Base URL to Grafana.
-                                    If your Grafana instance is protected, please specify credentials
-                                    within the URL, e.g. https://user:pass@www.example.org/grafana.
 
       --scenario=<scenario>         Which scenario to run. Built-in scenarios are defined within the
                                     `scenarios.py` file, however you can easily define scenarios in
@@ -29,11 +26,15 @@ def run():
 
                                     Scenarios can be referenced by arbitrary entrypoints, like:
 
-                                    - ``--scenario=grafanimate.scenarios:playdemo``    (module, symbol)
-                                    - ``--scenario=grafanimate/scenarios.py:playdemo`` (file, symbol)
-                                    - ``--scenario=playdemo`` (built-in)
+                                    - `--scenario=grafanimate.scenarios:playdemo`    (module, symbol)
+                                    - `--scenario=grafanimate/scenarios.py:playdemo` (file, symbol)
+                                    - `--scenario=playdemo` (built-in)
 
-      --dashboard-uid=<uid>         Grafana dashboard uid.
+      --grafana-url=<url>           Base URL to Grafana.
+                                    If your Grafana instance is protected, please specify credentials
+                                    within the URL, e.g. https://user:pass@www.example.org/grafana.
+
+      --dashboard-uid=<uid>         Grafana dashboard UID.
 
     Optional:
       --exposure-time=<seconds>     How long to wait for each frame to complete rendering. [default: 0.5]
@@ -84,20 +85,6 @@ def run():
 
       # Use more parameters to control the rendering process.
       grafanimate --grafana-url=http://localhost:3000/ --dashboard-uid=acUXbj_mz --scenario=ir_sensor_svg_pixmap --header-layout=studio --datetime-format=human-time --panel-id=6
-
-
-    NOT IMPLEMENTED YET
-
-      --target=<target>             Data output target
-
-    Examples: Ad hoc mode.
-
-    Until implemented, please use scenario mode.
-    Don't be afraid, it's just some copy/pasting in the `scenarios.py` file, go ahead.
-
-      --start=<start>               Start time
-      --end=<end>                   End time
-      --interval=<end>              Interval time
 
     """
 

@@ -9,11 +9,40 @@ Prio 1
 - [x] Modernize to Python 3 and Grafana 7/8
 - [x] Add possibility to authenticate with Grafana
 - [x] Add parameter to toggle between flavor = 'window|expand' in ``animations.py``
-- [x] Standalone scenario recipes. TOML?
+- [x] Standalone scenario recipes. TOML? => Python files, declarative style with ``@dataclass`` objects
 - [x] Load scenarios from arbitrary modules and files.
 - [x] Optionally use ``url`` from scenario
+- [x] Adjust file output to new feature where ``--scenario`` can be an arbitrary Python entrypoint (slugify)
+- [x] When no dashboard UID is specified, we get ``var/spool/playdemo/None/``.
+- [x] Rename ``NavigationFlavor`` to ``SequencingMode``
+- [x] Rename ``SequencingMode.EXPAND`` to ``SequencingMode.CUMULATIVE``
+- [o] Rename ``AnimationStep`` to ``AnimationSequence``
+- [x] Optionally obtain timestamps as strings (ISO/RFC), maybe also as integers (Epoch)?
+- [x] Start- und Endtime in Unix Epoch oder sogar gemischt [weef]
+- [o] Run ``black`` and ``isort``. Maybe also some Javascript formatter?
+- [o] Improve README
+- [o] Release 0.6.0
+
+
+*********
+Prio 1.25
+*********
+- [o] Add ``--output`` parameter and rewrite the whole ``grafanimate.mediastorage`` subsystem,
+      based on the new data- and object-model, and by pulling in things from ``commands.py``.
+- [o] Implement "ad-hoc" mode
+
+    Until implemented, please use scenario mode.
+    Don't be afraid, it's just some copy/pasting in the `scenarios.py` file, go ahead.
+
+      --start=<start>               Start time
+      --end=<end>                   End time
+      --interval=<end>              Interval time
+
+    => by @weef: ``--start 2019-01-31T23:00:00Z --stop -1h --every 15m``
+    -- https://community.hiveeyes.org/t/improving-time-range-control-for-grafanimate/1783/13
+
+- [o] Avoid collisions in output directory, e.g. take sequencing mode into account
 - [o] Clear Javascript event handlers after usage, maybe using ``scope.$on('$destroy', ...)``
-- [o] Avoid collisions in output directory, e.g. take ``flavor`` into account
 
 
 ********
@@ -87,7 +116,6 @@ Prio 3
 ******
 Prio 4
 ******
-- [o] Start- und Endtime in Unix Epoch oder sogar gemischt [weef]
 - [o] Add audio::
 
     The latter optionally accepts adding audio for creating a more immersive atmosphere.

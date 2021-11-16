@@ -268,8 +268,8 @@ automated through `Marionette Python Client`_ fame:
 
 Outlook
 =======
-Neither Playlists_ nor `Scripted Dashboards`_ offer these things
-to the user, but this program can be combined with both in order
+Neither Playlists_ nor `Scripted Dashboards`_ (now deprecated) offer these
+things to the user, but this program can be combined with both in order
 to implement more complex animations on top of Grafana.
 
 

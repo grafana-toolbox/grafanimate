@@ -3,14 +3,12 @@
 # License: GNU Affero General Public License, Version 3
 """
 Run different animation scenarios/sequences.
-
-As the ad-hoc interface is not finished yet,
-this is all we got. Enjoy!
+As the ad-hoc interface is not finished yet, this is all we got. Enjoy!
 
 The parameters `dtstart`, `dtuntil` and `interval` should explain themselves.
 
-The parameter `mode` can has two values (defaulting to `window`):
-- "window" will slide a window through the defined time range
+The parameter `mode` can have two values (defaulting to `window`):
+- "window" will slide a window through the defined time range, with `interval` as window width
 - "cumulative" will use a fixed start time and stepwise expand the end time by `interval`
 """
 import logging

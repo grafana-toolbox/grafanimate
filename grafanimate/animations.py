@@ -35,7 +35,7 @@ class SequentialAnimation:
 
     def run(self, step: AnimationStep):
 
-        self.log("Animation started")
+        self.log("Starting animation: {}".format(step))
 
         # Destructure `step` instance.
         dtstart, dtuntil, interval, mode = attrgetter("dtstart", "dtuntil", "interval", "mode")(step)

@@ -85,7 +85,7 @@ def print_intervals(intervals):
 
 def print_header(title):
     print
-    print '#', title
+    print('#', title)
 
 
 def create_dope_sheet_blueprint():
