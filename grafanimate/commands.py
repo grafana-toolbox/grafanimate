@@ -5,7 +5,7 @@ import json
 import logging
 from docopt import docopt, DocoptExit
 from grafanimate import __appname__, __version__
-from grafanimate.core import make_grafana, make_animation, make_storage
+from grafanimate.core import make_grafana, make_storage, get_scenario, run_animation
 from grafanimate.util import normalize_options, setup_logging, asbool
 
 log = logging.getLogger(__name__)
@@ -111,9 +111,6 @@ def run():
     if not options['scenario']:
         raise DocoptExit('Error: Parameter --scenario is mandatory')
 
-    if not options['dashboard-uid']:
-        raise DocoptExit('Error: Parameter --dashboard-uid is mandatory')
-
     if options['dashboard-view'] == 'd-solo' and not options['panel-id']:
         raise DocoptExit('Error: Parameter --panel-id is mandatory for --dashboard-view=d-solo')
 
@@ -122,7 +119,14 @@ def run():
     if options['use-panel-events']:
         options['exposure-time'] = 0
 
-    # Define and run Pipeline.
+    # Load scene.
+    scenario = get_scenario(options['scenario'])
+    # The dashboard UID can be defined either in the scenario or via command line.
+    # Command line takes precedence.
+    if options['dashboard-uid']:
+        scenario.dashboard_uid = options['dashboard-uid']
+    if not scenario.dashboard_uid:
+        raise KeyError("Dashboard UID is mandatory, either supply it on the command line or via scenario file")
 
     # Define pipeline elements.
     grafana = make_grafana(options['grafana-url'], options['use-panel-events'])
@@ -131,10 +135,8 @@ def run():
         outputfile='./var/results/{uid}-{name}.mp4')
 
     # Assemble pipeline.
-    animation = make_animation(grafana, storage, options)
-
     # Run stop motion animation to produce single artifacts.
-    animation.run()
+    run_animation(grafana=grafana, storage=storage, scenario=scenario, options=options)
 
     # Run rendering steps, produce composite artifacts.
     title = grafana.get_dashboard_title()

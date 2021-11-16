@@ -187,7 +187,7 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         Wait for map element <panel-plugin-grafana-worldmap-panel ...> to appear.
         """
         log.debug('Waiting for map element to appear in DOM')
-        # TODO: Make naming more universal.
+        # TODO: Make naming/addressing more universal.
         element = self.wait_for_element_tag("panel-plugin-grafana-worldmap-panel")
         log.info('Finished waiting for map element')
         log.info(element)
