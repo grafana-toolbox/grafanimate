@@ -2,10 +2,22 @@
 # (c) 2018-2021 Andreas Motl <andreas@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
 """
-Run different animation scenarios/sequences.
-As the ad-hoc interface is not finished yet, this is all we got. Enjoy!
+Introduction
+============
 
-The parameters `dtstart`, `dtuntil` and `interval` should explain themselves.
+This file hosts all built-in exposure sheets, i.e. multiple projects.
+Its purpose is to define how to run different animation scenarios/sequences.
+
+    An exposure sheet (also known variously as "dope sheet", "camera
+    instruction sheet", or "X-sheet") is a sheet of paper used primarily in
+    traditional animation to mark out the timing of various actions and
+    dialogue.
+
+
+Details
+=======
+
+The parameters `dtstart`, `dtuntil` and `interval` should be self-explaining.
 
 The parameter `mode` can have two values (defaulting to `window`):
 - "window" will slide a window through the defined time range, with `interval` as window width
@@ -23,9 +35,9 @@ def playdemo():
     """
     Run demo on `play.grafana.org`.
 
-    Example::
+    Synopsis::
 
-        grafanimate --grafana-url=https://play.grafana.org/ --dashboard-uid=000000012 --scenario=playdemo
+        grafanimate --scenario=playdemo --output=./animations
     """
     logger.info("Running scenario playdemo")
 
@@ -48,11 +60,11 @@ def playdemo():
 
 def playdemo_advanced():
     """
-    Run demo on `play.grafana.org`.
+    Run demo on `play.grafana.org`, demonstrating different flavors of timestamps.
 
-    Example::
+    Synopsis::
 
-        grafanimate --grafana-url=https://play.grafana.org/ --dashboard-uid=000000012 --scenario=playdemo_advanced
+        grafanimate --scenario=playdemo_advanced --output=./animations
     """
     logger.info("Running scenario playdemo")
 
@@ -85,6 +97,10 @@ def playdemo_advanced():
 def ldi_all():
     """
     Luftdaten.info, all
+
+    Synopsis::
+
+        grafanimate --grafana-url=https://daq.example.org/grafana --dashboard-uid=1aOmc1sik --scenario=ldi_all --output=./animations
     """
     logger.info("Running scenario ldi_all")
 
@@ -99,6 +115,10 @@ def ldi_all():
 def ldi_with_gaps():
     """
     Luftdaten.info, growth
+
+    Synopsis::
+
+        grafanimate --grafana-url=https://daq.example.org/grafana --dashboard-uid=1aOmc1sik --scenario=ldi_with_gaps --output=./animations
     """
     logger.info("Running scenario ldi_with_gaps")
 
@@ -116,6 +136,10 @@ def ldi_with_gaps():
 def ldi_nye_2017_2018():
     """
     LDI, New Year's Eve 2018
+
+    Synopsis::
+
+        grafanimate --grafana-url=https://daq.example.org/grafana --dashboard-uid=1aOmc1sik --scenario=ldi_nye_2017_2018 --output=./animations
     """
     logger.info("Running scenario ldi_nye_2017_2018")
     return AnimationSequence(
@@ -126,6 +150,10 @@ def ldi_nye_2017_2018():
 def ldi_nye_2018_2019():
     """
     LDI, New Year's Eve 2018/2019
+
+    Synopsis::
+
+        grafanimate --grafana-url=https://daq.example.org/grafana --dashboard-uid=1aOmc1sik --scenario=ldi_nye_2018_2019 --output=./animations
     """
     logger.info("Running scenario ldi_nye_2018_2019")
     return [
@@ -150,6 +178,10 @@ def ldi_nye_2018_2019():
 def cdc_maps():
     """
     DWD CDC, temperatur-sonne-and-niederschlag-karten
+
+    Synopsis::
+
+        grafanimate --grafana-url=https://daq.example.org/grafana --dashboard-uid=DLOlE_Rmz --scenario=cdc_maps --output=./animations
     """
     logger.info("Running scenario cdc_maps")
     return AnimationSequence(
@@ -163,6 +195,10 @@ def cdc_maps():
 def uba_ldi_dwd_maps():
     """
     Labor: Studio / UBA/LDI/DWD-Studio [dev!]
+
+    Synopsis::
+
+        grafanimate --grafana-url=https://daq.example.org/grafana --dashboard-uid=of6c9qlmk --scenario=uba_ldi_dwd_maps --output=./animations
     """
     logger.info("Running scenario uba_ldi_dwd_maps")
     return AnimationSequence(
@@ -174,6 +210,10 @@ def ir_sensor_svg_pixmap():
     """
     dtstart: 2018-08-14 03:16:00
     dtuntil: 2018-08-14 03:16:36
+
+    Synopsis::
+
+        grafanimate --grafana-url=https://daq.example.org/grafana --dashboard-uid=acUXbj_mz --scenario=ir_sensor_svg_pixmap --output=./animations
     """
     logger.info("Running scenario ir_sensor_svg_pixmap")
     return AnimationSequence(

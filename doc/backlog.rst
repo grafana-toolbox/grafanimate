@@ -3,34 +3,17 @@ grafanimate backlog
 ###################
 
 
-******
-Prio 1
-******
-- [x] Modernize to Python 3 and Grafana 7/8
-- [x] Add possibility to authenticate with Grafana
-- [x] Add parameter to toggle between flavor = 'window|expand' in ``animations.py``
-- [x] Standalone scenario recipes. TOML? => Python files, declarative style with ``@dataclass`` objects
-- [x] Load scenarios from arbitrary modules and files.
-- [x] Optionally use ``url`` from scenario
-- [x] Adjust file output to new feature where ``--scenario`` can be an arbitrary Python entrypoint (slugify)
-- [x] When no dashboard UID is specified, we get ``var/spool/playdemo/None/``.
-- [x] Rename ``NavigationFlavor`` to ``SequencingMode``
-- [x] Rename ``SequencingMode.EXPAND`` to ``SequencingMode.CUMULATIVE``
-- [x] Rename ``AnimationStep`` to ``AnimationSequence``
-- [x] Optionally obtain timestamps as strings (ISO/RFC), maybe also as integers (Epoch)?
-- [x] Start- und Endtime in Unix Epoch oder sogar gemischt [weef]
-- [x] Run ``black``, ``isort`` and ``prettier``
-- [x] Make it possible to adjust ``--framerate`` parameter
-- [x] Delete `spool` folder on each run / use temporary one
-- [o] Improve README
-- [o] Release 0.6.0
-
-
 *********
 Prio 1.25
 *********
-- [o] Add ``--output`` parameter and rewrite the whole ``grafanimate.mediastorage`` subsystem,
-      based on the new data- and object-model, and by pulling in things from ``commands.py``.
+- [o] Rename ``dtstart``/``dtuntil`` to ``start``/``stop`` and ``interval`` to ``every``
+- [o] Rename ``AnimationScenario.steps`` to ``AnimationScenario.sequences``
+- [o] Allow relative time range for ``stop`` parameter
+- [o] Mix relative with absolute timestamps: ``range(start:2019-01-31T23:00:00Z, stop:-1h)``
+  -- https://community.hiveeyes.org/t/improving-time-range-control-for-grafanimate/1783/11
+- [o] README: Drop some words about "Animation Speed" (--framerate)
+- [o] Specify number of frames to capture, instead of --stop
+- [o] Add ``--reverse`` parameter
 - [o] Implement "ad-hoc" mode
 
     Until implemented, please use scenario mode.
@@ -170,6 +153,9 @@ Prio 5
 ****
 Done
 ****
+
+Prio 0
+======
 - [x] Rename title: "luftdaten.info growth"
 - [x] Improve dashboard layout
 - [x] Toggle fullscreen mode
@@ -190,3 +176,26 @@ Done
     [libx264 @ 0x7fcf0c001200] width not divisible by 2 (1497x483)
     [libx264 @ 0x7fa917001200] height not divisible by 2 (1348x823)
 - [x] Toggle off default attribution to luftdaten.info
+
+Prio 1
+======
+- [x] Modernize to Python 3 and Grafana 7/8
+- [x] Add possibility to authenticate with Grafana
+- [x] Add parameter to toggle between flavor = 'window|expand' in ``animations.py``
+- [x] Standalone scenario recipes. TOML? => Python files, declarative style with ``@dataclass`` objects
+- [x] Load scenarios from arbitrary modules and files.
+- [x] Optionally use ``url`` from scenario
+- [x] Adjust file output to new feature where ``--scenario`` can be an arbitrary Python entrypoint (slugify)
+- [x] When no dashboard UID is specified, we get ``var/spool/playdemo/None/``.
+- [x] Rename ``NavigationFlavor`` to ``SequencingMode``
+- [x] Rename ``SequencingMode.EXPAND`` to ``SequencingMode.CUMULATIVE``
+- [x] Rename ``AnimationStep`` to ``AnimationSequence``
+- [x] Optionally obtain timestamps as strings (ISO/RFC), maybe also as integers (Epoch)?
+- [x] Start- und Endtime in Unix Epoch oder sogar gemischt [weef]
+- [x] Run ``black``, ``isort`` and ``prettier``
+- [x] Make it possible to adjust ``--framerate`` parameter
+- [x] Delete ``spool`` folder on each run / use temporary directory
+- [x] Add ``--output`` parameter and rewrite the whole ``grafanimate.mediastorage`` subsystem,
+      based on the new data- and object-model, and by pulling in things from ``commands.py``.
+- [x] Improve README
+- [x] Release 0.6.0

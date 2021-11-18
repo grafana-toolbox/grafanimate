@@ -41,7 +41,7 @@ class MediaProducer:
                 -vf fps=15,scale=320:-1:flags=lanczos,palettegen palette.png
 
             ffmpeg -ss 2.6 -t 1.3 -i MVI_7035.MOV -i palette.png \
-                -filter_complex “fps=15,scale=400:-1:flags=lanczos[x];[x][1:v]paletteuse” sixthtry.gif
+                -filter_complex "fps=15,scale=400:-1:flags=lanczos[x];[x][1:v]paletteuse" sixthtry.gif
 
         > I think the -1 in the video filters refers to the height and basically means ‘preserve aspect ratio’.
         > So, in this case, 320:-1 means scale to: w=320, h=320/CurrentWidth*CurrentHeight

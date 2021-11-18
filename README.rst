@@ -84,8 +84,16 @@ Introduction
 ============
 
 ``grafanimate`` works by operating on animations defined within description
-files, written in Python. It offers convenient data types, ``AnimationScenario``
-and ``AnimationSequence``, for outlining an animation scenario made of multiple
+files, written in Python. In cinematography jargon, this is called "exposure
+sheet", or "dope sheet".
+
+    An exposure sheet (also known variously as "dope sheet", "camera
+    instruction sheet", or "X-sheet") is a sheet of paper used primarily in
+    traditional animation to mark out the timing of various actions and
+    dialogue.
+
+``grafanimate`` offers convenient data types, ``AnimationScenario`` and
+``AnimationSequence``, for outlining an animation scenario made of multiple
 sequences.
 
 ::
@@ -103,7 +111,7 @@ sequences.
         ],
     )
 
-Please have a look at `scenarios.py`_ for a full description file containing
+Please have a look at the `scenarios.py`_ file for a full example containing
 multiple scenarios.
 
 For getting a detailed and descriptive overview about all available command
