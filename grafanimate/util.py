@@ -9,6 +9,7 @@ import sys
 from contextlib import closing
 from pathlib import Path
 
+from dateutil.relativedelta import relativedelta
 from munch import munchify
 from unidecode import unidecode
 
@@ -156,3 +157,27 @@ def import_module(name: str, path: str):
     spec.loader.exec_module(mod)
 
     return mod
+
+
+def get_relativedelta(seconds: int):
+    # TODO: Add to `pytimeparse2`?
+    # https://stackoverflow.com/questions/16977768/elegant-way-to-convert-python-datetime-timedelta-to-dateutil-relativedelta
+
+    seconds_in = {
+        "year": 365 * 24 * 60 * 60,
+        "month": 30 * 24 * 60 * 60,
+        "day": 24 * 60 * 60,
+        "hour": 60 * 60,
+        "minute": 60,
+    }
+
+    years, rem = divmod(seconds, seconds_in["year"])
+    months, rem = divmod(rem, seconds_in["month"])
+    days, rem = divmod(rem, seconds_in["day"])
+    hours, rem = divmod(rem, seconds_in["hour"])
+    minutes, rem = divmod(rem, seconds_in["minute"])
+    seconds = rem
+
+    return relativedelta(
+        years=years, months=months, days=days, hours=hours, minutes=minutes, seconds=seconds
+    ).normalized()

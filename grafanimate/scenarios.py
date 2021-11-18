@@ -81,13 +81,13 @@ def playdemo_advanced():
             AnimationSequence(
                 start="2021-11-15T02:12:05Z",
                 stop="2021-11-15T02:37:36Z",
-                every="5min",
+                every="3min",
                 mode=SequencingMode.CUMULATIVE,
             ),
             AnimationSequence(
                 start=1637091011,
                 stop=1637091911,
-                every="5min",
+                every="4m5s",
                 mode=SequencingMode.CUMULATIVE,
             ),
         ],
@@ -142,9 +142,7 @@ def ldi_nye_2017_2018():
         grafanimate --grafana-url=https://daq.example.org/grafana --dashboard-uid=1aOmc1sik --scenario=ldi_nye_2017_2018 --output=./animations
     """
     logger.info("Running scenario ldi_nye_2017_2018")
-    return AnimationSequence(
-        start=datetime(2017, 12, 31, 21, 0, 0), stop=datetime(2018, 1, 1, 4, 0, 0), every="10min"
-    )
+    return AnimationSequence(start=datetime(2017, 12, 31, 21, 0, 0), stop=datetime(2018, 1, 1, 4, 0, 0), every="10min")
 
 
 def ldi_nye_2018_2019():
@@ -157,21 +155,11 @@ def ldi_nye_2018_2019():
     """
     logger.info("Running scenario ldi_nye_2018_2019")
     return [
-        AnimationSequence(
-            start=datetime(2018, 12, 31, 15, 0, 0), stop=datetime(2018, 12, 31, 20, 0, 0), every="30min"
-        ),
-        AnimationSequence(
-            start=datetime(2018, 12, 31, 20, 0, 0), stop=datetime(2018, 12, 31, 23, 0, 0), every="10min"
-        ),
-        AnimationSequence(
-            start=datetime(2018, 12, 31, 23, 0, 0), stop=datetime(2019, 1, 1, 1, 0, 0), every="5min"
-        ),
-        AnimationSequence(
-            start=datetime(2019, 1, 1, 1, 0, 0), stop=datetime(2019, 1, 1, 4, 0, 0), every="10min"
-        ),
-        AnimationSequence(
-            start=datetime(2019, 1, 1, 4, 0, 0), stop=datetime(2019, 1, 1, 9, 0, 0), every="30min"
-        ),
+        AnimationSequence(start=datetime(2018, 12, 31, 15, 0, 0), stop=datetime(2018, 12, 31, 20, 0, 0), every="30min"),
+        AnimationSequence(start=datetime(2018, 12, 31, 20, 0, 0), stop=datetime(2018, 12, 31, 23, 0, 0), every="10min"),
+        AnimationSequence(start=datetime(2018, 12, 31, 23, 0, 0), stop=datetime(2019, 1, 1, 1, 0, 0), every="5min"),
+        AnimationSequence(start=datetime(2019, 1, 1, 1, 0, 0), stop=datetime(2019, 1, 1, 4, 0, 0), every="10min"),
+        AnimationSequence(start=datetime(2019, 1, 1, 4, 0, 0), stop=datetime(2019, 1, 1, 9, 0, 0), every="30min"),
     ]
 
 
@@ -184,9 +172,7 @@ def cdc_maps():
         grafanimate --grafana-url=https://daq.example.org/grafana --dashboard-uid=DLOlE_Rmz --scenario=cdc_maps --output=./animations
     """
     logger.info("Running scenario cdc_maps")
-    return AnimationSequence(
-        start=datetime(2018, 3, 6, 5, 0, 0), stop=datetime(2018, 3, 10, 23, 59, 59), every="hourly"
-    )
+    return AnimationSequence(start=datetime(2018, 3, 6, 5, 0, 0), stop=datetime(2018, 3, 10, 23, 59, 59), every="hourly")
 
     # Short sequence, for debugging processes.
     # return AnimationSequence(start=datetime(2018, 3, 6, 5, 0, 0), stop=datetime(2018, 3, 6, 6, 59, 59), every='hourly')

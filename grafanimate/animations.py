@@ -5,6 +5,7 @@ import logging
 import time
 from datetime import timedelta
 from operator import attrgetter
+from typing import Tuple
 
 from dateutil.relativedelta import relativedelta
 from dateutil.rrule import (
@@ -18,9 +19,11 @@ from dateutil.rrule import (
     rrule,
 )
 from munch import munchify
+from pytimeparse2 import parse as parse_human_time
 
 from grafanimate.grafana import GrafanaWrapper
 from grafanimate.model import AnimationSequence, SequencingMode
+from grafanimate.util import get_relativedelta
 
 logger = logging.getLogger(__name__)
 
@@ -106,9 +109,43 @@ class SequentialAnimation:
 
         self.log("Animation finished")
 
-    def get_freq_delta(self, interval):
+    @staticmethod
+    def get_freq_delta(interval: str) -> Tuple[int, int, timedelta]:
 
+        rr_freq = MINUTELY
         rr_interval = 1
+
+        # 1. Attempt to parse time using `pytimeparse` module.
+        # https://pypi.org/project/pytimeparse/
+        duration = parse_human_time(interval)
+        if duration:
+            delta = get_relativedelta(seconds=duration)
+
+            if delta.years:
+                rr_freq = YEARLY
+                rr_interval = delta.years
+            elif delta.months:
+                rr_freq = MONTHLY
+                rr_interval = delta.months
+            elif delta.days:
+                rr_freq = DAILY
+                rr_interval = delta.days
+            elif delta.hours:
+                rr_freq = HOURLY
+                rr_interval = delta.hours
+            elif delta.minutes:
+                rr_freq = MINUTELY
+                rr_interval = delta.minutes
+            else:
+                rr_freq = SECONDLY
+                rr_interval = delta.seconds
+
+            if rr_freq != SECONDLY:
+                delta -= relativedelta(seconds=1)
+
+            return rr_freq, rr_interval, delta
+
+        # 2. Compute parameters from specific labels, expression periods.
 
         # Secondly
         if interval == "secondly":
@@ -165,6 +202,9 @@ class SequentialAnimation:
 
         else:
             raise ValueError('Unknown interval "{}"'.format(interval))
+
+        if isinstance(delta, timedelta):
+            delta = get_relativedelta(seconds=delta.total_seconds())
 
         return rr_freq, rr_interval, delta
 
