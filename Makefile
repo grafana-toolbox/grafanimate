@@ -19,7 +19,7 @@ $(eval isort        := $(venvpath)/bin/isort)
 # Setup Python virtualenv
 setup-virtualenv:
 	@test -e $(python) || python3 -m venv $(venvpath)
-	$(pip) install --quiet --editable=.[test]
+	@test -e $(pytest) || $(pip) install --quiet --editable=.[test]
 
 
 # ----

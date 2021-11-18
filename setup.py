@@ -19,7 +19,6 @@ requires = [
     "marionette_driver>=3,<4",
     "python-dateutil>=2.7,<3",
     "datetime-interval==0.2",
-    #'Pillow==5.2.0',
 ]
 
 extras = {

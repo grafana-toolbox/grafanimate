@@ -6,9 +6,11 @@ grafanimate backlog
 *********
 Prio 1.25
 *********
-- [o] Rename ``dtstart``/``dtuntil`` to ``start``/``stop`` and ``interval`` to ``every``
-- [o] Rename ``AnimationScenario.steps`` to ``AnimationScenario.sequences``
+- [x] Rename ``AnimationScenario.steps`` to ``AnimationScenario.sequences``
+- [x] Rename ``dtstart``/``dtuntil`` to ``start``/``stop`` and ``interval`` to ``every``
 - [o] Allow relative time range for ``stop`` parameter
+  > The every parameter supports all valid duration units, including calendar months (1mo) and years (1y).
+  > -- https://docs.influxdata.com/flux/v0.x/spec/types/#duration-types
 - [o] Mix relative with absolute timestamps: ``range(start:2019-01-31T23:00:00Z, stop:-1h)``
   -- https://community.hiveeyes.org/t/improving-time-range-control-for-grafanimate/1783/11
 - [o] README: Drop some words about "Animation Speed" (--framerate)
@@ -26,13 +28,16 @@ Prio 1.25
     => by @weef: ``--start 2019-01-31T23:00:00Z --stop -1h --every 15m``
     -- https://community.hiveeyes.org/t/improving-time-range-control-for-grafanimate/1783/13
 
+- [o] Panel spinner is visible again
 - [o] Avoid collisions in output directory, e.g. take sequencing mode into account
-- [o] Clear Javascript event handlers after usage, maybe using ``scope.$on('$destroy', ...)``
+- [o] Final tests
+- [o] Release 0.7.0
 
 
 ********
 Prio 1.5
 ********
+- [o] Clear Javascript event handlers after usage, maybe using ``scope.$on('$destroy', ...)``
 - [o] Catch "Dashboard not found" errors.
 - [o] For smoother live view, toggle time **after** data has loaded
 - [o] When slugifying the title, replace ``'`` by empty string.
@@ -45,6 +50,7 @@ Prio 1.5
     - LDI coverage: ``grafanimate --grafana-url=http://localhost:3000/ --scenario=ldi_with_gaps --dashboard-uid=1aOmc1sik --header-layout=studio,no-folder --datetime-format=human-date``
 - [o] FIXME re. special handling of dashboard DLOlE_Rmz
 - [o] Switch to fullscreen mode before rendering?
+- [o] Convenience datetime parsing with https://github.com/bear/parsedatetime ?
 
 
 ******

@@ -1,5 +1,5 @@
 #  -*- coding: utf-8 -*-
-# (c) 2018-2021 Andreas Motl <andreas@hiveeyes.org>
+# (c) 2018-2021 Andreas Motl <andreas.motl@panodata.org>
 # License: GNU Affero General Public License, Version 3
 """
 Introduction

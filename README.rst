@@ -74,12 +74,6 @@ grafanimate
 Usage
 *****
 
-Synopsis
-========
-::
-
-    grafanimate --scenario=playdemo --output=./animations
-
 Introduction
 ============
 
@@ -96,23 +90,35 @@ sheet", or "dope sheet".
 ``AnimationSequence``, for outlining an animation scenario made of multiple
 sequences.
 
-::
+Please have a look at the `scenarios.py`_ file for a full example containing
+multiple scenarios.
+
+Synopsis
+========
+
+A scenario definition::
 
     AnimationScenario(
         grafana_url="https://play.grafana.org/",
         dashboard_uid="000000012",
         sequences=[
             AnimationSequence(
-                dtstart="2021-11-15T02:12:05Z",
-                dtuntil="2021-11-15T02:37:36Z",
+                start="2021-11-15T02:12:05Z",
+                stop="2021-11-15T02:37:36Z",
                 every="5min",
                 mode=SequencingMode.CUMULATIVE,
             ),
         ],
     )
 
-Please have a look at the `scenarios.py`_ file for a full example containing
-multiple scenarios.
+
+In order to run a built-in scenario, invoke::
+
+    grafanimate --scenario=playdemo --output=./animations
+
+
+Help
+====
 
 For getting a detailed and descriptive overview about all available command
 line options, please invoke::
