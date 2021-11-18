@@ -46,21 +46,21 @@ class SequentialAnimation:
         self.log("Starting animation: {}".format(step))
 
         # Destructure `step` instance.
-        dtstart, dtuntil, interval, mode = attrgetter("dtstart", "dtuntil", "interval", "mode")(step)
+        start, stop, interval, mode = attrgetter("start", "stop", "interval", "mode")(step)
 
-        if dtstart > dtuntil:
-            message = "Timestamp dtstart={} is after dtuntil={}".format(dtstart, dtuntil)
+        if start > stop:
+            message = "Timestamp start={} is after stop={}".format(start, stop)
             raise ValueError(message)
 
         rr_freq, rr_interval, dtdelta = self.get_freq_delta(interval)
 
         # until = datetime.now()
         if mode == SequencingMode.CUMULATIVE:
-            dtuntil += dtdelta
+            stop += dtdelta
 
         # Compute complete date range.
-        logger.info("Creating rrule: dtstart=%s, until=%s, freq=%s, interval=%s", dtstart, dtuntil, rr_freq, rr_interval)
-        daterange = list(rrule(dtstart=dtstart, until=dtuntil, freq=rr_freq, interval=rr_interval))
+        logger.info("Creating rrule: dtstart=%s, until=%s, freq=%s, interval=%s", start, stop, rr_freq, rr_interval)
+        daterange = list(rrule(dtstart=start, until=stop, freq=rr_freq, interval=rr_interval))
         # logger.info('Date range is: %s', daterange)
 
         # Iterate date range.
@@ -72,14 +72,14 @@ class SequentialAnimation:
             # Compute start and end dates based on mode.
 
             if mode == SequencingMode.WINDOW:
-                dtstart = date
-                dtuntil = date + dtdelta
+                start = date
+                stop = date + dtdelta
 
             elif mode == SequencingMode.CUMULATIVE:
-                dtuntil = date
+                stop = date
 
             # Render image.
-            image = self.render(dtstart, dtuntil, interval)
+            image = self.render(start, stop, interval)
 
             # Build item model.
             item = munchify(
@@ -91,8 +91,8 @@ class SequentialAnimation:
                         "interval": interval,
                     },
                     "data": {
-                        "dtstart": dtstart,
-                        "dtuntil": dtuntil,
+                        "start": start,
+                        "stop": stop,
                         "image": image,
                     },
                 }
@@ -168,10 +168,10 @@ class SequentialAnimation:
 
         return rr_freq, rr_interval, delta
 
-    def render(self, dtstart, dtuntil, interval):
+    def render(self, start, stop, interval):
 
         logger.debug("Adjusting time range control")
-        self.grafana.timewarp(dtstart, dtuntil, interval)
+        self.grafana.timewarp(start, stop, interval)
 
         logger.debug("Rendering image")
         return self.make_image()

@@ -117,20 +117,20 @@ class GrafanaWrapper(FirefoxMarionetteBase):
     def clear_all_data_received(self):
         return self.calljs("grafanaStudio.hasAllData", False)
 
-    def timewarp(self, dtstart, dtuntil, interval):
+    def timewarp(self, start, stop, interval):
         """
         Navigate the Dashboard to the designated point in time
         and wait for refreshing all child components including data.
         """
 
         # Notify user.
-        message = "Timewarp to {} -> {}".format(dtstart, dtuntil)
+        message = "Timewarp to {} -> {}".format(start, stop)
         log.info(message)
         self.console_log(message)
 
         # Perform timewarp.
         self.clear_all_data_received()
-        self.timerange_set(format_date_grafana(dtstart, interval), format_date_grafana(dtuntil, interval))
+        self.timerange_set(format_date_grafana(start, interval), format_date_grafana(stop, interval))
         self.wait_for_frame_finished()
 
     def timerange_set(self, starttime, endtime):
