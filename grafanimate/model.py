@@ -22,20 +22,20 @@ class AnimationSequence:
     milliseconds: int = 0
 
     @property
-    def dtstart(self) -> datetime:
-        return self._dtstart
+    def start(self) -> datetime:
+        return self._start
 
     @property
-    def dtuntil(self) -> datetime:
-        return self._dtuntil
+    def stop(self) -> datetime:
+        return self._stop
 
-    @dtstart.setter
-    def dtstart(self, value: Union[datetime, str]):
-        self._dtstart = self.convert_timestamp(value)
+    @start.setter
+    def start(self, value: Union[datetime, str]):
+        self._start = self.convert_timestamp(value)
 
-    @dtuntil.setter
-    def dtuntil(self, value: Union[datetime, str]):
-        self._dtuntil = self.convert_timestamp(value)
+    @stop.setter
+    def stop(self, value: Union[datetime, str]):
+        self._stop = self.convert_timestamp(value)
 
     def convert_timestamp(self, value: Union[datetime, str]) -> datetime:
         if isinstance(value, datetime):
@@ -45,7 +45,7 @@ class AnimationSequence:
         elif isinstance(value, str):
             value = dateutil.parser.parse(value)
         else:
-            raise TypeError("Unknown data type for `dtstart` or `dtuntil` value: {} ({})".format(value, type(value)))
+            raise TypeError("Unknown data type for `start` or `stop` value: {} ({})".format(value, type(value)))
         return value
 
 

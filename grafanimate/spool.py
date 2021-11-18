@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class TemporaryStorage:
     def __init__(self):
         self.workdir = mkdtemp()
-        self.imagefile_template = "{uid}_{dtstart}_{dtuntil}.png"
+        self.imagefile_template = "{uid}_{start}_{stop}.png"
 
     def save_items(self, results) -> List[str]:
         files = []
@@ -32,8 +32,8 @@ class TemporaryStorage:
         # Compute image sequence file name.
         imagename = self.imagefile_template.format(
             uid=item.meta.dashboard,
-            dtstart=format_date_human(item.data.dtstart),
-            dtuntil=format_date_human(item.data.dtuntil),
+            start=format_date_human(item.data.start),
+            stop=format_date_human(item.data.stop),
         )
 
         imagefile = os.path.join(self.workdir, imagename)
