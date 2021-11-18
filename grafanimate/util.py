@@ -58,18 +58,18 @@ def check_socket(host, port):
             return False
 
 
-def format_date_human(date, interval=None):
+def format_date_human(date, every=None):
     # pattern = '%Y-%m-%d'
     pattern = "%Y-%m-%dT%H-%M-%S"
-    # if interval in ['secondly', 'minutely', 'hourly']:
+    # if every in ['secondly', 'minutely', 'hourly']:
     #    pattern = '%Y-%m-%dT%H-%M-%S'
     date_formatted = date.strftime(pattern)
     return date_formatted
 
 
-def format_date_grafana(date, interval=None):
+def format_date_grafana(date, every=None):
     pattern = "%Y-%m-%d"
-    if interval in ["secondly", "minutely", "hourly"] or interval.endswith("min"):
+    if every in ["secondly", "minutely", "hourly"] or every.endswith("min"):
         pattern = "%Y-%m-%dT%H:%M:%S"
     date_formatted = date.strftime(pattern)
     return date_formatted
