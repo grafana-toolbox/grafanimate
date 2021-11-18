@@ -5,6 +5,8 @@ grafanimate changelog
 
 in progress
 ===========
+- Improve scope of values for ``every`` parameter. It will now accept relative
+  humanized timestamps like ``2m30s``, ``1d12h`` or ``1.5 days``.
 
 
 2021-11-17 0.6.0

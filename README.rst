@@ -117,6 +117,14 @@ In order to run a built-in scenario, invoke::
     grafanimate --scenario=playdemo --output=./animations
 
 
+Details
+=======
+
+``grafanimate`` also supports relative timestamps, based on the fine
+`pytimeparse2`_ library.
+
+- Within ``every``, you will express a duration.
+
 Help
 ====
 
@@ -317,6 +325,7 @@ License
 .. _Grafana: https://grafana.com/
 .. _Marionette Python Client: https://marionette-client.readthedocs.io/
 .. _Playlists: http://docs.grafana.org/reference/playlist/
+.. _pytimeparse2: https://github.com/onegreyonewhite/pytimeparse2
 .. _scenarios.py: https://github.com/panodata/grafanimate/blob/main/grafanimate/scenarios.py
 .. _Scripted Dashboards: http://docs.grafana.org/reference/scripting/
 .. _set time range in Grafana: https://stackoverflow.com/questions/48264279/how-to-set-time-range-in-grafana-dashboard-from-text-panels/52492205#52492205
