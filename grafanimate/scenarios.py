@@ -44,7 +44,7 @@ def playdemo():
     return AnimationScenario(
         grafana_url="https://play.grafana.org/",
         dashboard_uid="000000012",
-        steps=[
+        sequences=[
             AnimationSequence(
                 dtstart=datetime(2021, 11, 14, 2, 0, 0),
                 # Produce video with reasonable duration to explore different rendering options.
@@ -71,7 +71,7 @@ def playdemo_advanced():
     return AnimationScenario(
         grafana_url="https://play.grafana.org/",
         dashboard_uid="000000012",
-        steps=[
+        sequences=[
             AnimationSequence(
                 dtstart=datetime(2021, 11, 14, 2, 0, 0),
                 dtuntil=datetime(2021, 11, 14, 2, 16, 36),
