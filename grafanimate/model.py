@@ -51,7 +51,7 @@ class AnimationSequence:
 
 @dataclasses.dataclass
 class AnimationScenario:
-    steps: List[AnimationSequence]
+    sequences: List[AnimationSequence]
     grafana_url: Optional[str] = None
     dashboard_uid: Optional[str] = None
     dashboard_title: Optional[str] = None

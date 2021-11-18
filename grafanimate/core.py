@@ -76,7 +76,7 @@ def resolve_reference(module, symbol):
     if isinstance(reference, AnimationScenario):
         pass
     elif isinstance(reference, (AnimationSequence, list)):
-        reference = AnimationScenario(steps=as_list(reference))
+        reference = AnimationScenario(sequences=as_list(reference))
     return reference
 
 
@@ -105,7 +105,7 @@ def run_animation_scenario(scenario: AnimationScenario, grafana: GrafanaWrapper,
     animation.start()
 
     # Run animation scenario.
-    for step in scenario.steps:
+    for step in scenario.sequences:
         results = animation.run(step)
         storage.save_items(results)
 

@@ -101,7 +101,7 @@ sequences.
     AnimationScenario(
         grafana_url="https://play.grafana.org/",
         dashboard_uid="000000012",
-        steps=[
+        sequences=[
             AnimationSequence(
                 dtstart="2021-11-15T02:12:05Z",
                 dtuntil="2021-11-15T02:37:36Z",

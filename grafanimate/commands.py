@@ -177,7 +177,7 @@ def run():
     # Define output filename pattern.
     output = Path(output_path) / "{scenario}--{title}--{uid}.mp4"
 
-    # Run rendering steps, produce composite media artifacts.
+    # Run rendering sequences, produce composite media artifacts.
     scenario.dashboard_title = grafana.get_dashboard_title()
     results = produce_artifacts(input=storage.workdir, output=output, scenario=scenario, options=render_options)
     log.info("Produced %s results\n%s", len(results), json.dumps(results, indent=2))
