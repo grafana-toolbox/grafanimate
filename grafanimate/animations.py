@@ -44,12 +44,12 @@ class SequentialAnimation:
         logger.info(message)
         self.grafana.console_info(message)
 
-    def run(self, step: AnimationSequence):
+    def run(self, sequence: AnimationSequence):
 
-        self.log("Starting animation: {}".format(step))
+        self.log("Starting animation: {}".format(sequence))
 
-        # Destructure `step` instance.
-        start, stop, every, mode = attrgetter("start", "stop", "every", "mode")(step)
+        # Destructure `AnimationSequence` instance.
+        start, stop, every, mode = attrgetter("start", "stop", "every", "mode")(sequence)
 
         if start > stop:
             message = "Timestamp start={} is after stop={}".format(start, stop)

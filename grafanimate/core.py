@@ -105,8 +105,8 @@ def run_animation_scenario(scenario: AnimationScenario, grafana: GrafanaWrapper,
     animation.start()
 
     # Run animation scenario.
-    for step in scenario.sequences:
-        results = animation.run(step)
+    for sequence in scenario.sequences:
+        results = animation.run(sequence)
         storage.save_items(results)
 
     return storage
