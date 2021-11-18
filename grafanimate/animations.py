@@ -46,13 +46,13 @@ class SequentialAnimation:
         self.log("Starting animation: {}".format(step))
 
         # Destructure `step` instance.
-        start, stop, interval, mode = attrgetter("start", "stop", "interval", "mode")(step)
+        start, stop, every, mode = attrgetter("start", "stop", "every", "mode")(step)
 
         if start > stop:
             message = "Timestamp start={} is after stop={}".format(start, stop)
             raise ValueError(message)
 
-        rr_freq, rr_interval, dtdelta = self.get_freq_delta(interval)
+        rr_freq, rr_interval, dtdelta = self.get_freq_delta(every)
 
         # until = datetime.now()
         if mode == SequencingMode.CUMULATIVE:
@@ -79,7 +79,7 @@ class SequentialAnimation:
                 stop = date
 
             # Render image.
-            image = self.render(start, stop, interval)
+            image = self.render(start, stop, every)
 
             # Build item model.
             item = munchify(
@@ -88,7 +88,7 @@ class SequentialAnimation:
                         "grafana": self.grafana,
                         "scenario": self.options["scenario"],
                         "dashboard": self.dashboard_uid,
-                        "interval": interval,
+                        "every": every,
                     },
                     "data": {
                         "start": start,
@@ -168,10 +168,10 @@ class SequentialAnimation:
 
         return rr_freq, rr_interval, delta
 
-    def render(self, start, stop, interval):
+    def render(self, start, stop, every):
 
         logger.debug("Adjusting time range control")
-        self.grafana.timewarp(start, stop, interval)
+        self.grafana.timewarp(start, stop, every)
 
         logger.debug("Rendering image")
         return self.make_image()

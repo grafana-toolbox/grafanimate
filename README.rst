@@ -105,7 +105,7 @@ sequences.
             AnimationSequence(
                 dtstart="2021-11-15T02:12:05Z",
                 dtuntil="2021-11-15T02:37:36Z",
-                interval="5min",
+                every="5min",
                 mode=SequencingMode.CUMULATIVE,
             ),
         ],

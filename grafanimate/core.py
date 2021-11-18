@@ -119,7 +119,7 @@ def run_animation_adhoc():
         options['url'],
         time_start=options.get('start'),
         time_end=options.get('end', 'now'),
-        time_step=options.get('interval', '1h')
+        time_step=options.get('every', '1h')
     )
     animator.run()
     """

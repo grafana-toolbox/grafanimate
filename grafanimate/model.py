@@ -17,7 +17,7 @@ class SequencingMode(Enum):
 
 @dataclass
 class AnimationSequence:
-    interval: str
+    every: str
     mode: Optional[SequencingMode] = SequencingMode.WINDOW
     milliseconds: int = 0
 

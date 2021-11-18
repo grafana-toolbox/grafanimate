@@ -17,11 +17,11 @@ Its purpose is to define how to run different animation scenarios/sequences.
 Details
 =======
 
-The parameters `start`, `stop` and `interval` should be self-explaining.
+The parameters `start`, `stop` and `every` should be self-explaining.
 
 The parameter `mode` can have two values (defaulting to `window`):
-- "window" will slide a window through the defined time range, with `interval` as window width
-- "cumulative" will use a fixed start time and stepwise expand the end time by `interval`
+- "window" will slide a window through the defined time range, with `every` as window width
+- "cumulative" will use a fixed start time and stepwise expand the end time by `every`
 """
 import logging
 from datetime import datetime
@@ -51,7 +51,7 @@ def playdemo():
                 stop=datetime(2021, 11, 14, 4, 16, 36),
                 # Produce very short video.
                 # stop=datetime(2021, 11, 14, 2, 16, 36),
-                interval="5min",
+                every="5min",
                 mode=SequencingMode.CUMULATIVE,
             ),
         ],
@@ -75,19 +75,19 @@ def playdemo_advanced():
             AnimationSequence(
                 start=datetime(2021, 11, 14, 2, 0, 0),
                 stop=datetime(2021, 11, 14, 2, 16, 36),
-                interval="5min",
+                every="5min",
                 mode=SequencingMode.CUMULATIVE,
             ),
             AnimationSequence(
                 start="2021-11-15T02:12:05Z",
                 stop="2021-11-15T02:37:36Z",
-                interval="5min",
+                every="5min",
                 mode=SequencingMode.CUMULATIVE,
             ),
             AnimationSequence(
                 start=1637091011,
                 stop=1637091911,
-                interval="5min",
+                every="5min",
                 mode=SequencingMode.CUMULATIVE,
             ),
         ],
@@ -106,9 +106,9 @@ def ldi_all():
 
     return [
         # LDI, ramp-up
-        AnimationSequence(start=datetime(2015, 10, 1), stop=datetime(2017, 1, 1), interval="monthly"),
+        AnimationSequence(start=datetime(2015, 10, 1), stop=datetime(2017, 1, 1), every="monthly"),
         # LDI, growth
-        AnimationSequence(start=datetime(2017, 1, 1), stop=datetime.now(), interval="weekly"),
+        AnimationSequence(start=datetime(2017, 1, 1), stop=datetime.now(), every="weekly"),
     ]
 
 
@@ -124,12 +124,12 @@ def ldi_with_gaps():
 
     return [
         # LDI, ramp-up
-        AnimationSequence(start=datetime(2015, 10, 1), stop=datetime(2017, 1, 1), interval="monthly"),
+        AnimationSequence(start=datetime(2015, 10, 1), stop=datetime(2017, 1, 1), every="monthly"),
         # LDI, growth, with gap at 2018-04-29 - 2018-12-20
         # TODO: Detect empty data from datasource through Grafana Sidecar and skip respective images.
-        AnimationSequence(start=datetime(2017, 1, 1), stop=datetime(2018, 6, 5), interval="weekly"),
+        AnimationSequence(start=datetime(2017, 1, 1), stop=datetime(2018, 6, 5), every="weekly"),
         # LDI, until now
-        AnimationSequence(start=datetime(2018, 12, 20), stop=datetime.now(), interval="weekly"),
+        AnimationSequence(start=datetime(2018, 12, 20), stop=datetime.now(), every="weekly"),
     ]
 
 
@@ -143,7 +143,7 @@ def ldi_nye_2017_2018():
     """
     logger.info("Running scenario ldi_nye_2017_2018")
     return AnimationSequence(
-        start=datetime(2017, 12, 31, 21, 0, 0), stop=datetime(2018, 1, 1, 4, 0, 0), interval="10min"
+        start=datetime(2017, 12, 31, 21, 0, 0), stop=datetime(2018, 1, 1, 4, 0, 0), every="10min"
     )
 
 
@@ -158,19 +158,19 @@ def ldi_nye_2018_2019():
     logger.info("Running scenario ldi_nye_2018_2019")
     return [
         AnimationSequence(
-            start=datetime(2018, 12, 31, 15, 0, 0), stop=datetime(2018, 12, 31, 20, 0, 0), interval="30min"
+            start=datetime(2018, 12, 31, 15, 0, 0), stop=datetime(2018, 12, 31, 20, 0, 0), every="30min"
         ),
         AnimationSequence(
-            start=datetime(2018, 12, 31, 20, 0, 0), stop=datetime(2018, 12, 31, 23, 0, 0), interval="10min"
+            start=datetime(2018, 12, 31, 20, 0, 0), stop=datetime(2018, 12, 31, 23, 0, 0), every="10min"
         ),
         AnimationSequence(
-            start=datetime(2018, 12, 31, 23, 0, 0), stop=datetime(2019, 1, 1, 1, 0, 0), interval="5min"
+            start=datetime(2018, 12, 31, 23, 0, 0), stop=datetime(2019, 1, 1, 1, 0, 0), every="5min"
         ),
         AnimationSequence(
-            start=datetime(2019, 1, 1, 1, 0, 0), stop=datetime(2019, 1, 1, 4, 0, 0), interval="10min"
+            start=datetime(2019, 1, 1, 1, 0, 0), stop=datetime(2019, 1, 1, 4, 0, 0), every="10min"
         ),
         AnimationSequence(
-            start=datetime(2019, 1, 1, 4, 0, 0), stop=datetime(2019, 1, 1, 9, 0, 0), interval="30min"
+            start=datetime(2019, 1, 1, 4, 0, 0), stop=datetime(2019, 1, 1, 9, 0, 0), every="30min"
         ),
     ]
 
@@ -185,11 +185,11 @@ def cdc_maps():
     """
     logger.info("Running scenario cdc_maps")
     return AnimationSequence(
-        start=datetime(2018, 3, 6, 5, 0, 0), stop=datetime(2018, 3, 10, 23, 59, 59), interval="hourly"
+        start=datetime(2018, 3, 6, 5, 0, 0), stop=datetime(2018, 3, 10, 23, 59, 59), every="hourly"
     )
 
     # Short sequence, for debugging processes.
-    # return AnimationSequence(start=datetime(2018, 3, 6, 5, 0, 0), stop=datetime(2018, 3, 6, 6, 59, 59), interval='hourly')
+    # return AnimationSequence(start=datetime(2018, 3, 6, 5, 0, 0), stop=datetime(2018, 3, 6, 6, 59, 59), every='hourly')
 
 
 def uba_ldi_dwd_maps():
@@ -202,7 +202,7 @@ def uba_ldi_dwd_maps():
     """
     logger.info("Running scenario uba_ldi_dwd_maps")
     return AnimationSequence(
-        start=datetime(2018, 10, 6, 5, 0, 0), stop=datetime(2018, 10, 10, 23, 59, 59), interval="hourly"
+        start=datetime(2018, 10, 6, 5, 0, 0), stop=datetime(2018, 10, 10, 23, 59, 59), every="hourly"
     )
 
 
@@ -217,5 +217,5 @@ def ir_sensor_svg_pixmap():
     """
     logger.info("Running scenario ir_sensor_svg_pixmap")
     return AnimationSequence(
-        start=datetime(2018, 8, 14, 3, 16, 0), stop=datetime(2018, 8, 14, 3, 16, 36), interval="secondly"
+        start=datetime(2018, 8, 14, 3, 16, 0), stop=datetime(2018, 8, 14, 3, 16, 36), every="secondly"
     )
