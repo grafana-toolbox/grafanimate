@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from dateutil.relativedelta import relativedelta
 from dateutil.rrule import DAILY, MINUTELY, SECONDLY
@@ -74,8 +74,8 @@ def test_sequence_epoch():
         mode=SequencingMode.CUMULATIVE,
     )
 
-    assert seq.start == datetime(2021, 11, 16, 20, 30, 11)
-    assert seq.stop == datetime(2021, 11, 16, 20, 45, 11)
+    assert seq.start == datetime(2021, 11, 16, 19, 30, 11, tzinfo=timezone.utc)
+    assert seq.stop == datetime(2021, 11, 16, 19, 45, 11, tzinfo=timezone.utc)
     assert seq.every == "4m5s"
     assert seq.mode == SequencingMode.CUMULATIVE
 
@@ -85,11 +85,11 @@ def test_sequence_epoch():
     assert seq.recurrence.duration == relativedelta(minutes=+4, seconds=+4)
 
     assert list(seq.get_timeranges_isoformat()) == [
-        "2021-11-16T20:30:11/2021-11-16T20:30:11",
-        "2021-11-16T20:30:11/2021-11-16T20:34:11",
-        "2021-11-16T20:30:11/2021-11-16T20:38:11",
-        "2021-11-16T20:30:11/2021-11-16T20:42:11",
-        "2021-11-16T20:30:11/2021-11-16T20:46:11",
+        "2021-11-16T19:30:11+00:00/2021-11-16T19:30:11+00:00",
+        "2021-11-16T19:30:11+00:00/2021-11-16T19:34:11+00:00",
+        "2021-11-16T19:30:11+00:00/2021-11-16T19:38:11+00:00",
+        "2021-11-16T19:30:11+00:00/2021-11-16T19:42:11+00:00",
+        "2021-11-16T19:30:11+00:00/2021-11-16T19:46:11+00:00",
     ]
 
 
