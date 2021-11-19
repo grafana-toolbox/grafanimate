@@ -20,7 +20,6 @@ requires = [
     "python-dateutil>=2.7,<3",
     "datetime-interval==0.2",
     "pytimeparse2>=1.3,<2",
-    "pytz>=2021.3",
 ]
 
 extras = {
