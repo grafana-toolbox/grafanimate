@@ -1,4 +1,4 @@
-#  -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # (c) 2018-2021 Andreas Motl <andreas.motl@panodata.org>
 # License: GNU Affero General Public License, Version 3
 """
@@ -88,6 +88,24 @@ def playdemo_advanced():
                 start=1637091011,
                 stop=1637091911,
                 every="4m5s",
+                mode=SequencingMode.CUMULATIVE,
+            ),
+            AnimationSequence(
+                start="-30m",
+                stop="+30m",
+                every="5m",
+                mode=SequencingMode.CUMULATIVE,
+            ),
+            AnimationSequence(
+                start="-14d",
+                stop="start+7d",
+                every="1d",
+                mode=SequencingMode.CUMULATIVE,
+            ),
+            AnimationSequence(
+                start="-14d",
+                stop="now",
+                every="1d",
                 mode=SequencingMode.CUMULATIVE,
             ),
         ],

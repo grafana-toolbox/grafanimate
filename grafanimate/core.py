@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# (c) 2018-2021 Andreas Motl <andreas@hiveeyes.org>
+# (c) 2018-2021 Andreas Motl <andreas.motl@panodata.org>
 # License: GNU Affero General Public License, Version 3
 import logging
 from pathlib import Path
@@ -82,7 +82,7 @@ def resolve_reference(module, symbol):
 
 def run_animation_scenario(scenario: AnimationScenario, grafana: GrafanaWrapper, options: Munch) -> TemporaryStorage:
 
-    log.info("Running animation scenario {}".format(scenario))
+    log.info(f"Running animation scenario at {scenario.grafana_url}, with dashboard UID {scenario.dashboard_uid}")
 
     storage = TemporaryStorage()
 
@@ -105,9 +105,11 @@ def run_animation_scenario(scenario: AnimationScenario, grafana: GrafanaWrapper,
     animation.start()
 
     # Run animation scenario.
-    for sequence in scenario.sequences:
-        results = animation.run(sequence)
-        storage.save_items(results)
+    for index, sequence in enumerate(scenario.sequences):
+        sequence.index = index
+        results = list(animation.run(sequence))
+        if not options.dry_run:
+            storage.save_items(results)
 
     return storage
 

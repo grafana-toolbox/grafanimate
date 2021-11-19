@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# (c) 2018 Andreas Motl <andreas@hiveeyes.org>
+# (c) 2018-2021 Andreas Motl <andreas.motl@panodata.org>
 # License: GNU Affero General Public License, Version 3
 import json
 import logging
@@ -91,7 +91,7 @@ def run():
                                     FFmpeg's `-filter_complex` options. [default: 10]
       --gif-width=<pixel>           Width of the gif in pixels. [default: 480]
 
-
+      --dry-run                     Enable dry-run mode
       --debug                       Enable debug logging
       -h --help                     Show this screen
 
@@ -179,5 +179,6 @@ def run():
 
     # Run rendering sequences, produce composite media artifacts.
     scenario.dashboard_title = grafana.get_dashboard_title()
-    results = produce_artifacts(input=storage.workdir, output=output, scenario=scenario, options=render_options)
-    log.info("Produced %s results\n%s", len(results), json.dumps(results, indent=2))
+    if not options.dry_run:
+        results = produce_artifacts(input=storage.workdir, output=output, scenario=scenario, options=render_options)
+        log.info("Produced %s results\n%s", len(results), json.dumps(results, indent=2))
