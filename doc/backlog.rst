@@ -8,14 +8,12 @@ Prio 1.25
 *********
 - [x] Rename ``AnimationScenario.steps`` to ``AnimationScenario.sequences``
 - [x] Rename ``dtstart``/``dtuntil`` to ``start``/``stop`` and ``interval`` to ``every``
-- [o] Allow relative time range for ``stop`` parameter
-  > The every parameter supports all valid duration units, including calendar months (1mo) and years (1y).
+- [x] Allow relative time range for ``stop`` parameter
+  > The ``every`` parameter supports all valid duration units, including calendar months (1mo) and years (1y).
   > -- https://docs.influxdata.com/flux/v0.x/spec/types/#duration-types
-- [o] Mix relative with absolute timestamps: ``range(start:2019-01-31T23:00:00Z, stop:-1h)``
+- [x] Mix relative with absolute timestamps: ``range(start:2019-01-31T23:00:00Z, stop:-1h)``
   -- https://community.hiveeyes.org/t/improving-time-range-control-for-grafanimate/1783/11
 - [o] README: Drop some words about "Animation Speed" (--framerate)
-- [o] Specify number of frames to capture, instead of --stop
-- [o] Add ``--reverse`` parameter
 - [o] Implement "ad-hoc" mode
 
     Until implemented, please use scenario mode.
@@ -29,9 +27,17 @@ Prio 1.25
     -- https://community.hiveeyes.org/t/improving-time-range-control-for-grafanimate/1783/13
 
 - [o] Panel spinner is visible again
-- [o] Avoid collisions in output directory, e.g. take sequencing mode into account
+- [o] Avoid collisions in output directory, e.g. take sequencing mode and start/stop timestamps into account
 - [o] Final tests
 - [o] Release 0.7.0
+
+
+********
+Prio 1.3
+********
+- [o] Support for months and years: Follow up on https://github.com/onegreyonewhite/pytimeparse2/pull/1
+- [o] Specify number of frames to capture, instead of --stop
+- [o] Add ``--reverse`` parameter; hm, or use negative ``stop`` parameter instead
 
 
 ********

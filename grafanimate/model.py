@@ -1,13 +1,24 @@
 # -*- coding: utf-8 -*-
-# (c) 2021 Andreas Motl <andreas.motl@panodata.org>
+# (c) 2018-2021 Andreas Motl <andreas.motl@panodata.org>
 # License: GNU Affero General Public License, Version 3
 import dataclasses
+import logging
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional, Union
+from typing import Generator, List, Optional, Union
 
-import dateutil.parser
+import pytz
 from dataclass_property import dataclass
+from dateutil.rrule import rrule
+
+from grafanimate.timeutil import (
+    RecurrenceInfo,
+    Timerange,
+    convert_input_timestamp,
+    get_freq_delta,
+)
+
+logger = logging.getLogger(__name__)
 
 
 class SequencingMode(Enum):
@@ -15,11 +26,38 @@ class SequencingMode(Enum):
     CUMULATIVE = "cumulative"
 
 
+@dataclasses.dataclass
+class AnimationFrame:
+    sequence: "AnimationSequence"
+    timerange: Timerange
+
+
 @dataclass
 class AnimationSequence:
     every: str
+    index: Optional[int] = 0
     mode: Optional[SequencingMode] = SequencingMode.WINDOW
-    milliseconds: int = 0
+    recurrence: Optional[RecurrenceInfo] = None
+
+    def __post_init__(self):
+
+        # Convert start/stop timestamps, resolving relative timestamps.
+        now = datetime.now(tz=pytz.UTC)
+        self._start = convert_input_timestamp(self.__start, relative_to=now)
+        if isinstance(self.__stop, str) and self.__stop.startswith("start"):
+            stop = self.__stop.replace("start", "")
+            self._stop = convert_input_timestamp(stop, relative_to=self._start)
+        else:
+            self._stop = convert_input_timestamp(self.__stop, relative_to=now)
+
+        # Sanity checks.
+        if self._start > self._stop:
+            message = "Timestamp start={} is after stop={}".format(self._start, self._stop)
+            raise ValueError(message)
+
+        # Analyze `every` parameter and converge into `RecurrenceInfo`.
+        # From `every` (interval designator), compute frequency, interval and delta.
+        self.recurrence = get_freq_delta(self.every)
 
     @property
     def start(self) -> datetime:
@@ -31,22 +69,61 @@ class AnimationSequence:
 
     @start.setter
     def start(self, value: Union[datetime, str]):
-        self._start = self.convert_timestamp(value)
+        self.__start = value
 
     @stop.setter
     def stop(self, value: Union[datetime, str]):
-        self._stop = self.convert_timestamp(value)
+        self.__stop = value
 
-    def convert_timestamp(self, value: Union[datetime, str]) -> datetime:
-        if isinstance(value, datetime):
-            pass
-        elif isinstance(value, int):
-            value = datetime.fromtimestamp(value)
-        elif isinstance(value, str):
-            value = dateutil.parser.parse(value)
-        else:
-            raise TypeError("Unknown data type for `start` or `stop` value: {} ({})".format(value, type(value)))
-        return value
+    def get_frames(self) -> Generator[AnimationFrame, None, None]:
+
+        timerange = Timerange(start=self.start, stop=self.stop, recurrence=self.recurrence)
+
+        # until = datetime.now()
+        if self.mode == SequencingMode.CUMULATIVE:
+            timerange.stop += self.recurrence.duration
+
+        # Compute complete date range.
+        logger.info(
+            "Creating rrule: dtstart=%s, until=%s, freq=%s, interval=%s",
+            timerange.start,
+            timerange.stop,
+            self.recurrence.frequency,
+            self.recurrence.interval,
+        )
+        daterange = list(
+            rrule(
+                dtstart=timerange.start,
+                until=timerange.stop,
+                freq=self.recurrence.frequency,
+                interval=self.recurrence.interval,
+            )
+        )
+        # logger.info('Date range is: %s', daterange)
+
+        # Iterate date range.
+        for date in daterange:
+
+            # Compute start and end dates based on mode.
+
+            if self.mode == SequencingMode.WINDOW:
+                start = date
+                stop = date + self.recurrence.duration
+
+            elif self.mode == SequencingMode.CUMULATIVE:
+                start = timerange.start
+                stop = date
+
+            frame = AnimationFrame(
+                sequence=self, timerange=Timerange(start=start, stop=stop, recurrence=self.recurrence)
+            )
+            yield frame
+
+    def get_timeranges_isoformat(self) -> Generator[str, None, None]:
+        for frame in self.get_frames():
+            item = f"{frame.timerange.start.isoformat()}/{frame.timerange.stop.isoformat()}"
+            # print(f'"{item}",')
+            yield item
 
 
 @dataclasses.dataclass

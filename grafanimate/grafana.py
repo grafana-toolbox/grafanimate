@@ -1,5 +1,5 @@
-#  -*- coding: utf-8 -*-
-# (c) 2018 Andreas Motl <andreas@hiveeyes.org>
+# -*- coding: utf-8 -*-
+# (c) 2018-2021 Andreas Motl <andreas.motl@panodata.org>
 # License: GNU Affero General Public License, Version 3
 import json
 import logging
@@ -10,7 +10,8 @@ from marionette_driver.errors import TimeoutException
 from pkg_resources import resource_stream
 
 from grafanimate.marionette import FirefoxMarionetteBase
-from grafanimate.util import format_date_grafana
+from grafanimate.model import AnimationFrame
+from grafanimate.timeutil import format_date_grafana
 
 log = logging.getLogger(__name__)
 
@@ -20,9 +21,10 @@ class GrafanaWrapper(FirefoxMarionetteBase):
     https://marionette-client.readthedocs.io/en/master/interactive.html
     """
 
-    def __init__(self, baseurl=None, use_panel_events=False):
+    def __init__(self, baseurl: str = None, use_panel_events: bool = False, dry_run: bool = False):
         self.baseurl = baseurl
         self.use_panel_events = use_panel_events
+        self.dry_run = dry_run
         log.info("Starting GrafanaWrapper on %s", baseurl)
         FirefoxMarionetteBase.__init__(self)
 
@@ -117,21 +119,25 @@ class GrafanaWrapper(FirefoxMarionetteBase):
     def clear_all_data_received(self):
         return self.calljs("grafanaStudio.hasAllData", False)
 
-    def timewarp(self, start, stop, every):
+    def timewarp(self, frame: AnimationFrame, dry_run: bool = False):
         """
         Navigate the Dashboard to the designated point in time
         and wait for refreshing all child components including data.
         """
 
         # Notify user.
-        message = "Timewarp to {} -> {}".format(start, stop)
+        message = "Timewarp to {} -> {}".format(frame.timerange.start, frame.timerange.stop)
         log.info(message)
         self.console_log(message)
 
         # Perform timewarp.
-        self.clear_all_data_received()
-        self.timerange_set(format_date_grafana(start, every), format_date_grafana(stop, every))
-        self.wait_for_frame_finished()
+        if not dry_run:
+            self.clear_all_data_received()
+            self.timerange_set(
+                format_date_grafana(frame.timerange.start, frame.timerange.recurrence),
+                format_date_grafana(frame.timerange.stop, frame.timerange.recurrence),
+            )
+            self.wait_for_frame_finished()
 
     def timerange_set(self, starttime, endtime):
         """

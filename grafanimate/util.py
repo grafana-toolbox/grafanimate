@@ -1,4 +1,4 @@
-#  -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # (c) 2018-2021 Andreas Motl <andreas.motl@panodata.org>
 # License: GNU Affero General Public License, Version 3
 import logging
@@ -9,7 +9,6 @@ import sys
 from contextlib import closing
 from pathlib import Path
 
-from dateutil.relativedelta import relativedelta
 from munch import munchify
 from unidecode import unidecode
 
@@ -57,23 +56,6 @@ def check_socket(host, port):
             return True
         else:
             return False
-
-
-def format_date_human(date, every=None):
-    # pattern = '%Y-%m-%d'
-    pattern = "%Y-%m-%dT%H-%M-%S"
-    # if every in ['secondly', 'minutely', 'hourly']:
-    #    pattern = '%Y-%m-%dT%H-%M-%S'
-    date_formatted = date.strftime(pattern)
-    return date_formatted
-
-
-def format_date_grafana(date, every=None):
-    pattern = "%Y-%m-%d"
-    if every in ["secondly", "minutely", "hourly"] or every.endswith("min"):
-        pattern = "%Y-%m-%dT%H:%M:%S"
-    date_formatted = date.strftime(pattern)
-    return date_formatted
 
 
 def filter_dict(data, keys):
@@ -157,27 +139,3 @@ def import_module(name: str, path: str):
     spec.loader.exec_module(mod)
 
     return mod
-
-
-def get_relativedelta(seconds: int):
-    # TODO: Add to `pytimeparse2`?
-    # https://stackoverflow.com/questions/16977768/elegant-way-to-convert-python-datetime-timedelta-to-dateutil-relativedelta
-
-    seconds_in = {
-        "year": 365 * 24 * 60 * 60,
-        "month": 30 * 24 * 60 * 60,
-        "day": 24 * 60 * 60,
-        "hour": 60 * 60,
-        "minute": 60,
-    }
-
-    years, rem = divmod(seconds, seconds_in["year"])
-    months, rem = divmod(rem, seconds_in["month"])
-    days, rem = divmod(rem, seconds_in["day"])
-    hours, rem = divmod(rem, seconds_in["hour"])
-    minutes, rem = divmod(rem, seconds_in["minute"])
-    seconds = rem
-
-    return relativedelta(
-        years=years, months=months, days=days, hours=hours, minutes=minutes, seconds=seconds
-    ).normalized()

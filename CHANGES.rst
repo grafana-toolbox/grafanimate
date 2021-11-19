@@ -7,6 +7,9 @@ in progress
 ===========
 - Improve scope of values for ``every`` parameter. It will now accept relative
   humanized timestamps like ``2m30s``, ``1d12h`` or ``1.5 days``.
+- Allow relative timestamps / time ranges also for ``start`` and ``stop``
+  parameters. Accepted are humanized values like outlined above (``2m30s``),
+  combined with, e.g., ``stop=start+2m30s`` or ``start=-1h, stop=now``.
 
 
 2021-11-17 0.6.0

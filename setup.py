@@ -20,11 +20,13 @@ requires = [
     "python-dateutil>=2.7,<3",
     "datetime-interval==0.2",
     "pytimeparse2>=1.3,<2",
+    "pytz>=2021.3",
 ]
 
 extras = {
     "test": [
         "pytest>=6,<7",
+        "freezegun>=1,<2",
     ],
 }
 

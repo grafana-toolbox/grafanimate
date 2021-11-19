@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# (c) 2018-2021 Andreas Motl <andreas@hiveeyes.org>
+# (c) 2018-2021 Andreas Motl <andreas.motl@panodata.org>
 # License: GNU Affero General Public License, Version 3
 import logging
 import os.path
@@ -7,7 +7,7 @@ import shutil
 from tempfile import mkdtemp
 from typing import List
 
-from grafanimate.util import format_date_human
+from grafanimate.timeutil import format_date_filename
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class TemporaryStorage:
     def __init__(self):
         self.workdir = mkdtemp()
-        self.imagefile_template = "{uid}_{start}_{stop}.png"
+        self.imagefile_template = "{uid}_{seq}_{start}_{stop}.png"
 
     def save_items(self, results) -> List[str]:
         files = []
@@ -32,8 +32,9 @@ class TemporaryStorage:
         # Compute image sequence file name.
         imagename = self.imagefile_template.format(
             uid=item.meta.dashboard,
-            start=format_date_human(item.data.start),
-            stop=format_date_human(item.data.stop),
+            seq=str(item.frame.sequence.index).zfill(4),
+            start=format_date_filename(item.data.start),
+            stop=format_date_filename(item.data.stop),
         )
 
         imagefile = os.path.join(self.workdir, imagename)
