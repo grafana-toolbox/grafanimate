@@ -10,6 +10,7 @@ in progress
 - Allow relative timestamps / time ranges also for ``start`` and ``stop``
   parameters. Accepted are humanized values like outlined above (``2m30s``),
   combined with, e.g., ``stop=start+2m30s`` or ``start=-1h, stop=now``.
+- Add CI configuration for GHA
 
 
 2021-11-17 0.6.0
