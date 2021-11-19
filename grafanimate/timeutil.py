@@ -183,7 +183,7 @@ def convert_absolute_timestamp(value: Union[datetime, str]) -> datetime:
     if isinstance(value, datetime):
         pass
     elif isinstance(value, int):
-        value = datetime.fromtimestamp(value)
+        value = datetime.fromtimestamp(value, tz=timezone.utc)
     elif isinstance(value, str):
         value = dateutil.parser.parse(value)
     else:
