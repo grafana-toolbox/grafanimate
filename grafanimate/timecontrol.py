@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # (c) 2019 Andreas Motl <andreas@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from datetime_interval import Interval
 
@@ -89,7 +89,7 @@ def print_header(title):
 
 
 def create_dope_sheet_blueprint():
-    now = datetime.now()
+    now = datetime.now(tz=timezone.utc)
     yesterday = now - timedelta(days=1)
     tomorrow = now + timedelta(days=1)
 

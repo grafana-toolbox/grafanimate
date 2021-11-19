@@ -2,11 +2,10 @@
 # (c) 2018-2021 Andreas Motl <andreas.motl@panodata.org>
 # License: GNU Affero General Public License, Version 3
 import dataclasses
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional, Union
 
 import dateutil.parser
-import pytz
 from dateutil.relativedelta import relativedelta
 from dateutil.rrule import DAILY, HOURLY, MINUTELY, MONTHLY, SECONDLY, WEEKLY, YEARLY
 from pytimeparse2 import parse as parse_human_time
@@ -198,7 +197,7 @@ def convert_input_timestamp(value: Union[datetime, str], relative_to: Optional[d
     """
     if isinstance(value, str):
         if value == "now":
-            return datetime.now(tz=pytz.UTC)
+            return datetime.now(tz=timezone.utc)
         try:
             delta = parse_human_time(value)
             if not delta:

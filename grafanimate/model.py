@@ -3,11 +3,10 @@
 # License: GNU Affero General Public License, Version 3
 import dataclasses
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Generator, List, Optional, Union
 
-import pytz
 from dataclass_property import dataclass
 from dateutil.rrule import rrule
 
@@ -42,7 +41,7 @@ class AnimationSequence:
     def __post_init__(self):
 
         # Convert start/stop timestamps, resolving relative timestamps.
-        now = datetime.now(tz=pytz.UTC)
+        now = datetime.now(tz=timezone.utc)
         self._start = convert_input_timestamp(self.__start, relative_to=now)
         if isinstance(self.__stop, str) and self.__stop.startswith("start"):
             stop = self.__stop.replace("start", "")
