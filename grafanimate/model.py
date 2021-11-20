@@ -7,15 +7,9 @@ from datetime import datetime, timezone
 from enum import Enum
 from typing import Generator, List, Optional, Union
 
-from dataclass_property import dataclass
 from dateutil.rrule import rrule
 
-from grafanimate.timeutil import (
-    RecurrenceInfo,
-    Timerange,
-    convert_input_timestamp,
-    get_freq_delta,
-)
+from grafanimate.timeutil import Timerange, convert_input_timestamp, get_freq_delta
 
 logger = logging.getLogger(__name__)
 
@@ -31,48 +25,35 @@ class AnimationFrame:
     timerange: Timerange
 
 
-@dataclass
 class AnimationSequence:
-    every: str
-    index: Optional[int] = 0
-    mode: Optional[SequencingMode] = SequencingMode.WINDOW
-    recurrence: Optional[RecurrenceInfo] = None
-
-    def __post_init__(self):
+    def __init__(
+        self,
+        start: Union[datetime, int, str],
+        stop: Union[datetime, int, str],
+        every: str,
+        mode: Optional[SequencingMode] = SequencingMode.WINDOW,
+    ):
 
         # Convert start/stop timestamps, resolving relative timestamps.
         now = datetime.now(tz=timezone.utc)
-        self._start = convert_input_timestamp(self.__start, relative_to=now)
-        if isinstance(self.__stop, str) and self.__stop.startswith("start"):
-            stop = self.__stop.replace("start", "")
-            self._stop = convert_input_timestamp(stop, relative_to=self._start)
+        self.start = convert_input_timestamp(start, relative_to=now)
+        if isinstance(stop, str) and stop.startswith("start"):
+            _stop = stop.replace("start", "")
+            self.stop = convert_input_timestamp(_stop, relative_to=self.start)
         else:
-            self._stop = convert_input_timestamp(self.__stop, relative_to=now)
-
-        # Sanity checks.
-        if self._start > self._stop:
-            message = "Timestamp start={} is after stop={}".format(self._start, self._stop)
-            raise ValueError(message)
+            self.stop = convert_input_timestamp(stop, relative_to=now)
 
         # Analyze `every` parameter and converge into `RecurrenceInfo`.
         # From `every` (interval designator), compute frequency, interval and delta.
-        self.recurrence = get_freq_delta(self.every)
+        self.recurrence = get_freq_delta(every)
 
-    @property
-    def start(self) -> datetime:
-        return self._start
+        self.mode = mode
+        self.index = None
 
-    @property
-    def stop(self) -> datetime:
-        return self._stop
-
-    @start.setter
-    def start(self, value: Union[datetime, str]):
-        self.__start = value
-
-    @stop.setter
-    def stop(self, value: Union[datetime, str]):
-        self.__stop = value
+        # Sanity checks.
+        if self.start > self.stop:
+            message = f"Timestamp start={self.start.isoformat()} is after stop={self.stop.isoformat()}"
+            raise ValueError(message)
 
     def get_frames(self) -> Generator[AnimationFrame, None, None]:
 
