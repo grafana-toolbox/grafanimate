@@ -5,7 +5,7 @@ from dateutil.rrule import DAILY, MINUTELY, SECONDLY
 from dateutil.tz import tzutc
 from freezegun import freeze_time
 
-from grafanimate.model import AnimationSequence, SequencingMode
+from grafanimate.model import AnimationScenario, AnimationSequence, SequencingMode
 
 
 def test_sequence_datetime():
@@ -172,3 +172,26 @@ def test_sequence_relative_with_now():
         "2021-11-18T20:34:17+00:00/2021-11-19T20:34:16+00:00",
         "2021-11-19T20:34:17+00:00/2021-11-20T20:34:16+00:00",
     ]
+
+
+def test_scenario_basic():
+    scenario = AnimationScenario(
+        grafana_url="https://daq.example.org/grafana/",
+        dashboard_uid="foobar",
+        sequences=[
+            AnimationSequence(
+                start="2021-11-14T15:20:05Z",
+                stop="2021-11-14T15:45:36Z",
+                every="5min",
+                mode=SequencingMode.WINDOW,
+            ),
+            AnimationSequence(
+                start="2021-11-15T02:12:05Z",
+                stop="2021-11-15T02:37:36Z",
+                every="3 minutes 2 seconds",
+                mode=SequencingMode.CUMULATIVE,
+            ),
+        ],
+    )
+
+    assert len(scenario.sequences) == 2
