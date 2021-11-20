@@ -13,7 +13,7 @@ requires = [
     "tqdm>=4,<5",
     "unidecode>=1,<2",
     "furl>=2,<3",
-    "dataclass-property>=1,<2",
+    "dataclasses>=0.8,<1; python_version=='3.6'",
     # Grafana control and animation
     "where>=1,<2",
     "marionette_driver>=3,<4",
@@ -38,9 +38,11 @@ setup(
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "License :: OSI Approved :: GNU Affero General Public License v3",
         "License :: OSI Approved :: European Union Public Licence 1.2 (EUPL 1.2)",
         "Development Status :: 4 - Beta",

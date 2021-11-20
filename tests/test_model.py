@@ -18,7 +18,6 @@ def test_sequence_datetime():
 
     assert seq.start == datetime(2021, 11, 14, 2, 0, 0)
     assert seq.stop == datetime(2021, 11, 14, 2, 16, 36)
-    assert seq.every == "5min"
     assert seq.mode == SequencingMode.WINDOW
 
     assert seq.recurrence.every == "5min"
@@ -44,7 +43,6 @@ def test_sequence_isodate():
 
     assert seq.start == datetime(2021, 11, 15, 2, 12, 5, tzinfo=tzutc())
     assert seq.stop == datetime(2021, 11, 15, 2, 37, 36, tzinfo=tzutc())
-    assert seq.every == "3min"
     assert seq.mode == SequencingMode.CUMULATIVE
 
     assert seq.recurrence.every == "3min"
@@ -76,7 +74,6 @@ def test_sequence_epoch():
 
     assert seq.start == datetime(2021, 11, 16, 19, 30, 11, tzinfo=timezone.utc)
     assert seq.stop == datetime(2021, 11, 16, 19, 45, 11, tzinfo=timezone.utc)
-    assert seq.every == "4m5s"
     assert seq.mode == SequencingMode.CUMULATIVE
 
     assert seq.recurrence.every == "4m5s"
@@ -103,7 +100,6 @@ def test_sequence_relative_to_now():
 
     assert seq.start == datetime(2021, 11, 19, 20, 4, 17, tzinfo=tzutc())
     assert seq.stop == datetime(2021, 11, 19, 21, 4, 17, tzinfo=tzutc())
-    assert seq.every == "8m"
 
     assert seq.recurrence.every == "8m"
     assert seq.recurrence.frequency == MINUTELY
@@ -132,7 +128,6 @@ def test_sequence_relative_to_start():
 
     assert seq.start == datetime(2021, 11, 5, 20, 34, 17, tzinfo=tzutc())
     assert seq.stop == datetime(2021, 11, 12, 20, 34, 17, tzinfo=tzutc())
-    assert seq.every == "1d"
 
     assert seq.recurrence.every == "1d"
     assert seq.recurrence.frequency == DAILY
@@ -161,7 +156,6 @@ def test_sequence_relative_with_now():
 
     assert seq.start == datetime(2021, 11, 12, 20, 34, 17, tzinfo=tzutc())
     assert seq.stop == datetime(2021, 11, 19, 20, 34, 17, tzinfo=tzutc())
-    assert seq.every == "1d"
 
     assert seq.recurrence.every == "1d"
     assert seq.recurrence.frequency == DAILY
