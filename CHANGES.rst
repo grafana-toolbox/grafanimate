@@ -11,6 +11,7 @@ in progress
   parameters. Accepted are humanized values like outlined above (``2m30s``),
   combined with, e.g., ``stop=start+2m30s`` or ``start=-1h, stop=now``.
 - Add CI configuration for GHA
+- Enable support for relative timestamps with months and years, like ``1y3mo``.
 
 
 2021-11-17 0.6.0
