@@ -114,7 +114,6 @@ def test_freq_delta_pytimeparse():
     assert recurrence.interval == 7
     assert recurrence.duration == relativedelta(days=+7, seconds=-1)
 
-    """
     recurrence = get_freq_delta("1mo")
     assert recurrence.frequency == MONTHLY
     assert recurrence.interval == 1
@@ -124,4 +123,8 @@ def test_freq_delta_pytimeparse():
     assert recurrence.frequency == YEARLY
     assert recurrence.interval == 1
     assert recurrence.duration == relativedelta(years=+1, seconds=-1)
-    """
+
+    recurrence = get_freq_delta("3 years 5 months")
+    assert recurrence.frequency == YEARLY
+    assert recurrence.interval == 3
+    assert recurrence.duration == relativedelta(years=+3, months=+5, seconds=-1)
