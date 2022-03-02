@@ -26,7 +26,8 @@ class MediaProducer:
         # command = "ffmpeg -framerate 4 -pattern_type glob -i '{}' -c:v libx264 -vf 'fps=25,format=yuv420p,drawtext=text=Produced with Grafana and grafanimate:fontsize=11:x=w-tw-30:y=h-th-10:fontcolor=lightgrey:fontfile=/Library/Fonts/Arial.ttf' '{}' -y".format(source, target)
 
         # TODO: Expose `-framerate` and `fps` values.
-        command = f"ffmpeg -framerate {self.options.video_framerate} -pattern_type glob -i '{source}' -c:v libx264 -vf 'fps={self.options.video_fps},format=yuv420p' '{target}' -y"
+        # use the `pad` option to avoid ffmpeg errors like 'height not divisible by 2'
+        command = f"ffmpeg -framerate {self.options.video_framerate} -pattern_type glob -i '{source}' -c:v libx264 -vf 'pad=ceil(iw/2)*2:ceil(ih/2)*2,fps={self.options.video_fps},format=yuv420p' '{target}' -y"
         logger.info("Rendering video: {}".format(target))
         logger.debug(command)
         os.system(command)

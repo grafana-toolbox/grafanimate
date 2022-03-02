@@ -34,7 +34,6 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         """
         log.info("Starting Grafana at {}".format(self.baseurl))
 
-        self.fix_window_size()
         self.navigate(self.baseurl)
 
     def navigate(self, url):
@@ -51,25 +50,6 @@ class GrafanaWrapper(FirefoxMarionetteBase):
             with resource_stream("grafanimate", jsfile) as f:
                 javascript = f.read().decode("utf-8")
                 self.run_javascript(javascript)
-
-    def fix_window_size(self):
-        """
-        Work around FFmpeg errors like::
-
-          Input #0, image2, from './var/spool/DLOlE_Rmz/DLOlE_Rmz_*.png':
-            Duration: 00:00:28.75, start: 0.000000, bitrate: N/A
-              Stream #0:0: Video: png, rgba(pc), 1497x483, 4 fps, 4 tbr, 4 tbn, 4 tbc
-
-        [libx264 @ 0x7fcf0c001200] width not divisible by 2 (1497x483)
-
-        [libx264 @ 0x7fa917001200] height not divisible by 2 (1348x823)
-        """
-        window_size = self.get_window_rect()
-        if window_size["width"] % 2:
-            window_size["width"] -= 1
-        if window_size["height"] % 2:
-            window_size["height"] -= 1
-        self.set_window_size(window_size["width"], window_size["height"])
 
     def wait_for_grafana(self):
         """
