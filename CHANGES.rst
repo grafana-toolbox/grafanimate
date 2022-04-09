@@ -5,6 +5,10 @@ grafanimate changelog
 
 in progress
 ===========
+
+
+2022-04-10 0.7.0
+================
 - Rename ``dtstart``/``dtuntil`` to ``start``/``stop``
 - Rename ``interval`` to ``every``
 - Rename ``AnimationScenario.steps`` to ``AnimationScenario.sequences``
