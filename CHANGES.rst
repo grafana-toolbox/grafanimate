@@ -5,6 +5,9 @@ grafanimate changelog
 
 in progress
 ===========
+- Rename ``dtstart``/``dtuntil`` to ``start``/``stop``
+- Rename ``interval`` to ``every``
+- Rename ``AnimationScenario.steps`` to ``AnimationScenario.sequences``
 - Improve scope of values for ``every`` parameter. It will now accept relative
   humanized timestamps like ``2m30s``, ``1d12h`` or ``1.5 days``.
 - Allow relative timestamps / time ranges also for ``start`` and ``stop``
@@ -12,6 +15,7 @@ in progress
   combined with, e.g., ``stop=start+2m30s`` or ``start=-1h, stop=now``.
 - Add CI configuration for GHA
 - Enable support for relative timestamps with months and years, like ``1y3mo``.
+- Avoid ``ffmpeg``'s *height not divisible by 2* errors. Thanks, @cure!
 
 
 2021-11-17 0.6.0
