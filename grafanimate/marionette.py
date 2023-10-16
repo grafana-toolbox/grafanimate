@@ -109,7 +109,7 @@ class FirefoxMarionetteBase(object):
 
     @classmethod
     def find_firefox(cls):
-        candidates = where.where("firefox")
+        candidates = where.where("firefox-bin")
         candidates += [
             "/Applications/Firefox.app/Contents/MacOS/firefox-bin",
         ]
