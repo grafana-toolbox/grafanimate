@@ -25,10 +25,14 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         self,
         baseurl: t.Optional[str] = None,
         use_panel_events: bool = True,
+        window_size: t.Optional[tuple[int, int]] = None,
+        zoom_factor: float = 1.0,
         dry_run: bool = False,
     ):
         self.baseurl = baseurl
         self.use_panel_events = use_panel_events
+        self.window_size = window_size
+        self.zoom_factor = zoom_factor
         self.dry_run = dry_run
         log.info("Starting GrafanaWrapper on %s", baseurl)
         FirefoxMarionetteBase.__init__(self)
@@ -38,12 +42,17 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         Navigate to Grafana application and inject Grafana Sidecar service.
         """
         log.info("Starting Grafana at %s", self.baseurl)
-        self.set_window_size(1920, 1080)
-
+        if self.window_size:
+            self.set_window_size(
+                int(self.window_size[0]),
+                int(self.window_size[1] + (85 * self.zoom_factor)),
+            )
         self.navigate(self.baseurl)
 
         rect = self.get_window_rect()
-        self.marionette.set_window_rect(height=rect["height"], width=rect["width"])
+        self.marionette.set_window_rect(
+            height=int(rect["height"]), width=int(rect["width"])
+        )
 
     def navigate(self, url):
         # Navigate to resource URL.
@@ -51,6 +60,10 @@ class GrafanaWrapper(FirefoxMarionetteBase):
 
         # Wait for Grafana application to load.
         self.wait_for_grafana()
+
+        # Apply zoom factor to page.
+        if self.zoom_factor:
+            self.marionette.set_pref("layout.css.devPixelsPerPx", str(self.zoom_factor))
 
         # Load Javascript for GrafanaStudio sidecar service.
         jsfiles = ["grafana-util.js", "grafana-studio.js"]

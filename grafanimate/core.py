@@ -55,6 +55,8 @@ def make_grafana(
     grafana = GrafanaWrapper(
         baseurl=str(url),
         use_panel_events=options["use-panel-events"],
+        window_size=options["window-size"],
+        zoom_factor=options["zoom-factor"],
     )
     grafana.boot_firefox(headless=headless)
     grafana.boot_grafana()
