@@ -11,7 +11,7 @@ RUN \
     --mount=type=cache,id=apt,sharing=locked,target=/var/lib/apt \
     true \
     && apt-get update \
-    && apt-get install --no-install-recommends --no-install-suggests --yes git firefox-esr xvfb
+    && apt-get install --no-install-recommends --no-install-suggests --yes git ffmpeg firefox-esr xauth xvfb
 
 # Copy sources
 COPY . /src
