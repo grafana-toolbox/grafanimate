@@ -5,6 +5,7 @@ grafanimate changelog
 
 in progress
 ===========
+- Add Dockerfile, and publish OCI images to GHCR. Thanks, @intermittentnrg.
 
 
 2022-04-10 0.7.0
