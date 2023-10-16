@@ -153,6 +153,21 @@ any other Python module or file.
         --header-layout=studio --datetime-format=human-time --panel-id=6
 
 
+*******************
+Usage in Containers
+*******************
+
+You can use ``grafanimate`` with Docker and Podman. An OCI image is published
+to ``ghcr.io/panodata/grafanimate``.
+
+::
+
+    docker run --rm -it --volume=$(PWD)/animations:/animations ghcr.io/panodata/grafanimate \
+        --header-layout=no-chrome \
+        --video-fps=30 --video-framerate=30 \
+        --scenario=playdemo --output=./animations
+
+
 *******
 Gallery
 *******
