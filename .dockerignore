@@ -1,3 +1,14 @@
-.venv
-.git
-Dockerfile
+*
+!.git
+!examples
+!doc
+!docs
+!grafanimate
+!tests
+!LICENSE
+!MANIFEST.in
+!pyproject.toml
+!setup.py
+!*.ini
+!*.md
+!*.rst
