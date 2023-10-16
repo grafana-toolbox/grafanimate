@@ -22,7 +22,7 @@ on:
   # Remark: Activate only when needed, it will eat a lot of resources. The alternative
   #         is to build manually / on-demand, by using the `workflow_dispatch` feature,
   #         available through the GHA web UI.
-  # pull_request: ~
+  pull_request: ~
 
   # Produce a nightly image every day at 6 a.m. CEST.
   schedule:
