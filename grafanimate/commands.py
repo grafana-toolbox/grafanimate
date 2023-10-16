@@ -4,6 +4,7 @@ import json
 import logging
 import os
 import typing as t
+from ast import literal_eval
 from pathlib import Path
 
 from docopt import DocoptExit, docopt
@@ -50,6 +51,8 @@ def run():
       --dashboard-uid=<uid>         Grafana dashboard UID.
 
     Layout and scene options:
+      --window-size=<window-size>   Customize window size, e.g. `(1920, 1180)`
+      --zoom-factor=<zoom-factor>   Adjust zoom factor of page. [default: 1.0]
       --use-panel-events            Whether to enable using Grafana's panel events. [default: false]
                                     Caveat: Does not work for "d-solo" panels
 
@@ -155,6 +158,10 @@ def run():
     options["headless"] = asbool(options["headless"])
     if options["use-panel-events"]:
         options["exposure-time"] = 0
+    if options["window-size"]:
+        options["window-size"] = literal_eval(options["window-size"])
+    if options["zoom-factor"]:
+        options["zoom-factor"] = float(options["zoom-factor"])
 
     # Prepare rendering options.
     render_options = RenderingOptions(
