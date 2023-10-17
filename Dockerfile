@@ -4,8 +4,13 @@ RUN apt update && apt install -y --no-install-recommends \
     xvfb xauth firefox-esr \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Add Tini
+ENV TINI_VERSION v0.19.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
+
 COPY . /app
 WORKDIR /app
 RUN python3 setup.py develop
 
-ENTRYPOINT xvfb-run python -c "from grafanimate.commands import run; run()" "$@"
+ENTRYPOINT ["/tini", "--", "xvfb-run", "python", "-c", "from grafanimate.commands import run; run()"]
