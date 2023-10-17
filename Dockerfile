@@ -28,5 +28,10 @@ RUN apt-get --yes remove --purge git && apt-get --yes autoremove
 # Purge /src and /tmp directories.
 RUN rm -rf /src /tmp/*
 
-ENV PATH /usr/lib/firefox-esr:/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin
-CMD xvfb-run python -c 'from grafanimate.commands import run; run()'
+# Add Tini.
+ENV TINI_VERSION v0.19.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
+
+# Run grafananimate through tini and xvfb-run.
+ENTRYPOINT ["/tini", "--", "xvfb-run", "grafanimate"]
