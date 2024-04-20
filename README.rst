@@ -56,7 +56,7 @@ in its postprocessing subsystem.
 grafanimate
 ===========
 
-::
+.. code:: sh
 
     pip install grafanimate
 
@@ -114,7 +114,9 @@ A scenario definition:
     )
 
 
-In order to run a built-in scenario, invoke::
+In order to run a built-in scenario, invoke:
+
+.. code:: sh
 
     grafanimate --scenario=playdemo --output=./animations
 
@@ -131,7 +133,9 @@ Help
 ====
 
 For getting a detailed and descriptive overview about all available command
-line options, please invoke::
+line options, please invoke:
+
+.. code:: sh
 
     grafanimate --help
 
@@ -141,7 +145,7 @@ Examples
 Examples for scenario mode. Script your animations in file ``scenarios.py`` or
 any other Python module or file.
 
-::
+.. code:: sh
 
     # Use freely accessible `play.grafana.org` for demo purposes.
     grafanimate --scenario=playdemo --output=./animations
@@ -162,7 +166,7 @@ Usage in Containers
 You can use ``grafanimate`` with Docker and Podman. An OCI image is published
 to ``ghcr.io/panodata/grafanimate``.
 
-::
+.. code:: sh
 
     docker run --rm -it --volume=$(PWD)/animations:/animations ghcr.io/panodata/grafanimate \
         --header-layout=no-chrome \
@@ -289,7 +293,7 @@ to implement more complex animations on top of Grafana.
 Development
 ***********
 
-::
+.. code:: sh
 
     # Acquire sources.
     git clone https://github.com/panodata/grafanimate
