@@ -6,6 +6,7 @@ import logging
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Generator, List, Optional, Union
+from grafanimate.timeutil import RecurrenceInfo
 
 from dateutil.rrule import rrule
 
@@ -30,7 +31,8 @@ class AnimationSequence:
         self,
         start: Union[datetime, int, str],
         stop: Union[datetime, int, str],
-        every: str,
+        every: str = None,
+        recurrence: RecurrenceInfo = None,
         mode: Optional[SequencingMode] = SequencingMode.WINDOW,
     ):
 
@@ -45,7 +47,10 @@ class AnimationSequence:
 
         # Analyze `every` parameter and converge into `RecurrenceInfo`.
         # From `every` (interval designator), compute frequency, interval and delta.
-        self.recurrence = get_freq_delta(every)
+        if recurrence is not None:
+            self.recurrence = recurrence
+        else:
+            self.recurrence = get_freq_delta(every)
 
         self.mode = mode
         self.index = None

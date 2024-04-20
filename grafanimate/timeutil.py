@@ -17,9 +17,6 @@ class RecurrenceInfo:
     For feeding data to `dateutil.rrule.rrule`.
     """
 
-    # Original interval/windowing label.
-    every: str
-
     # One of `rrules`s DAILY, HOURLY, ...
     frequency: int
 
@@ -28,6 +25,9 @@ class RecurrenceInfo:
 
     # The segment duration, expressed as `relativedelta`.
     duration: relativedelta
+
+    # Original interval/windowing label.
+    every: str = None
 
 
 @dataclasses.dataclass
