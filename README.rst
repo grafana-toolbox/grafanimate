@@ -96,7 +96,9 @@ multiple scenarios.
 Synopsis
 ========
 
-A scenario definition::
+A scenario definition:
+
+.. code:: python
 
     AnimationScenario(
         grafana_url="https://play.grafana.org/",
@@ -259,7 +261,9 @@ in a more general way yet. Challenge accepted!
 
 Time warp
 =========
-At this programs' core is the code to `set time range in Grafana`_::
+At this programs' core is the code to `set time range in Grafana`_:
+
+.. code:: javascript
 
     timeSrv = angular.element('grafana-app').injector().get('timeSrv');
     timeSrv.setTime({from: "2015-10-01", to: "2018-12-31"});
