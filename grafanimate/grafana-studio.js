@@ -19,27 +19,18 @@ class GrafanaStudioSrv {
     this.$rootScope = $rootScope;
     this.$location = $location;
 
-    this.appElement = angular.element("grafana-app");
+    this.appElement = document.querySelector("grafana-app");
+
+    this.onDashboardLoad = this.onDashboardLoad.bind(this);
+    this.waitForDashboard = this.waitForDashboard.bind(this);
+
+    this.options = {};
+    this.all_data_loaded = false;
+    this.timerange = null;
 
     // Get references to Grafana components.
     // public/app/angular/registerComponents.ts
     // public/app/angular/AngularApp.ts
-    this.backendSrv = this.appElement.injector().get("backendSrv");
-    this.dashboardSrv = this.appElement.injector().get("dashboardSrv");
-    this.timeSrv = this.appElement.injector().get("timeSrv");
-    this.contextSrv = this.appElement.injector().get("contextSrv");
-
-    // Debugging.
-    /*
-        log("$rootScope:", this.$rootScope);
-        log("$location:", this.$location);
-        log("appElement:", this.appElement);
-        log("backendSrv:", this.backendSrv);
-        log("dashboardSrv:", this.dashboardSrv);
-        log("timeSrv:", this.timeSrv);
-        log("contextSrv:", this.contextSrv);
-        */
-
     this.onDashboardLoad = this.onDashboardLoad.bind(this);
     this.waitForDashboard = this.waitForDashboard.bind(this);
 
@@ -84,11 +75,8 @@ class GrafanaStudioSrv {
   }
 
   setTime(from, to) {
-    // Internal bookeeping for "collapse-datetime" layout.
-    this.timerange = { from: from, to: to };
-
-    // Propagate to Grafana service.
-    this.timeSrv.setTime(this.timerange);
+    __grafanaSceneContext.state.$timeRange.setState({ from: from, to: to});
+    __grafanaSceneContext.state.$timeRange.onRefresh();
   }
 
   getTime() {
@@ -101,7 +89,7 @@ class GrafanaStudioSrv {
 
         -- https://community.grafana.com/t/how-to-access-time-picker-from-to-within-a-text-panel-and-jquery/6071/3
         */
-    var timeRange = this.timeSrv.timeRange();
+    var timeRange = __grafanaSceneContext.state.$timeRange.getUrlState();
     return timeRange;
   }
 
@@ -126,14 +114,14 @@ class GrafanaStudioSrv {
 
   waitForDashboard(uid, resolve, reject) {
     log("waitForDashboard");
-    var dashboard = this.dashboardSrv.getCurrent();
+    var dashboard = __grafanaSceneContext._state;
     if (dashboard) {
       // Sanity check. Has the right dashboard been loaded actually?
       if (dashboard.uid == uid) {
         // Quick hack to remove specific panel from specific dashboard.
         // FIXME
         if (uid == "DLOlE_Rmz") {
-          dashboard.panels.shift();
+          __grafanaSceneContext.getDashboardPanels().shift();
         }
 
         // Resolve promise, thus progressing the pipeline.
@@ -193,15 +181,15 @@ class GrafanaStudioSrv {
     log("onDashboardLoad");
 
     // Acquire real dashboard model object.
-    var dashboard = this.dashboardSrv.getCurrent();
+    var dashboard = __grafanaSceneContext._state;
     //log('dashboard:', dashboard);
 
-    dashboard.events.on("render", function (event) {
+    __grafanaSceneContext._events.on("render", function (event) {
       log("================ DASHBOARD RENDER");
     });
 
     var _this = this;
-    dashboard.events.on("refresh", function (event) {
+    __grafanaSceneContext._events.on("refresh", function (event) {
       //log('================ DASHBOARD REFRESH');
 
       // Clear signal.
@@ -231,16 +219,18 @@ class GrafanaStudioSrv {
   onDashboardRefresh() {
     log("onDashboardRefresh");
 
-    var dashboard = this.dashboardSrv.getCurrent();
+    var dashboard = __grafanaSceneContext._state;
     var panel_id = this.options["panel-id"];
 
     // Wait for all panels to receive their data.
     var promises = [];
     var skipped = [];
-    dashboard.panels.forEach(function (panel) {
+    // __grafanaSceneContext.state.$variables._state.variables[0]._state.name 
+    // __grafanaSceneContext.getDashboardPanels()
+    __grafanaSceneContext.getDashboardPanels().forEach(function (panel) {
       // Skip all other panels when specific panel is selected.
       if (panel_id != undefined) {
-        if (panel.id != panel_id) {
+        if (panel._state.key != panel_id) {
           return;
         }
       }
@@ -248,8 +238,8 @@ class GrafanaStudioSrv {
       // Skip panels with type==row or type==text.
       //var whitelist = ['grafana-worldmap-panel', 'marcuscalidus-svg-panel'];
       var blacklist = ["row", "text", "timeseries", "dashlist"];
-      if (blacklist.includes(panel.type)) {
-        skipped.push({ id: panel.id, type: panel.type });
+      if (blacklist.includes(panel._state.pluginId)) {
+        skipped.push({ id: panel._state.key, type: panel._state.pluginId });
         return;
       }
 
@@ -257,13 +247,13 @@ class GrafanaStudioSrv {
 
       var promise = new Promise(function (resolve, reject) {
         // Previously, we used the `data-received` and `data-frames-received` events.
-        panel.events.on("render", function () {
-          log("--- render for panel.id:", panel.id);
+        panel._events.on("render", function () {
+          log("--- render for panel.id:", panel._state.key);
           resolve();
         });
-        panel.events.on("data-error", function (event) {
+        panel._events.on("data-error", function (event) {
           //console.error('--- PANEL DATA-ERROR', event);
-          console.warn("--- data-error for panel.id:", panel.id);
+          console.warn("--- data-error for panel.id:", panel._state.key);
           reject(event);
         });
       });
@@ -406,7 +396,8 @@ class GrafanaStudioSrv {
 
   getDashboardTitle() {
     // Build title from original one plus start time.
-    var dashboard = this.dashboardSrv.getCurrent();
+    
+    var dashboard = __grafanaSceneContext._state;
     var title = dashboard.title;
     if (!this.hasHeaderLayout("no-folder")) {
       title = dashboard.meta.folderTitle + " / " + title;
@@ -428,9 +419,6 @@ class GrafanaStudioSrv {
     var signature = $(".leaflet-control-attribution");
     if (!signature.data("manipulated")) {
       signature.data("manipulated", true);
-      var luftdaten_info = $(
-        '<a href="https://luftdaten.info/" title="luftdaten.info – Feinstaub selber messen &#8211; Open Data und Citizen Science aus Stuttgart">luftdaten.info</a>'
-      );
       var grafanimate = $(
         '<a href="https://github.com/panodata/grafanimate" title="grafanimate: Animate timeseries data with Grafana">grafanimate</a>'
       );
@@ -444,12 +432,5 @@ class GrafanaStudioSrv {
   }
 }
 
-// Register sidecar service with `grafana.core`.
-let coreModule = angular.module("grafana.core");
-coreModule.service("grafanaStudioSrv", GrafanaStudioSrv);
-
-// Acquire application element.
-var grafanaApp = angular.element("grafana-app");
-
 // Put service into global scope.
-window.grafanaStudio = grafanaApp.injector().get("grafanaStudioSrv");
+window.grafanaStudio = new GrafanaStudioSrv();
