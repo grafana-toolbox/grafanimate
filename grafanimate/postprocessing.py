@@ -74,11 +74,12 @@ class MediaProducer:
 
         """
         # One-step conversion.
+        ffmpeg -ss $START -i $IN_URL -t $LENGTH -filter_complex "fps=$FPS,scale=$WIDTH:-1:flags=lanczos,split=2 [a][b]; [a] palettegen [pal]; [b] [pal] paletteuse" out.gif
         ffmpeg -i dwd-cdc-2018-08.mov -filter_complex 'fps=10,scale=480:-1:flags=lanczos,split [o1] [o2];[o1] palettegen [p]; [o2] fifo [o3];[o3] [p] paletteuse' dwd-cdc-2018-08-v2.gif -y
         """
 
         # TODO: Expose `fps` and `scale` values.
-        command = f"ffmpeg -i '{source}' -filter_complex 'fps={self.options.gif_fps},scale={self.options.gif_width}:-1:flags=lanczos,split [o1] [o2];[o1] palettegen [p]; [o2] fifo [o3];[o3] [p] paletteuse' '{target}' -y"
+        command = f"ffmpeg -i '{source}' -filter_complex 'fps={self.options.gif_fps},scale={self.options.gif_width}:-1:flags=lanczos,split [o1] [o2];[o1] palettegen [p]; [o2] [p] paletteuse' '{target}' -y"
         logger.info("Rendering GIF: {}".format(target))
         logger.debug(command)
         os.system(command)
