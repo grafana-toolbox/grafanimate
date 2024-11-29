@@ -7,7 +7,8 @@ import time
 
 from marionette_driver import Wait
 from marionette_driver.errors import TimeoutException
-from pkg_resources import resource_stream
+
+from importlib.resources import read_text
 
 from grafanimate.marionette import FirefoxMarionetteBase
 from grafanimate.model import AnimationFrame
@@ -47,9 +48,8 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         # Load Javascript for GrafanaStudio sidecar service.
         jsfiles = ["grafana-util.js", "grafana-studio.js"]
         for jsfile in jsfiles:
-            with resource_stream("grafanimate", jsfile) as f:
-                javascript = f.read().decode("utf-8")
-                self.run_javascript(javascript)
+            javascript = read_text("grafanimate", jsfile)
+            self.run_javascript(javascript)
 
     def wait_for_grafana(self):
         """
