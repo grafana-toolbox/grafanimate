@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # (c) 2018-2021 Andreas Motl <andreas.motl@panodata.org>
 # License: GNU Affero General Public License, Version 3
+import importlib
 import logging
 from pathlib import Path
 
-import pkg_resources
 from furl import furl
 from munch import Munch
 
@@ -65,7 +65,7 @@ def load_module(modname):
     if Path(modname).exists():
         module = import_module("<unknown>", modname)
     else:
-        module = pkg_resources.EntryPoint(None, modname).resolve()
+        module = importlib.import_module(modname)
     return module
 
 
