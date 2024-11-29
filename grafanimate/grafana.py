@@ -65,6 +65,8 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         log.info("Logging in")
         javascript = mkjscall("grafanaStudio.login", username, password)
         self.run_javascript(javascript)
+        # the login works, but it is not shown even after reload
+        # self.navigate(self.baseurl)
 
     def open_dashboard(self, uid, options=None):
         """
@@ -98,6 +100,9 @@ class GrafanaWrapper(FirefoxMarionetteBase):
 
     def clear_all_data_received(self):
         return self.calljs("grafanaStudio.hasAllData", False)
+
+    def update_tags(self):
+        return self.calljs("grafanaStudio.improvePanelChrome")
 
     def timewarp(self, frame: AnimationFrame, dry_run: bool = False):
         """

@@ -169,7 +169,7 @@ def run():
         raise KeyError("Dashboard UID is mandatory, either supply it on the command line or via scenario file")
 
     # Open a Grafana site in Firefox, using Marionette.
-    grafana = make_grafana(scenario.grafana_url, options["use-panel-events"])
+    grafana = make_grafana(scenario.grafana_url, scenario.dashboard_uid, options)
 
     # Invoke pipeline: Run stop motion animation, producing single frames.
     storage: TemporaryStorage = run_animation_scenario(scenario=scenario, grafana=grafana, options=options)
