@@ -44,7 +44,7 @@ env:
 jobs:
 
   oci:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: ${{ ! (startsWith(github.actor, 'dependabot') || github.event.pull_request.head.repo.fork ) }}
 
     steps:
@@ -81,7 +81,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Cache OCI layers
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
@@ -104,7 +104,7 @@ jobs:
           password: ${{ github.token }}
 
       - name: Build and push image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ${{ env.RECIPE_PATH }}/Dockerfile
