@@ -56,9 +56,14 @@ test = [
     "freezegun >=1, <2",
 ]
 
-
 [project.scripts]
 grafanimate = "grafanimate.commands:run"
+
+[project.urls]
+Homepage = "https://github.com/grafana-toolbox/grafanimate"
+Repository = "https://github.com/grafana-toolbox/grafanimate"
+Issues = "https://github.com/grafana-toolbox/grafanimate/issues"
+
 
 [tool.setuptools]
 packages = {find = {}}

@@ -8,23 +8,23 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       max-parallel: 5
       matrix:
-        python-version: ['3.6', '3.11']
+        python-version: ['3.9', '3.13']
 
     name: Python ${{ matrix.python-version }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
 
     - name: Set timezone
-      uses: szenius/set-timezone@v1.0
+      uses: szenius/set-timezone@v2.0
 
     - name: Run tests
       run: make test
