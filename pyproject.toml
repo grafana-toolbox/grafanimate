@@ -1,3 +1,72 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "grafanimate"
+version = "0.8.0"
+description = "Animate timeseries data with Grafana"
+authors = [{ name = "Andreas Motl", email = "andreas.motl@panodata.org" }]
+license = { text = "AGPL 3, EUPL 1.2" }
+readme = "README.rst"
+keywords = ["grafana", "animate", "animation", "automation", "time", "gif", "video"]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Manufacturing",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: System Administrators",
+    "Intended Audience :: Telecommunications Industry",
+    "Topic :: Communications",
+    "Topic :: Database",
+    "Topic :: Internet",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Scientific/Engineering :: Interface Engine/Protocol Translator",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Topic :: Software Development :: Embedded Systems",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: System :: Archiving",
+    "Topic :: System :: Networking :: Monitoring",
+    "Operating System :: POSIX",
+    "Operating System :: Unix",
+    "Operating System :: MacOS",
+]
+
+requires-python = ">=3.9, <3.14"
+
+dependencies = [
+    "munch >=4",
+    "docopt >=0.6, <1",
+    "tqdm >=4, <5",
+    "unidecode >=1, <2",
+    "furl >=2, <3",
+    "where >=1, <2",
+    "marionette_driver >=3.4, <4",
+    "python-dateutil >=2.7, <3",
+    "datetime-interval ==0.2",
+    "pytimeparse2 >=1.4, <2",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest >=6, <7",
+    "freezegun >=1, <2",
+]
+
+
+[project.scripts]
+grafanimate = "grafanimate.commands:run"
+
+[tool.setuptools]
+packages = {find = {}}
+
+[tool.setuptools.package-data]
+"grafanimate" = ["*.js"]
+
+
 [tool.isort]
 profile = "black"
 src_paths = ["grafanimate", "tests"]
