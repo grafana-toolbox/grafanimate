@@ -78,6 +78,9 @@ def run():
                                     - human-datetime:       on 2018-08-14 at 03:16:05
 
                                     When left empty, the default is determined by the configured interval.
+      --headless                    Use headless firefox if set, else render with frontend. [default: false]
+                                    Setting this to true allows to render whole dashboards.
+                                    Otherwise the screensize determines the maximum height.
 
     Capturing options:
       --exposure-time=<seconds>     How long to wait for each frame to complete rendering. [default: 0.5]
@@ -141,6 +144,7 @@ def run():
 
     options["exposure-time"] = float(options["exposure-time"])
     options["use-panel-events"] = asbool(options["use-panel-events"])
+    options["headless"] = asbool(options["headless"])
     if options["use-panel-events"]:
         options["exposure-time"] = 0
 
@@ -169,7 +173,7 @@ def run():
         raise KeyError("Dashboard UID is mandatory, either supply it on the command line or via scenario file")
 
     # Open a Grafana site in Firefox, using Marionette.
-    grafana = make_grafana(scenario.grafana_url, scenario.dashboard_uid, options)
+    grafana = make_grafana(scenario.grafana_url, scenario.dashboard_uid, options, options["headless"])
 
     # Invoke pipeline: Run stop motion animation, producing single frames.
     storage: TemporaryStorage = run_animation_scenario(scenario=scenario, grafana=grafana, options=options)
