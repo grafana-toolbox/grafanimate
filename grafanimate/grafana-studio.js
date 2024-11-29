@@ -49,24 +49,20 @@ class GrafanaStudioSrv {
     log("Invoking login");
 
     // https://github.com/grafana/grafana/blob/v8.2.4/public/app/core/components/Login/LoginCtrl.tsx#L85-L106
-    this.backendSrv
-      .post("/login", { user: username, password: password })
-      .then((result) => {
-        log("Login succeeded:", result);
-
-        // Variant 1: Use window.location.href to force page reload
-        //window.location.assign(grafanaBootData.settings.appSubUrl + '/');
-
-        // Variant 2: Just hide the alert popup.
-        var login_alert = $(".page-alert-list").findByContentText("Logged in");
-        login_alert.hide();
-      })
-      .catch((ex) => {
-        console.error("Login failed:", ex);
-        // TODO: Propagate error and quit Firefox?
-      });
+    $.post({
+        url: '/login',  // The URL where the POST request is sent
+        contentType: 'application/json', 
+        data: JSON.stringify({ user: username, password: password }),
+        success: function(response) {
+            console.log('Success:', response);  // Handle success
+        },
+        error: function(xhr, status, error) {
+            console.log('Login Failed:', error);  // Handle error
+        }
+    });
   }
 
+  // I don't think the events work in grafana 11
   hasAllData(value) {
     if (value !== undefined) {
       this.all_data_loaded = value;
@@ -118,12 +114,6 @@ class GrafanaStudioSrv {
     if (dashboard) {
       // Sanity check. Has the right dashboard been loaded actually?
       if (dashboard.uid == uid) {
-        // Quick hack to remove specific panel from specific dashboard.
-        // FIXME
-        if (uid == "DLOlE_Rmz") {
-          __grafanaSceneContext.getDashboardPanels().shift();
-        }
-
         // Resolve promise, thus progressing the pipeline.
         resolve(dashboard);
         return;
@@ -137,38 +127,26 @@ class GrafanaStudioSrv {
     var $location = this.$location;
     var _this = this;
     var promise = new Promise(function (resolve, reject) {
-      // Wait for dashboard being loaded.
-      $rootScope.$apply(function ($rootScope) {
-        log("loadDashboard: Installing event handlers");
+      // Compute dashboard url.
+      var view = "d";
+      var slug = "foo";
+      var query = "";
+      if (_this.options["dashboard-view"]) {
+        view = _this.options["dashboard-view"];
+      }
+      if (_this.options["panel-id"]) {
+        query = "?panelId=" + _this.options["panel-id"] + "&fullscreen";
+      }
+      var url = "/" + view + "/" + uid + "/" + slug + query;
 
-        _this.waitForDashboard(uid, resolve, reject);
-
-        $rootScope.$on("all-data-received", function (event, result) {
-          //log("Received 'all-data-received' event", event, result);
-          _this.hasAllData(true);
-        });
-
-        // Compute dashboard url.
-        var view = "d";
-        var slug = "foo";
-        var query = "";
-        if (_this.options["dashboard-view"]) {
-          view = _this.options["dashboard-view"];
-        }
-        if (_this.options["panel-id"]) {
-          query = "?panelId=" + _this.options["panel-id"] + "&fullscreen";
-        }
-        var url = "/" + view + "/" + uid + "/" + slug + query;
-
-        // Trigger the dashboard loading.
-        // https://docs.angularjs.org/api/ng/service/$location#url
-        // https://stackoverflow.com/questions/16450125/angularjs-redirect-from-outside-angular/16450748#16450748
-        // TODO: If you need to automatically navigate the user to a new place in the application this should
-        //       be done via the LocationSrv and it will make sure to update the application state accordingly.
-        //       https://grafana.com/docs/grafana/latest/packages_api/runtime/locationsrv/
-        //       https://community.grafana.com/t/how-can-i-change-template-varibale-in-a-react-plugin-in-grafana-7-0/31345/2
-        $location.url(url);
-      });
+      // Trigger the dashboard loading.
+      // https://docs.angularjs.org/api/ng/service/$location#url
+      // https://stackoverflow.com/questions/16450125/angularjs-redirect-from-outside-angular/16450748#16450748
+      // TODO: If you need to automatically navigate the user to a new place in the application this should
+      //       be done via the LocationSrv and it will make sure to update the application state accordingly.
+      //       https://grafana.com/docs/grafana/latest/packages_api/runtime/locationsrv/
+      //       https://community.grafana.com/t/how-can-i-change-template-varibale-in-a-react-plugin-in-grafana-7-0/31345/2
+      $location.url(url);
 
       // Time out this promise after a while.
       setTimeout(reject, 10000, "Timeout while loading dashboard " + uid);
@@ -225,8 +203,9 @@ class GrafanaStudioSrv {
     // Wait for all panels to receive their data.
     var promises = [];
     var skipped = [];
+    // we can also access variables, but no way to manipulate from JS found yet
     // __grafanaSceneContext.state.$variables._state.variables[0]._state.name 
-    // __grafanaSceneContext.getDashboardPanels()
+  
     __grafanaSceneContext.getDashboardPanels().forEach(function (panel) {
       // Skip all other panels when specific panel is selected.
       if (panel_id != undefined) {
@@ -286,24 +265,6 @@ class GrafanaStudioSrv {
 
       // Add some padding to content top.
       $(".main-view").css("padding-top", "1rem");
-
-      // Remove left side menu.
-      $(".sidemenu").remove();
-
-      // Adjust navigation bar.
-      //$('.navbar').css('padding-left', '15px');
-      $(".navbar").css({
-        background: "unset",
-        "box-shadow": "unset",
-        "border-bottom": "unset",
-      });
-
-      // Clean up dashboard title widget.
-      $(".navbar-page-btn").find(".fa-caret-down").remove();
-      $(".navbar-page-btn").find(".gicon-dashboard").remove();
-
-      // Clean up navigation buttons.
-      $(".navbar-buttons--tv").remove();
     }
 
     // Adjust header font size. v1.
@@ -351,43 +312,42 @@ class GrafanaStudioSrv {
       $(".leaflet-control-zoom").remove();
     }
 
-    // Collapse datetime into title.
-    if (this.hasHeaderLayout("collapse-datetime", "studio")) {
-      // Build title from original one plus start time.
-      var title = this.getDashboardTitle();
+    // Build title from original one plus start time.
+    var title = this.getDashboardTitle();
 
-      // Custom datetime format.
-      var infix = " at ";
-      var datetime_format = this.options["datetime-format"];
-      if (datetime_format) {
-        var timerange = this.getTime();
-        //log('timerange:', timerange);
-        var dtstart;
-        if (datetime_format == "human-date") {
-          infix = "";
-          dtstart = " on " + timerange.from.format("YYYY-MM-DD");
-        } else if (datetime_format == "human-time") {
-          infix = "";
-          dtstart = " at " + timerange.from.format("HH:mm:ss");
-        } else if (datetime_format == "human-datetime") {
-          // Datetime format naming is "on DATE at TIME".
-          // https://english.stackexchange.com/questions/182660/on-vs-at-with-date-and-time/182663#182663
-          infix = "";
-          dtstart =
-            " on " +
-            timerange.from.format("YYYY-MM-DD") +
-            " at " +
-            timerange.from.format("HH:mm:ss");
-        } else {
-          dtstart = timerange.from.format(datetime_format);
-        }
-        title += infix + dtstart;
-      } else if (this.timerange) {
-        var dtstart = this.timerange.from;
-        title += infix + dtstart;
+    // Custom datetime format.
+    var infix = " at ";
+    var datetime_format = this.options["datetime-format"];
+    if (datetime_format) {
+      var timerange = this.getTime();
+      //log('timerange:', timerange);
+      var dtstart;
+      if (datetime_format == "human-date") {
+        infix = "";
+        dtstart = " on " + timerange.from.format("YYYY-MM-DD");
+      } else if (datetime_format == "human-time") {
+        infix = "";
+        dtstart = " at " + timerange.from.format("HH:mm:ss");
+      } else if (datetime_format == "human-datetime") {
+        // Datetime format naming is "on DATE at TIME".
+        // https://english.stackexchange.com/questions/182660/on-vs-at-with-date-and-time/182663#182663
+        infix = "";
+        dtstart =
+          " on " +
+          timerange.from.format("YYYY-MM-DD") +
+          " at " +
+          timerange.from.format("HH:mm:ss");
+      } else {
+        dtstart = timerange.from.format(datetime_format);
       }
+      title += infix + dtstart;
+    } else {
+      var dtstart = this.getTime().from;
+      title += infix + dtstart;
+    }
 
-      $(".navbar-page-btn").text(title);
+    if (this.options["panel-id"] != undefined){
+      $("h2").text(title)
     }
 
     // Add attribution content.
@@ -406,6 +366,7 @@ class GrafanaStudioSrv {
   }
 
   setKioskMode() {
+    // not working in grafana 11
     // Enter kiosk/fullscreen mode.
     this.$rootScope.appEvent("toggle-kiosk-mode");
 
@@ -416,11 +377,11 @@ class GrafanaStudioSrv {
   addAttribution() {
     // Hijack Leaflet attribution area for Grafana and grafanimate.
     // TODO: Use alternative place if there 's not Worldmap in sight.
-    var signature = $(".leaflet-control-attribution");
+    var signature = $(".ol-attribution, .leaflet-control-attribution");
     if (!signature.data("manipulated")) {
       signature.data("manipulated", true);
       var grafanimate = $(
-        '<a href="https://github.com/panodata/grafanimate" title="grafanimate: Animate timeseries data with Grafana">grafanimate</a>'
+        '<a href="https://github.com/grafana-toolbox/grafanimate" title="grafanimate: Animate timeseries data with Grafana">grafanimate</a>'
       );
       var grafana = $(
         '<a href="https://grafana.com/" title="Grafana: The leading open source software for time series analytics">Grafana</a>'

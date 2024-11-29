@@ -17,7 +17,7 @@ from grafanimate.util import as_list, filter_dict, import_module
 log = logging.getLogger(__name__)
 
 
-def make_grafana(url, use_panel_events) -> GrafanaWrapper:
+def make_grafana(url: str, dashboard_uid: str, options: dict) -> GrafanaWrapper:
 
     do_login = False
     url = furl(url)
@@ -28,7 +28,18 @@ def make_grafana(url, use_panel_events) -> GrafanaWrapper:
         url.username = None
         url.password = None
 
-    grafana = GrafanaWrapper(baseurl=str(url), use_panel_events=use_panel_events)
+    view = "d"
+    slug = "foo"
+    query = ""
+    if options["dashboard-view"]:
+        view = options["dashboard-view"]
+    if options["panel-id"]:
+        query = "?panelId=" + options["panel-id"] + "&__feature.dashboardSceneSolo&fullscreen"
+
+    url = str(url) + view + "/" + dashboard_uid + "/" + slug + query;
+    print(url)
+
+    grafana = GrafanaWrapper(baseurl=str(url), use_panel_events=options["use-panel-events"])
     grafana.boot_firefox(headless=False)
     grafana.boot_grafana()
 
