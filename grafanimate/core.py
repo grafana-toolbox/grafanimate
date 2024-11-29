@@ -17,7 +17,7 @@ from grafanimate.util import as_list, filter_dict, import_module
 log = logging.getLogger(__name__)
 
 
-def make_grafana(url: str, dashboard_uid: str, options: dict) -> GrafanaWrapper:
+def make_grafana(url: str, dashboard_uid: str, options: dict, headless=False) -> GrafanaWrapper:
 
     do_login = False
     url = furl(url)
@@ -40,7 +40,7 @@ def make_grafana(url: str, dashboard_uid: str, options: dict) -> GrafanaWrapper:
     print(url)
 
     grafana = GrafanaWrapper(baseurl=str(url), use_panel_events=options["use-panel-events"])
-    grafana.boot_firefox(headless=False)
+    grafana.boot_firefox(headless=headless)
     grafana.boot_grafana()
 
     if do_login:

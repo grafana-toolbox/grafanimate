@@ -172,11 +172,12 @@ class FirefoxMarionetteBase(object):
         """
         Return screenshot from element.
         """
-        image = self.marionette.screenshot(element=element, format="binary")
+        image = self.marionette.screenshot(element=element, format="binary", full=False)
         return image
 
     def set_window_size(self, width, height):
         self.marionette.set_window_rect(width=width, height=height)
 
     def get_window_rect(self):
-        return self.marionette.window_rect
+        # this is the main content size
+        return self.marionette.find_element('id', 'pageContent').rect
