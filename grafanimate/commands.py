@@ -48,11 +48,11 @@ def run():
 
     Layout and scene options:
       --use-panel-events            Whether to enable using Grafana's panel events. [default: false]
-                                    Caveat: Used to work properly with Angular-based panels like `graph`.
-                                            Stopped working with React-based panels like `timeseries`.
+                                    Caveat: Does not work for "d-solo" panels
 
       --panel-id=<id>               Render single panel only by navigating to "panelId=<id>&fullscreen".
       --dashboard-view=<mode>       Use Grafana's "d-solo" view for rendering single panels without header.
+                                    "d-solo" is incompatible with the "use-panel-events" option
 
       --header-layout=<layout>      The header rendering subsystem offers different modes
                                     for amending the vanilla Grafana user interface.
@@ -84,6 +84,7 @@ def run():
 
     Capturing options:
       --exposure-time=<seconds>     How long to wait for each frame to complete rendering. [default: 0.5]
+                                    Caveat: Is ignored when use-panel-events is set
 
     Rendering options:
       --video-framerate=<rate>      Framerate to apply when recording the video. This value will get propagated

@@ -9,15 +9,11 @@
 */
 
 class GrafanaStudioSrv {
-  /** @ngInject */
-  constructor($rootScope, $location) {
+  constructor() {
     console.info("Starting GrafanaStudio sidecar service");
 
     this.grafanaVersion = window.grafanaBootData.settings.buildInfo.version;
-    log("Grafana version:", this.grafanaVersion);
-
-    this.$rootScope = $rootScope;
-    this.$location = $location;
+    console.log("Grafana version:", this.grafanaVersion);
 
     this.appElement = document.querySelector("grafana-app");
 
@@ -25,28 +21,11 @@ class GrafanaStudioSrv {
     this.waitForDashboard = this.waitForDashboard.bind(this);
 
     this.options = {};
-    this.all_data_loaded = false;
-    this.timerange = null;
-
-    // Get references to Grafana components.
-    // public/app/angular/registerComponents.ts
-    // public/app/angular/AngularApp.ts
-    this.onDashboardLoad = this.onDashboardLoad.bind(this);
-    this.waitForDashboard = this.waitForDashboard.bind(this);
-
-    // FIXME: Maybe stuff this into this.dashboardSrv.dash?
-    //        GrafanaStudioSrv is actually a singleton, right?
-
-    // TODO: Create a DashboardController instance per call of "openDashboard" and hold state variables
-    //       like "all_data_loaded" or "options" there as they are actually per-dashboard!
-
-    this.options = {};
-    this.all_data_loaded = false;
     this.timerange = null;
   }
 
   login(username, password) {
-    log("Invoking login");
+    console.log("Invoking login");
 
     // https://github.com/grafana/grafana/blob/v8.2.4/public/app/core/components/Login/LoginCtrl.tsx#L85-L106
     $.post({
@@ -62,12 +41,8 @@ class GrafanaStudioSrv {
     });
   }
 
-  // I don't think the events work in grafana 11
   hasAllData(value) {
-    if (value !== undefined) {
-      this.all_data_loaded = value;
-    }
-    return this.all_data_loaded;
+    return document.querySelector('[aria-label="Refresh"]') && !document.querySelector('[aria-label="Cancel"]')
   }
 
   setTime(from, to) {
@@ -76,17 +51,7 @@ class GrafanaStudioSrv {
   }
 
   getTime() {
-    /*
-        For fetching the current timeRange values, use::
-
-            var timeRange = angular.element('grafana-app').injector().get('timeSrv').timeRange();
-            var temp_date_from = new Date(timeRange.from);
-            var temp_date_to = new Date(timeRange.to);
-
-        -- https://community.grafana.com/t/how-to-access-time-picker-from-to-within-a-text-panel-and-jquery/6071/3
-        */
-    var timeRange = __grafanaSceneContext.state.$timeRange.getUrlState();
-    return timeRange;
+    return __grafanaSceneContext.state.$timeRange.getUrlState();
   }
 
   openDashboard(uid, options) {
@@ -94,11 +59,13 @@ class GrafanaStudioSrv {
     console.info("Opening dashboard", uid, options);
     //_.(this.options).extend(options);
     _.extend(this.options, options);
+    // TODO while loadDashboard does not properly work, we need to apply customization ourselves
+    this.onDashboardLoad();
     this.loadDashboard(uid).then(this.onDashboardLoad);
   }
 
   hasHeaderLayout() {
-    var header_layout = this.options["header-layout"];
+    var header_layout = this.options["header-layout"] || [];
     var layouts = Array.prototype.slice.call(arguments);
     for (var layout of layouts) {
       if (header_layout.includes(layout)) {
@@ -109,7 +76,7 @@ class GrafanaStudioSrv {
   }
 
   waitForDashboard(uid, resolve, reject) {
-    log("waitForDashboard");
+    console.log("waitForDashboard");
     var dashboard = __grafanaSceneContext._state;
     if (dashboard) {
       // Sanity check. Has the right dashboard been loaded actually?
@@ -123,8 +90,6 @@ class GrafanaStudioSrv {
   }
 
   loadDashboard(uid) {
-    var $rootScope = this.$rootScope;
-    var $location = this.$location;
     var _this = this;
     var promise = new Promise(function (resolve, reject) {
       // Compute dashboard url.
@@ -139,6 +104,9 @@ class GrafanaStudioSrv {
       }
       var url = "/" + view + "/" + uid + "/" + slug + query;
 
+      // TODO We need a replacement for Grafana 11 for this
+      // which opens a dashboard without a reload
+
       // Trigger the dashboard loading.
       // https://docs.angularjs.org/api/ng/service/$location#url
       // https://stackoverflow.com/questions/16450125/angularjs-redirect-from-outside-angular/16450748#16450748
@@ -146,7 +114,7 @@ class GrafanaStudioSrv {
       //       be done via the LocationSrv and it will make sure to update the application state accordingly.
       //       https://grafana.com/docs/grafana/latest/packages_api/runtime/locationsrv/
       //       https://community.grafana.com/t/how-can-i-change-template-varibale-in-a-react-plugin-in-grafana-7-0/31345/2
-      $location.url(url);
+      //window.location.assign(url);
 
       // Time out this promise after a while.
       setTimeout(reject, 10000, "Timeout while loading dashboard " + uid);
@@ -156,29 +124,20 @@ class GrafanaStudioSrv {
   }
 
   onDashboardLoad() {
-    log("onDashboardLoad");
-
-    // Acquire real dashboard model object.
-    var dashboard = __grafanaSceneContext._state;
-    //log('dashboard:', dashboard);
+    console.log("onDashboardLoad");
 
     __grafanaSceneContext._events.on("render", function (event) {
-      log("================ DASHBOARD RENDER");
+      console.log("================ DASHBOARD RENDER");
     });
 
     var _this = this;
     __grafanaSceneContext._events.on("refresh", function (event) {
-      //log('================ DASHBOARD REFRESH');
-
+      console.log('================ DASHBOARD REFRESH');
       // Clear signal.
-      _this.hasAllData(false);
 
       // Adjust user interface on dashboard refresh.
       _this.improveDashboardChrome();
       _this.improvePanelChrome();
-
-      // Watch dashboard for panel data to arrive.
-      _this.onDashboardRefresh();
     });
 
     // Adjust user interface on dashboard load.
@@ -186,80 +145,15 @@ class GrafanaStudioSrv {
     if (this.hasHeaderLayout("no-chrome", "studio")) {
       this.setKioskMode();
     }
-    //_this.improveDashboardChrome();
-
-    // FIXME: Q: Really?
-    //        A: Yes, seems to be required at least for the "cdc_maps" scenario
-    //           as there won't be any refresh event to catch at first hand.
-    _this.onDashboardRefresh();
-  }
-
-  onDashboardRefresh() {
-    log("onDashboardRefresh");
-
-    var dashboard = __grafanaSceneContext._state;
-    var panel_id = this.options["panel-id"];
-
-    // Wait for all panels to receive their data.
-    var promises = [];
-    var skipped = [];
-    // we can also access variables, but no way to manipulate from JS found yet
-    // __grafanaSceneContext.state.$variables._state.variables[0]._state.name 
-  
-    __grafanaSceneContext.getDashboardPanels().forEach(function (panel) {
-      // Skip all other panels when specific panel is selected.
-      if (panel_id != undefined) {
-        if (panel._state.key != panel_id) {
-          return;
-        }
-      }
-
-      // Skip panels with type==row or type==text.
-      //var whitelist = ['grafana-worldmap-panel', 'marcuscalidus-svg-panel'];
-      var blacklist = ["row", "text", "timeseries", "dashlist"];
-      if (blacklist.includes(panel._state.pluginId)) {
-        skipped.push({ id: panel._state.key, type: panel._state.pluginId });
-        return;
-      }
-
-      log("Installing event handlers for panel:", panel);
-
-      var promise = new Promise(function (resolve, reject) {
-        // Previously, we used the `data-received` and `data-frames-received` events.
-        panel._events.on("render", function () {
-          log("--- render for panel.id:", panel._state.key);
-          resolve();
-        });
-        panel._events.on("data-error", function (event) {
-          //console.error('--- PANEL DATA-ERROR', event);
-          console.warn("--- data-error for panel.id:", panel._state.key);
-          reject(event);
-        });
-      });
-      promises.push(promise);
-    });
-    if (skipped.length) {
-      log("Will not install event handlers for panels:", skipped);
-    }
-    if (promises.length) {
-      log("Promises for panel event handlers:", promises);
-    }
-
-    // Consolidate all promises into single one.
-    // TODO: What about the error case? Should call `.hasAllData(false)`?
-    // TODO: Q: What if promises is an empty array?
-    //       A: It will resolve successfully, which might not be what we want.
-    var _this = this;
-    Promise.all(promises)
-      .then(function (event) {
-        _this.$rootScope.$emit("all-data-received", dashboard);
-      })
-      .catch(function (error) {
-        console.error("Unable to receive data:", error);
-      });
   }
 
   improveDashboardChrome() {
+    // undock menu if visible
+    if (document.querySelector('[aria-label="Undock menu"]')) {
+      document.querySelector('[aria-label="Undock menu"]').click()
+    }
+
+    // below CSS properteis are not working with Grafana 11 anymore
     if (this.hasHeaderLayout("no-chrome", "studio")) {
       //this.setKioskMode();
 
@@ -366,12 +260,10 @@ class GrafanaStudioSrv {
   }
 
   setKioskMode() {
-    // not working in grafana 11
-    // Enter kiosk/fullscreen mode.
-    this.$rootScope.appEvent("toggle-kiosk-mode");
-
-    // Exit kiosk mode.
-    //this.$rootScope.appEvent('toggle-kiosk-mode', { exit: true });
+    if (!document.querySelector('[title="Enable kiosk mode"]')) {
+      document.querySelector('[title="Toggle top search bar"]').click()
+    }
+    document.querySelector('[title="Enable kiosk mode"]').click()
   }
 
   addAttribution() {

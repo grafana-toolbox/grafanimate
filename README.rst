@@ -120,6 +120,11 @@ In order to run a built-in scenario, invoke:
 
     grafanimate --scenario=playdemo --output=./animations
 
+To use the headless mode which renders all panels on a dashboard and use panel events instead of waiting a fixed duration run
+
+.. code:: sh
+
+    grafanimate --scenario=playdemo --output=./animations--headless --use-panel-events
 
 Details
 =======
@@ -269,8 +274,8 @@ At this programs' core is the code to `set time range in Grafana`_:
 
 .. code:: javascript
 
-    timeSrv = angular.element('grafana-app').injector().get('timeSrv');
-    timeSrv.setTime({from: "2015-10-01", to: "2018-12-31"});
+    __grafanaSceneContext.state.$timeRange.setState({ from: from, to: to});
+    __grafanaSceneContext.state.$timeRange.onRefresh();
 
 Rendering engine
 ================
