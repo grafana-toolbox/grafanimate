@@ -1,14 +1,12 @@
-# -*- coding: utf-8 -*-
 # (c) 2018-2021 Andreas Motl <andreas.motl@panodata.org>
 # License: GNU Affero General Public License, Version 3
 import json
 import logging
 import time
+from importlib.resources import read_text
 
 from marionette_driver import Wait
 from marionette_driver.errors import TimeoutException
-
-from importlib.resources import read_text
 
 from grafanimate.marionette import FirefoxMarionetteBase
 from grafanimate.model import AnimationFrame
@@ -22,7 +20,9 @@ class GrafanaWrapper(FirefoxMarionetteBase):
     https://marionette-client.readthedocs.io/en/master/interactive.html
     """
 
-    def __init__(self, baseurl: str = None, use_panel_events: bool = True, dry_run: bool = False):
+    def __init__(
+        self, baseurl: str = None, use_panel_events: bool = True, dry_run: bool = False
+    ):
         self.baseurl = baseurl
         self.use_panel_events = use_panel_events
         self.dry_run = dry_run
@@ -33,8 +33,8 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         """
         Navigate to Grafana application and inject Grafana Sidecar service.
         """
-        log.info("Starting Grafana at {}".format(self.baseurl))
-        self.set_window_size(1920,1080)
+        log.info("Starting Grafana at %s", self.baseurl)
+        self.set_window_size(1920, 1080)
 
         self.navigate(self.baseurl)
 
@@ -42,7 +42,6 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         self.marionette.set_window_rect(height=rect["height"], width=rect["width"])
 
     def navigate(self, url):
-
         # Navigate to resource URL.
         self.marionette.navigate(url)
 
@@ -112,7 +111,7 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         """
 
         # Notify user.
-        message = "Timewarp to {} -> {}".format(frame.timerange.start, frame.timerange.stop)
+        message = f"Timewarp to {frame.timerange.start} -> {frame.timerange.stop}"
         log.info(message)
         self.console_log(message)
 
@@ -153,7 +152,9 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         # https://github.com/devtools-html/har-export-trigger/issues/27#issuecomment-424777524
         if not silent:
             log.debug("Running Javascript: %s", sourcecode)
-        return self.marionette.execute_script(sourcecode, sandbox=None, new_sandbox=False)
+        return self.marionette.execute_script(
+            sourcecode, sandbox=None, new_sandbox=False
+        )
 
     def calljs(self, name, *args, silent=False):
         return self.run_javascript(mkjscall(name, *args), silent=silent)

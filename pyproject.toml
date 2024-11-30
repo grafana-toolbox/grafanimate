@@ -80,3 +80,24 @@ src_paths = ["grafanimate", "tests"]
 line-length = 121
 #include = '\.pyi?$'
 src_paths = ["grafanimate", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "G", "I", "UP", "AIR", "PIE", "PLR1714", "PLW2901", "TRY201"]
+ignore = [
+  "E501",  # line too long
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = [
+    "I001", # allow unsorted imports in __init__.py
+    "F401", # allow unused imports in __init__.py
+]
+"examples/*" = [
+    "ARG",  # allow unused arguments
+    "F841", # allow unused local variables
+]
+"tests/*" = [
+    "ARG",  # allow unused arguments for pytest fixtures
+    "E741", # allow reused variables
+    "F841", # allow unused local variables
+]

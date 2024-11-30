@@ -5,7 +5,9 @@ from grafanimate.postprocessing import MediaProducer
 from grafanimate.util import ensure_directory, slug
 
 
-def produce_artifacts(input, output, scenario: AnimationScenario, options: RenderingOptions):
+def produce_artifacts(
+    input, output, scenario: AnimationScenario, options: RenderingOptions
+):
     # TODO: Can use dashboard title as output filename here?
     # TODO: Can put `start` into filename?
 
@@ -14,7 +16,9 @@ def produce_artifacts(input, output, scenario: AnimationScenario, options: Rende
 
     # Compute input pattern and output file name.
     input = os.path.join(str(input), "*.png")
-    output = str(output).format(scenario=scenario_slug, title=title_slug, uid=scenario.dashboard_uid)
+    output = str(output).format(
+        scenario=scenario_slug, title=title_slug, uid=scenario.dashboard_uid
+    )
 
     # Produce output artifacts.
     ensure_directory(output)

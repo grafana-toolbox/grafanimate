@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
 from dateutil.relativedelta import relativedelta
-from dateutil.rrule import DAILY, MINUTELY, SECONDLY
+from dateutil.rrule import DAILY, MINUTELY
 from dateutil.tz import tzutc
 from freezegun import freeze_time
 
@@ -9,7 +9,6 @@ from grafanimate.model import AnimationScenario, AnimationSequence, SequencingMo
 
 
 def test_sequence_datetime():
-
     seq = AnimationSequence(
         start=datetime(2021, 11, 14, 2, 0, 0),
         stop=datetime(2021, 11, 14, 2, 16, 36),

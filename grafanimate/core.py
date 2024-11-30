@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # (c) 2018-2021 Andreas Motl <andreas.motl@panodata.org>
 # License: GNU Affero General Public License, Version 3
 import importlib
@@ -17,8 +16,9 @@ from grafanimate.util import as_list, filter_dict, import_module
 log = logging.getLogger(__name__)
 
 
-def make_grafana(url: str, dashboard_uid: str, options: dict, headless=False) -> GrafanaWrapper:
-
+def make_grafana(
+    url: str, dashboard_uid: str, options: dict, headless=False
+) -> GrafanaWrapper:
     do_login = False
     url = furl(url)
     if url.username:
@@ -35,16 +35,22 @@ def make_grafana(url: str, dashboard_uid: str, options: dict, headless=False) ->
         view = options["dashboard-view"]
     if options["panel-id"]:
         if options["dashboard-view"] == "d-solo":
-            query = "?panelId=" + options["panel-id"] + "&__feature.dashboardSceneSolo&fullscreen"
+            query = (
+                "?panelId="
+                + options["panel-id"]
+                + "&__feature.dashboardSceneSolo&fullscreen"
+            )
         else:
             query = "?viewPanel=" + options["panel-id"]
 
     if str(url)[-1] != "/":
         url = str(url) + "/"
-    url = str(url) + view + "/" + dashboard_uid + "/" + slug + query;
+    url = str(url) + view + "/" + dashboard_uid + "/" + slug + query
     print(url)
 
-    grafana = GrafanaWrapper(baseurl=str(url), use_panel_events=options["use-panel-events"])
+    grafana = GrafanaWrapper(
+        baseurl=str(url), use_panel_events=options["use-panel-events"]
+    )
     grafana.boot_firefox(headless=headless)
     grafana.boot_grafana()
 
@@ -70,7 +76,9 @@ def get_scenario(source: str) -> AnimationScenario:
     scenario: AnimationScenario = resolve_reference(module, symbol)
 
     if scenario is None:
-        raise NotImplementedError('Animation scenario "{}" not found or implemented'.format(source))
+        raise NotImplementedError(
+            f'Animation scenario "{source}" not found or implemented'
+        )
 
     scenario.source = source
 
@@ -96,9 +104,12 @@ def resolve_reference(module, symbol):
     return reference
 
 
-def run_animation_scenario(scenario: AnimationScenario, grafana: GrafanaWrapper, options: Munch) -> TemporaryStorage:
-
-    log.info(f"Running animation scenario at {scenario.grafana_url}, with dashboard UID {scenario.dashboard_uid}")
+def run_animation_scenario(
+    scenario: AnimationScenario, grafana: GrafanaWrapper, options: Munch
+) -> TemporaryStorage:
+    log.info(
+        f"Running animation scenario at {scenario.grafana_url}, with dashboard UID {scenario.dashboard_uid}"
+    )
 
     storage = TemporaryStorage()
 
@@ -117,7 +128,9 @@ def run_animation_scenario(scenario: AnimationScenario, grafana: GrafanaWrapper,
     )
 
     # Start the engines.
-    animation = SequentialAnimation(grafana=grafana, dashboard_uid=scenario.dashboard_uid, options=animation_options)
+    animation = SequentialAnimation(
+        grafana=grafana, dashboard_uid=scenario.dashboard_uid, options=animation_options
+    )
     animation.start()
 
     # Run animation scenario.
@@ -141,4 +154,3 @@ def run_animation_adhoc():
     )
     animator.run()
     """
-    pass

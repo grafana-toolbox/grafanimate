@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # (c) 2018-2021 Andreas Motl <andreas.motl@panodata.org>
 # License: GNU Affero General Public License, Version 3
 import atexit
@@ -16,7 +15,7 @@ from grafanimate.util import check_socket, find_program_candidate
 logger = logging.getLogger(__name__)
 
 
-class FirefoxMarionetteBase(object):
+class FirefoxMarionetteBase:
     """
     Wrap Marionette/Firefox into convenient interface.
 
@@ -56,7 +55,6 @@ class FirefoxMarionetteBase(object):
         self.firefox_do_shutdown = do_shutdown
 
     def boot_firefox(self, headless=True):
-
         # Indicate whether to run in headless mode
         self.enable_headless(headless)
         self.enable_shutdown(True)
@@ -67,7 +65,9 @@ class FirefoxMarionetteBase(object):
 
         # Check whether Firefox is already running
         logger.info(
-            "Check for running instance of Marionette/Firefox at {}:{}".format(self.firefox_host, self.firefox_port)
+            "Check for running instance of Marionette/Firefox at %s:%s",
+            self.firefox_host,
+            self.firefox_port,
         )
 
         if check_socket(self.firefox_host, self.firefox_port):
@@ -97,7 +97,6 @@ class FirefoxMarionetteBase(object):
         self.configure_marionette()
 
     def configure_marionette(self):
-
         # This specifies the time to wait for the page loading to complete.
         self.marionette.timeout.page_load = self.page_timeout
 
@@ -117,7 +116,7 @@ class FirefoxMarionetteBase(object):
             "/Applications/Firefox.app/Contents/MacOS/firefox-bin",
         ]
         firefox = find_program_candidate(candidates)
-        logger.info('Found "firefox" program at {}'.format(firefox))
+        logger.info('Found "firefox" program at %s', firefox)
         return firefox
 
     def get_status(self):
@@ -128,25 +127,31 @@ class FirefoxMarionetteBase(object):
         return data
 
     def log_status(self):
-        logger.info("Marionette report: {}".format(json.dumps(self.get_status(), indent=4)))
+        logger.info(f"Marionette report: {json.dumps(self.get_status(), indent=4)}")
 
     def has_active_session(self):
-        is_initialized = self.marionette is not None and self.marionette.session_id is not None
+        is_initialized = (
+            self.marionette is not None and self.marionette.session_id is not None
+        )
         return is_initialized
 
     def ensure_session(self):
         # self.log_status()
         if not self.has_active_session():
             self.boot_firefox()
-            logger.info("No session with Marionette, started new session {}".format(self.marionette.session_id))
+            logger.info(
+                "No session with Marionette, started new session %s",
+                self.marionette.session_id,
+            )
 
     def shutdown(self):
         if self.firefox_do_shutdown:
-
             logger.info("Aiming at shutdown")
 
             if self.firefox_already_started:
-                logger.warning("Can not shutdown Firefox as it was already running before starting this program")
+                logger.warning(
+                    "Can not shutdown Firefox as it was already running before starting this program"
+                )
                 return False
 
             logger.info("Shutting down Marionette/Firefox")
@@ -181,4 +186,4 @@ class FirefoxMarionetteBase(object):
 
     def get_window_rect(self):
         # this is the main content size
-        return self.marionette.find_element('id', 'pageContent').rect
+        return self.marionette.find_element("id", "pageContent").rect

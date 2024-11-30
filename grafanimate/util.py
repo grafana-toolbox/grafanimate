@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # (c) 2018-2021 Andreas Motl <andreas.motl@panodata.org>
 # License: GNU Affero General Public License, Version 3
 import logging
@@ -25,8 +24,8 @@ def setup_logging(level=logging.INFO):
 def normalize_options(options, lists=None):
     lists = lists or []
     normalized = {}
-    for key, value in options.items():
-        key = key.strip("--<>")
+    for key_raw, value in options.items():
+        key = key_raw.strip("--<>")
         normalized[key] = normalized[key.replace("-", "_")] = value
     for key in lists:
         normalized[key] = normalized[key.replace("-", "_")] = read_list(normalized[key])
@@ -97,7 +96,7 @@ def asbool(obj):
         elif obj in ["false", "no", "off", "n", "f", "0"]:
             return False
         else:
-            raise ValueError("String is not true/false: %r" % obj)
+            raise ValueError(f"String is not true/false: {obj!r}")
     return bool(obj)
 
 
