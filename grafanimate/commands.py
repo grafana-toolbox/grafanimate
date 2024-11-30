@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # (c) 2018-2021 Andreas Motl <andreas.motl@panodata.org>
 # License: GNU Affero General Public License, Version 3
 import json
@@ -128,7 +127,7 @@ def run():
 
     # Debug command line options.
     if debug:
-        log.info("Options: {}".format(json.dumps(options, indent=4)))
+        log.info(f"Options: {json.dumps(options, indent=4)}")
 
     # Sanity checks.
     if not options["scenario"]:
@@ -138,10 +137,14 @@ def run():
     if not output_path:
         output_path = os.environ.get("GRAFANIMATE_OUTPUT")
     if not output_path:
-        raise DocoptExit("Error: Parameter --output or environment variable GRAFANIMATE_OUTPUT is mandatory")
+        raise DocoptExit(
+            "Error: Parameter --output or environment variable GRAFANIMATE_OUTPUT is mandatory"
+        )
 
     if options["dashboard-view"] == "d-solo" and not options["panel-id"]:
-        raise DocoptExit("Error: Parameter --panel-id is mandatory for --dashboard-view=d-solo")
+        raise DocoptExit(
+            "Error: Parameter --panel-id is mandatory for --dashboard-view=d-solo"
+        )
 
     options["exposure-time"] = float(options["exposure-time"])
     options["use-panel-events"] = asbool(options["use-panel-events"])
@@ -171,13 +174,19 @@ def run():
     if options["dashboard-uid"]:
         scenario.dashboard_uid = options["dashboard-uid"]
     if not scenario.dashboard_uid:
-        raise KeyError("Dashboard UID is mandatory, either supply it on the command line or via scenario file")
+        raise KeyError(
+            "Dashboard UID is mandatory, either supply it on the command line or via scenario file"
+        )
 
     # Open a Grafana site in Firefox, using Marionette.
-    grafana = make_grafana(scenario.grafana_url, scenario.dashboard_uid, options, options["headless"])
+    grafana = make_grafana(
+        scenario.grafana_url, scenario.dashboard_uid, options, options["headless"]
+    )
 
     # Invoke pipeline: Run stop motion animation, producing single frames.
-    storage: TemporaryStorage = run_animation_scenario(scenario=scenario, grafana=grafana, options=options)
+    storage: TemporaryStorage = run_animation_scenario(
+        scenario=scenario, grafana=grafana, options=options
+    )
 
     # Define output filename pattern.
     output = Path(output_path) / "{scenario}--{title}--{uid}.mp4"
@@ -185,5 +194,10 @@ def run():
     # Run rendering sequences, produce composite media artifacts.
     scenario.dashboard_title = grafana.get_dashboard_title()
     if not options.dry_run:
-        results = produce_artifacts(input=storage.workdir, output=output, scenario=scenario, options=render_options)
+        results = produce_artifacts(
+            input=storage.workdir,
+            output=output,
+            scenario=scenario,
+            options=render_options,
+        )
         log.info("Produced %s results\n%s", len(results), json.dumps(results, indent=2))

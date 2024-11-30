@@ -1,16 +1,20 @@
-# -*- coding: utf-8 -*-
 # (c) 2018-2021 Andreas Motl <andreas.motl@panodata.org>
 # License: GNU Affero General Public License, Version 3
 import dataclasses
 import logging
+from collections.abc import Generator
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Generator, List, Optional, Union
-from grafanimate.timeutil import RecurrenceInfo
+from typing import Optional, Union
 
 from dateutil.rrule import rrule
 
-from grafanimate.timeutil import Timerange, convert_input_timestamp, get_freq_delta
+from grafanimate.timeutil import (
+    RecurrenceInfo,
+    Timerange,
+    convert_input_timestamp,
+    get_freq_delta,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +39,6 @@ class AnimationSequence:
         recurrence: RecurrenceInfo = None,
         mode: Optional[SequencingMode] = SequencingMode.WINDOW,
     ):
-
         # Convert start/stop timestamps, resolving relative timestamps.
         now = datetime.now(tz=timezone.utc)
         self.start = convert_input_timestamp(start, relative_to=now)
@@ -61,8 +64,9 @@ class AnimationSequence:
             raise ValueError(message)
 
     def get_frames(self) -> Generator[AnimationFrame, None, None]:
-
-        timerange = Timerange(start=self.start, stop=self.stop, recurrence=self.recurrence)
+        timerange = Timerange(
+            start=self.start, stop=self.stop, recurrence=self.recurrence
+        )
 
         # until = datetime.now()
         if self.mode == SequencingMode.CUMULATIVE:
@@ -88,7 +92,6 @@ class AnimationSequence:
 
         # Iterate date range.
         for date in daterange:
-
             # Compute start and end dates based on mode.
 
             if self.mode == SequencingMode.WINDOW:
@@ -100,7 +103,8 @@ class AnimationSequence:
                 stop = date
 
             frame = AnimationFrame(
-                sequence=self, timerange=Timerange(start=start, stop=stop, recurrence=self.recurrence)
+                sequence=self,
+                timerange=Timerange(start=start, stop=stop, recurrence=self.recurrence),
             )
             yield frame
 
@@ -113,7 +117,7 @@ class AnimationSequence:
 
 @dataclasses.dataclass
 class AnimationScenario:
-    sequences: List[AnimationSequence]
+    sequences: list[AnimationSequence]
     grafana_url: Optional[str] = None
     dashboard_uid: Optional[str] = None
     dashboard_title: Optional[str] = None

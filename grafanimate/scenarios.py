@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # (c) 2018-2021 Andreas Motl <andreas.motl@panodata.org>
 # License: GNU Affero General Public License, Version 3
 """
@@ -23,6 +22,7 @@ The parameter `mode` can have two values (defaulting to `window`):
 - "window" will slide a window through the defined time range, with `every` as window width
 - "cumulative" will use a fixed start time and stepwise expand the end time by `every`
 """
+
 import logging
 from datetime import datetime
 
@@ -124,9 +124,13 @@ def ldi_all():
 
     return [
         # LDI, ramp-up
-        AnimationSequence(start=datetime(2015, 10, 1), stop=datetime(2017, 1, 1), every="monthly"),
+        AnimationSequence(
+            start=datetime(2015, 10, 1), stop=datetime(2017, 1, 1), every="monthly"
+        ),
         # LDI, growth
-        AnimationSequence(start=datetime(2017, 1, 1), stop=datetime.now(), every="weekly"),
+        AnimationSequence(
+            start=datetime(2017, 1, 1), stop=datetime.now(), every="weekly"
+        ),
     ]
 
 
@@ -142,12 +146,18 @@ def ldi_with_gaps():
 
     return [
         # LDI, ramp-up
-        AnimationSequence(start=datetime(2015, 10, 1), stop=datetime(2017, 1, 1), every="monthly"),
+        AnimationSequence(
+            start=datetime(2015, 10, 1), stop=datetime(2017, 1, 1), every="monthly"
+        ),
         # LDI, growth, with gap at 2018-04-29 - 2018-12-20
         # TODO: Detect empty data from datasource through Grafana Sidecar and skip respective images.
-        AnimationSequence(start=datetime(2017, 1, 1), stop=datetime(2018, 6, 5), every="weekly"),
+        AnimationSequence(
+            start=datetime(2017, 1, 1), stop=datetime(2018, 6, 5), every="weekly"
+        ),
         # LDI, until now
-        AnimationSequence(start=datetime(2018, 12, 20), stop=datetime.now(), every="weekly"),
+        AnimationSequence(
+            start=datetime(2018, 12, 20), stop=datetime.now(), every="weekly"
+        ),
     ]
 
 
@@ -160,7 +170,11 @@ def ldi_nye_2017_2018():
         grafanimate --grafana-url=https://daq.example.org/grafana --dashboard-uid=1aOmc1sik --scenario=ldi_nye_2017_2018 --output=./animations
     """
     logger.info("Running scenario ldi_nye_2017_2018")
-    return AnimationSequence(start=datetime(2017, 12, 31, 21, 0, 0), stop=datetime(2018, 1, 1, 4, 0, 0), every="10min")
+    return AnimationSequence(
+        start=datetime(2017, 12, 31, 21, 0, 0),
+        stop=datetime(2018, 1, 1, 4, 0, 0),
+        every="10min",
+    )
 
 
 def ldi_nye_2018_2019():
@@ -173,11 +187,31 @@ def ldi_nye_2018_2019():
     """
     logger.info("Running scenario ldi_nye_2018_2019")
     return [
-        AnimationSequence(start=datetime(2018, 12, 31, 15, 0, 0), stop=datetime(2018, 12, 31, 20, 0, 0), every="30min"),
-        AnimationSequence(start=datetime(2018, 12, 31, 20, 0, 0), stop=datetime(2018, 12, 31, 23, 0, 0), every="10min"),
-        AnimationSequence(start=datetime(2018, 12, 31, 23, 0, 0), stop=datetime(2019, 1, 1, 1, 0, 0), every="5min"),
-        AnimationSequence(start=datetime(2019, 1, 1, 1, 0, 0), stop=datetime(2019, 1, 1, 4, 0, 0), every="10min"),
-        AnimationSequence(start=datetime(2019, 1, 1, 4, 0, 0), stop=datetime(2019, 1, 1, 9, 0, 0), every="30min"),
+        AnimationSequence(
+            start=datetime(2018, 12, 31, 15, 0, 0),
+            stop=datetime(2018, 12, 31, 20, 0, 0),
+            every="30min",
+        ),
+        AnimationSequence(
+            start=datetime(2018, 12, 31, 20, 0, 0),
+            stop=datetime(2018, 12, 31, 23, 0, 0),
+            every="10min",
+        ),
+        AnimationSequence(
+            start=datetime(2018, 12, 31, 23, 0, 0),
+            stop=datetime(2019, 1, 1, 1, 0, 0),
+            every="5min",
+        ),
+        AnimationSequence(
+            start=datetime(2019, 1, 1, 1, 0, 0),
+            stop=datetime(2019, 1, 1, 4, 0, 0),
+            every="10min",
+        ),
+        AnimationSequence(
+            start=datetime(2019, 1, 1, 4, 0, 0),
+            stop=datetime(2019, 1, 1, 9, 0, 0),
+            every="30min",
+        ),
     ]
 
 
@@ -190,7 +224,11 @@ def cdc_maps():
         grafanimate --grafana-url=https://daq.example.org/grafana --dashboard-uid=DLOlE_Rmz --scenario=cdc_maps --output=./animations
     """
     logger.info("Running scenario cdc_maps")
-    return AnimationSequence(start=datetime(2018, 3, 6, 5, 0, 0), stop=datetime(2018, 3, 10, 23, 59, 59), every="hourly")
+    return AnimationSequence(
+        start=datetime(2018, 3, 6, 5, 0, 0),
+        stop=datetime(2018, 3, 10, 23, 59, 59),
+        every="hourly",
+    )
 
     # Short sequence, for debugging processes.
     # return AnimationSequence(start=datetime(2018, 3, 6, 5, 0, 0), stop=datetime(2018, 3, 6, 6, 59, 59), every='hourly')
@@ -206,7 +244,9 @@ def uba_ldi_dwd_maps():
     """
     logger.info("Running scenario uba_ldi_dwd_maps")
     return AnimationSequence(
-        start=datetime(2018, 10, 6, 5, 0, 0), stop=datetime(2018, 10, 10, 23, 59, 59), every="hourly"
+        start=datetime(2018, 10, 6, 5, 0, 0),
+        stop=datetime(2018, 10, 10, 23, 59, 59),
+        every="hourly",
     )
 
 
@@ -221,5 +261,7 @@ def ir_sensor_svg_pixmap():
     """
     logger.info("Running scenario ir_sensor_svg_pixmap")
     return AnimationSequence(
-        start=datetime(2018, 8, 14, 3, 16, 0), stop=datetime(2018, 8, 14, 3, 16, 36), every="secondly"
+        start=datetime(2018, 8, 14, 3, 16, 0),
+        stop=datetime(2018, 8, 14, 3, 16, 36),
+        every="secondly",
     )

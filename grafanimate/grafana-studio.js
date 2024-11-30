@@ -30,7 +30,7 @@ class GrafanaStudioSrv {
     // https://github.com/grafana/grafana/blob/v8.2.4/public/app/core/components/Login/LoginCtrl.tsx#L85-L106
     $.post({
         url: '/login',  // The URL where the POST request is sent
-        contentType: 'application/json', 
+        contentType: 'application/json',
         data: JSON.stringify({ user: username, password: password }),
         success: function(response) {
             console.log('Success:', response);  // Handle success
@@ -250,7 +250,7 @@ class GrafanaStudioSrv {
 
   getDashboardTitle() {
     // Build title from original one plus start time.
-    
+
     var dashboard = __grafanaSceneContext._state;
     var title = dashboard.title;
     if (!this.hasHeaderLayout("no-folder")) {

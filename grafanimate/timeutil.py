@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # (c) 2018-2021 Andreas Motl <andreas.motl@panodata.org>
 # License: GNU Affero General Public License, Version 3
 import dataclasses
@@ -69,7 +68,9 @@ def get_freq_delta(every: str) -> RecurrenceInfo:
         if rr_freq != SECONDLY:
             delta -= relativedelta(seconds=1)
 
-        return RecurrenceInfo(every=every, frequency=rr_freq, interval=rr_interval, duration=delta)
+        return RecurrenceInfo(
+            every=every, frequency=rr_freq, interval=rr_interval, duration=delta
+        )
 
     # 2. Compute parameters from specific labels, expression periods.
 
@@ -127,12 +128,14 @@ def get_freq_delta(every: str) -> RecurrenceInfo:
         delta = relativedelta(years=+1) - relativedelta(seconds=1)
 
     else:
-        raise ValueError('Unknown interval "{}"'.format(every))
+        raise ValueError(f'Unknown interval "{every}"')
 
     if isinstance(delta, timedelta):
         delta = get_relativedelta(seconds=delta.total_seconds())
 
-    return RecurrenceInfo(every=every, frequency=rr_freq, interval=rr_interval, duration=delta)
+    return RecurrenceInfo(
+        every=every, frequency=rr_freq, interval=rr_interval, duration=delta
+    )
 
 
 def get_relativedelta(seconds: int):
@@ -155,7 +158,12 @@ def get_relativedelta(seconds: int):
     seconds = rem
 
     return relativedelta(
-        years=years, months=months, days=days, hours=hours, minutes=minutes, seconds=seconds
+        years=years,
+        months=months,
+        days=days,
+        hours=hours,
+        minutes=minutes,
+        seconds=seconds,
     ).normalized()
 
 
@@ -187,11 +195,15 @@ def convert_absolute_timestamp(value: Union[datetime, str]) -> datetime:
     elif isinstance(value, str):
         value = dateutil.parser.parse(value)
     else:
-        raise TypeError("Unknown data type for `start` or `stop` value: {} ({})".format(value, type(value)))
+        raise TypeError(
+            f"Unknown data type for `start` or `stop` value: {value} ({type(value)})"
+        )
     return value
 
 
-def convert_input_timestamp(value: Union[datetime, str], relative_to: Optional[datetime] = None) -> datetime:
+def convert_input_timestamp(
+    value: Union[datetime, str], relative_to: Optional[datetime] = None
+) -> datetime:
     """
     Read and convert absolute or relative (humanized) timestamps.
     """

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # (c) 2018-2021 Andreas Motl <andreas@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
 import logging
@@ -28,7 +27,7 @@ class MediaProducer:
         # TODO: Expose `-framerate` and `fps` values.
         # use the `pad` option to avoid ffmpeg errors like 'height not divisible by 2'
         command = f"ffmpeg -framerate {self.options.video_framerate} -pattern_type glob -i '{source}' -c:v libx264 -vf 'pad=ceil(iw/2)*2:ceil(ih/2)*2,fps={self.options.video_fps},format=yuv420p' '{target}' -y"
-        logger.info("Rendering video: {}".format(target))
+        logger.info(f"Rendering video: {target}")
         logger.debug(command)
         os.system(command)
 
@@ -80,14 +79,12 @@ class MediaProducer:
 
         # TODO: Expose `fps` and `scale` values.
         command = f"ffmpeg -i '{source}' -filter_complex 'fps={self.options.gif_fps},scale={self.options.gif_width}:-1:flags=lanczos,split [o1] [o2];[o1] palettegen [p]; [o2] [p] paletteuse' '{target}' -y"
-        logger.info("Rendering GIF: {}".format(target))
+        logger.info("Rendering GIF: %s", target)
         logger.debug(command)
         os.system(command)
 
     def upload_server(self, source):
-        command = "make --makefile=/Users/amo/dev/hiveeyes/sources/documentation/Makefile ptrace source={}".format(
-            source
-        )
+        command = f"make --makefile=/Users/amo/dev/hiveeyes/sources/documentation/Makefile ptrace source={source}"
         os.system(command)
 
     def render(self, source, target):

@@ -5,7 +5,6 @@ from grafanimate.timeutil import get_freq_delta
 
 
 def test_freq_delta_legacy():
-
     recurrence = get_freq_delta("secondly")
     assert recurrence.frequency == SECONDLY
     assert recurrence.interval == 1
@@ -44,7 +43,9 @@ def test_freq_delta_legacy():
     recurrence = get_freq_delta("weekly")
     assert recurrence.frequency == WEEKLY
     assert recurrence.interval == 1
-    assert recurrence.duration == relativedelta(days=+6, hours=+23, minutes=+59, seconds=+59)
+    assert recurrence.duration == relativedelta(
+        days=+6, hours=+23, minutes=+59, seconds=+59
+    )
 
     recurrence = get_freq_delta("monthly")
     assert recurrence.frequency == MONTHLY
@@ -58,7 +59,6 @@ def test_freq_delta_legacy():
 
 
 def test_freq_delta_pytimeparse():
-
     recurrence = get_freq_delta("1s")
     assert recurrence.frequency == SECONDLY
     assert recurrence.interval == 1

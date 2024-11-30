@@ -1,11 +1,9 @@
-# -*- coding: utf-8 -*-
 # (c) 2018-2021 Andreas Motl <andreas.motl@panodata.org>
 # License: GNU Affero General Public License, Version 3
 import logging
 import os.path
 import shutil
 from tempfile import mkdtemp
-from typing import List
 
 from grafanimate.timeutil import format_date_filename
 
@@ -17,7 +15,7 @@ class TemporaryStorage:
         self.workdir = mkdtemp()
         self.imagefile_template = "{uid}_{seq}_{start}_{stop}.png"
 
-    def save_items(self, results) -> List[str]:
+    def save_items(self, results) -> list[str]:
         files = []
         for item in results:
             # logger.info('item: %s', item)
@@ -28,7 +26,6 @@ class TemporaryStorage:
         return files
 
     def save_item(self, item) -> str:
-
         # Compute image sequence file name.
         imagename = self.imagefile_template.format(
             uid=item.meta.dashboard,
@@ -43,7 +40,7 @@ class TemporaryStorage:
         with open(imagefile, "wb") as f:
             f.write(item.data.image)
 
-        logger.info("Saved frame to {} (size={})".format(imagefile, len(item.data.image)))
+        logger.info(f"Saved frame to {imagefile} (size={len(item.data.image)})")
 
         return imagefile
 
