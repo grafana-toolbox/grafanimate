@@ -34,8 +34,13 @@ def make_grafana(url: str, dashboard_uid: str, options: dict, headless=False) ->
     if options["dashboard-view"]:
         view = options["dashboard-view"]
     if options["panel-id"]:
-        query = "?panelId=" + options["panel-id"] + "&__feature.dashboardSceneSolo&fullscreen"
+        if options["dashboard-view"] == "d-solo":
+            query = "?panelId=" + options["panel-id"] + "&__feature.dashboardSceneSolo&fullscreen"
+        else:
+            query = "?viewPanel=" + options["panel-id"]
 
+    if str(url)[-1] != "/":
+        url = str(url) + "/"
     url = str(url) + view + "/" + dashboard_uid + "/" + slug + query;
     print(url)
 

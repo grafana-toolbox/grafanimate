@@ -22,7 +22,7 @@ class GrafanaWrapper(FirefoxMarionetteBase):
     https://marionette-client.readthedocs.io/en/master/interactive.html
     """
 
-    def __init__(self, baseurl: str = None, use_panel_events: bool = False, dry_run: bool = False):
+    def __init__(self, baseurl: str = None, use_panel_events: bool = True, dry_run: bool = False):
         self.baseurl = baseurl
         self.use_panel_events = use_panel_events
         self.dry_run = dry_run
@@ -102,9 +102,6 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         except TimeoutException as ex:
             log.warning("Timed out waiting for data: %s. Continuing anyway.", ex)
 
-    def clear_all_data_received(self):
-        return self.calljs("grafanaStudio.hasAllData", False)
-
     def update_tags(self):
         return self.calljs("grafanaStudio.improvePanelChrome")
 
@@ -121,7 +118,6 @@ class GrafanaWrapper(FirefoxMarionetteBase):
 
         # Perform timewarp.
         if not dry_run:
-            self.clear_all_data_received()
             self.timerange_set(
                 format_date_grafana(frame.timerange.start, frame.timerange.recurrence),
                 format_date_grafana(frame.timerange.stop, frame.timerange.recurrence),
@@ -145,7 +141,6 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         -- https://community.grafana.com/t/how-to-access-time-picker-from-to-within-a-text-panel-and-jquery/6071/3
         """
         return self.calljs("grafanaStudio.getTime")
-        raise NotImplemented("timerange_get not implemented yet")
 
     def run_javascript(self, sourcecode, silent=False):
         """

@@ -59,6 +59,7 @@ class FirefoxMarionetteBase(object):
 
         # Indicate whether to run in headless mode
         self.enable_headless(headless)
+        self.enable_shutdown(True)
 
         # Optionally shut down Marionette/Firefox after performing work
         # This will just be called if Python exits normally
