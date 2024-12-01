@@ -305,14 +305,14 @@ Development
     cd grafanimate
 
     # Create and activate virtualenv.
-    python3 -m venv .venv
+    uv venv
     source .venv/bin/activate
 
     # Install package in "editable" mode.
-    pip install --editable=.
+    uv pip install --editable='.[develop,test]'
 
-    # Run tests.
-    make test
+    # Run linters and software tests.
+    poe check
 
 
 *******************
