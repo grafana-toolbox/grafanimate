@@ -1,103 +1,145 @@
 [build-system]
-requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
+
+requires = [ "setuptools>=61.0" ]
 
 [project]
 name = "grafanimate"
 version = "0.8.0"
 description = "Animate timeseries data with Grafana"
-authors = [{ name = "Andreas Motl", email = "andreas.motl@panodata.org" }]
-license = { text = "AGPL 3, EUPL 1.2" }
 readme = "README.rst"
-keywords = ["grafana", "animate", "animation", "automation", "time", "gif", "video"]
+keywords = [ "animate", "animation", "automation", "gif", "grafana", "time", "video" ]
+
+license = { text = "AGPL 3, EUPL 1.2" }
+authors = [ { name = "Andreas Motl", email = "andreas.motl@panodata.org" } ]
+requires-python = ">=3.9,<3.14"
 
 classifiers = [
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Developers",
-    "Intended Audience :: Education",
-    "Intended Audience :: Information Technology",
-    "Intended Audience :: Manufacturing",
-    "Intended Audience :: Science/Research",
-    "Intended Audience :: System Administrators",
-    "Intended Audience :: Telecommunications Industry",
-    "Topic :: Communications",
-    "Topic :: Database",
-    "Topic :: Internet",
-    "Topic :: Scientific/Engineering :: Information Analysis",
-    "Topic :: Scientific/Engineering :: Interface Engine/Protocol Translator",
-    "Topic :: Scientific/Engineering :: Visualization",
-    "Topic :: Software Development :: Embedded Systems",
-    "Topic :: Software Development :: Libraries",
-    "Topic :: System :: Archiving",
-    "Topic :: System :: Networking :: Monitoring",
-    "Operating System :: POSIX",
-    "Operating System :: Unix",
-    "Operating System :: MacOS",
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Education",
+  "Intended Audience :: Information Technology",
+  "Intended Audience :: Manufacturing",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: System Administrators",
+  "Intended Audience :: Telecommunications Industry",
+  "Operating System :: MacOS",
+  "Operating System :: POSIX",
+  "Operating System :: Unix",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Communications",
+  "Topic :: Database",
+  "Topic :: Internet",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+  "Topic :: Scientific/Engineering :: Interface Engine/Protocol Translator",
+  "Topic :: Scientific/Engineering :: Visualization",
+  "Topic :: Software Development :: Embedded Systems",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: System :: Archiving",
+  "Topic :: System :: Networking :: Monitoring",
 ]
-
-requires-python = ">=3.9, <3.14"
 
 dependencies = [
-    "munch >=4",
-    "docopt >=0.6, <1",
-    "tqdm >=4, <5",
-    "unidecode >=1, <2",
-    "furl >=2, <3",
-    "where >=1, <2",
-    "marionette_driver >=3.4, <4",
-    "python-dateutil >=2.7, <3",
-    "datetime-interval ==0.2",
-    "pytimeparse2 >=1.4, <2",
+  "datetime-interval==0.2",
+  "docopt>=0.6,<1",
+  "furl>=2,<3",
+  "marionette-driver>=3.4,<4",
+  "munch>=4",
+  "python-dateutil>=2.7,<3",
+  "pytimeparse2>=1.4,<2",
+  "tqdm>=4,<5",
+  "unidecode>=1,<2",
+  "where>=1,<2",
 ]
 
-[project.optional-dependencies]
-test = [
-    "pytest >=6, <7",
-    "freezegun >=1, <2",
+optional-dependencies.develop = [
+  "mypy<1.12",
+  "poethepoet<0.31",
+  "pyproject-fmt<2.3",
+  "ruff<0.9",
+  "validate-pyproject<0.19",
 ]
-
-[project.scripts]
-grafanimate = "grafanimate.commands:run"
-
-[project.urls]
-Homepage = "https://github.com/grafana-toolbox/grafanimate"
-Repository = "https://github.com/grafana-toolbox/grafanimate"
-Issues = "https://github.com/grafana-toolbox/grafanimate/issues"
-
+optional-dependencies.release = [
+  "build<2",
+  "keyring",
+  "twine<6",
+]
+optional-dependencies.test = [
+  "freezegun>=1,<2",
+  "pytest>=6,<7",
+]
+urls.Homepage = "https://github.com/grafana-toolbox/grafanimate"
+urls.Issues = "https://github.com/grafana-toolbox/grafanimate/issues"
+urls.Repository = "https://github.com/grafana-toolbox/grafanimate"
+scripts.grafanimate = "grafanimate.commands:run"
 
 [tool.setuptools]
-packages = {find = {}}
+packages = { find = {} }
 
 [tool.setuptools.package-data]
-"grafanimate" = ["*.js"]
-
-
-[tool.isort]
-profile = "black"
-src_paths = ["grafanimate", "tests"]
+"grafanimate" = [ "*.js" ]
 
 [tool.black]
 line-length = 121
 #include = '\.pyi?$'
-src_paths = ["grafanimate", "tests"]
+src_paths = [ "grafanimate", "tests" ]
 
-[tool.ruff.lint]
-select = ["E", "F", "G", "I", "UP", "AIR", "PIE", "PLR1714", "PLW2901", "TRY201"]
-ignore = [
-  "E501",  # line too long
+[tool.ruff]
+lint.select = [ "AIR", "E", "F", "G", "I", "PIE", "PLR1714", "PLW2901", "TRY201", "UP" ]
+lint.ignore = [
+  "E501", # line too long
+  "G004", # Logging statement uses f-string
+]
+lint.per-file-ignores."__init__.py" = [
+  "F401", # allow unused imports in __init__.py
+  "I001", # allow unsorted imports in __init__.py
+]
+lint.per-file-ignores."examples/*" = [
+  "ARG",  # allow unused arguments
+  "F841", # allow unused local variables
+]
+# ===================
+# Tasks configuration
+# ===================
+lint.per-file-ignores."tests/*" = [
+  "ARG",  # allow unused arguments for pytest fixtures
+  "E741", # allow reused variables
+  "F841", # allow unused local variables
 ]
 
-[tool.ruff.lint.per-file-ignores]
-"__init__.py" = [
-    "I001", # allow unsorted imports in __init__.py
-    "F401", # allow unused imports in __init__.py
+[tool.isort]
+profile = "black"
+src_paths = [ "grafanimate", "tests" ]
+
+[tool.poe.tasks]
+
+check = [
+  "lint",
+  "test",
 ]
-"examples/*" = [
-    "ARG",  # allow unused arguments
-    "F841", # allow unused local variables
+
+format = [
+  { cmd = "ruff format" },
+  # Configure Ruff not to auto-fix (remove!):
+  # unused imports (F401), unused variables (F841), `print` statements (T201), and commented-out code (ERA001).
+  { cmd = "ruff check --fix --ignore=ERA --ignore=F401 --ignore=F841 --ignore=T20 --ignore=ERA001 ." },
+  { cmd = "pyproject-fmt --keep-full-version pyproject.toml" },
 ]
-"tests/*" = [
-    "ARG",  # allow unused arguments for pytest fixtures
-    "E741", # allow reused variables
-    "F841", # allow unused local variables
+
+lint = [
+  { cmd = "ruff check ." },
+  { cmd = "validate-pyproject pyproject.toml" },
+  # { cmd = "mypy" },
 ]
+
+release = [
+  { cmd = "python -m build" },
+  { cmd = "twine upload dist/*.tar.gz dist/*.whl" },
+]
+
+test = { cmd = "pytest" }
