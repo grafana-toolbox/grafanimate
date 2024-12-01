@@ -78,12 +78,12 @@ class CumulativePeriodicInterval:
 
 def print_intervals(intervals):
     for interval in intervals:
-        print(f"{interval.start} - {interval.end}")
+        print(f"{interval.start} - {interval.end}")  # noqa: T201
 
 
 def print_header(title):
-    print
-    print("#", title)
+    print()  # noqa: T201
+    print("#", title)  # noqa: T201
 
 
 def create_dope_sheet_blueprint():
@@ -93,7 +93,9 @@ def create_dope_sheet_blueprint():
 
     print_header("Sliding forward")
     intervals = SlidingPeriodicInterval(
-        start=yesterday, stop=tomorrow, every=timedelta(days=1)
+        start=yesterday,
+        stop=tomorrow,
+        every=timedelta(days=1),
     )
     print_intervals(intervals)
 
@@ -101,19 +103,25 @@ def create_dope_sheet_blueprint():
     # just the opposite of sliding forward without any different computation involved.
     print_header("Sliding reverse")
     intervals = SlidingPeriodicInterval(
-        start=yesterday, stop=tomorrow, every=timedelta(days=1)
+        start=yesterday,
+        stop=tomorrow,
+        every=timedelta(days=1),
     )
     print_intervals(reversed(list(intervals)))
 
     print_header("Cumulative I (unaligned)")
     intervals = CumulativePeriodicInterval(
-        start=yesterday, stop=tomorrow, every=timedelta(days=1)
+        start=yesterday,
+        stop=tomorrow,
+        every=timedelta(days=1),
     )
     print_intervals(intervals)
 
     print_header("Cumulative II (aligned)")
     now_aligned_to_hour = now - timedelta(
-        minutes=now.minute, seconds=now.second, microseconds=now.microsecond
+        minutes=now.minute,
+        seconds=now.second,
+        microseconds=now.microsecond,
     )
     intervals = CumulativePeriodicInterval(
         start=now_aligned_to_hour,

@@ -13,7 +13,10 @@ logger = logging.getLogger(__name__)
 
 class SequentialAnimation:
     def __init__(
-        self, grafana: GrafanaWrapper, dashboard_uid: str = None, options: Munch = None
+        self,
+        grafana: GrafanaWrapper,
+        dashboard_uid: str = None,
+        options: Munch = None,
     ):
         self.grafana = grafana
         self.dashboard_uid = dashboard_uid
@@ -57,7 +60,7 @@ class SequentialAnimation:
                         "image": image,
                     },
                     "frame": frame,
-                }
+                },
             )
 
             yield item
@@ -71,7 +74,8 @@ class SequentialAnimation:
         logger.debug("Rendering image")
         if self.options["exposure-time"] > 0:
             logger.info(
-                "Waiting for %s seconds (exposure time)", self.options["exposure-time"]
+                "Waiting for %s seconds (exposure time)",
+                self.options["exposure-time"],
             )
             time.sleep(self.options["exposure-time"])
 

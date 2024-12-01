@@ -3,6 +3,7 @@
 import json
 import logging
 import os
+import typing as t
 from pathlib import Path
 
 from docopt import DocoptExit, docopt
@@ -11,8 +12,11 @@ from grafanimate import __appname__, __version__
 from grafanimate.core import get_scenario, make_grafana, run_animation_scenario
 from grafanimate.media import produce_artifacts
 from grafanimate.model import RenderingOptions
-from grafanimate.spool import TemporaryStorage
 from grafanimate.util import asbool, normalize_options, setup_logging
+
+if t.TYPE_CHECKING:
+    from grafanimate.spool import TemporaryStorage
+
 
 log = logging.getLogger(__name__)
 
@@ -138,12 +142,12 @@ def run():
         output_path = os.environ.get("GRAFANIMATE_OUTPUT")
     if not output_path:
         raise DocoptExit(
-            "Error: Parameter --output or environment variable GRAFANIMATE_OUTPUT is mandatory"
+            "Error: Parameter --output or environment variable GRAFANIMATE_OUTPUT is mandatory",
         )
 
     if options["dashboard-view"] == "d-solo" and not options["panel-id"]:
         raise DocoptExit(
-            "Error: Parameter --panel-id is mandatory for --dashboard-view=d-solo"
+            "Error: Parameter --panel-id is mandatory for --dashboard-view=d-solo",
         )
 
     options["exposure-time"] = float(options["exposure-time"])
@@ -175,17 +179,22 @@ def run():
         scenario.dashboard_uid = options["dashboard-uid"]
     if not scenario.dashboard_uid:
         raise KeyError(
-            "Dashboard UID is mandatory, either supply it on the command line or via scenario file"
+            "Dashboard UID is mandatory, either supply it on the command line or via scenario file",
         )
 
     # Open a Grafana site in Firefox, using Marionette.
     grafana = make_grafana(
-        scenario.grafana_url, scenario.dashboard_uid, options, options["headless"]
+        scenario.grafana_url,
+        scenario.dashboard_uid,
+        options,
+        options["headless"],
     )
 
     # Invoke pipeline: Run stop motion animation, producing single frames.
     storage: TemporaryStorage = run_animation_scenario(
-        scenario=scenario, grafana=grafana, options=options
+        scenario=scenario,
+        grafana=grafana,
+        options=options,
     )
 
     # Define output filename pattern.

@@ -69,7 +69,10 @@ def get_freq_delta(every: str) -> RecurrenceInfo:
             delta -= relativedelta(seconds=1)
 
         return RecurrenceInfo(
-            every=every, frequency=rr_freq, interval=rr_interval, duration=delta
+            every=every,
+            frequency=rr_freq,
+            interval=rr_interval,
+            duration=delta,
         )
 
     # 2. Compute parameters from specific labels, expression periods.
@@ -134,7 +137,10 @@ def get_freq_delta(every: str) -> RecurrenceInfo:
         delta = get_relativedelta(seconds=delta.total_seconds())
 
     return RecurrenceInfo(
-        every=every, frequency=rr_freq, interval=rr_interval, duration=delta
+        every=every,
+        frequency=rr_freq,
+        interval=rr_interval,
+        duration=delta,
     )
 
 
@@ -167,7 +173,7 @@ def get_relativedelta(seconds: int):
     ).normalized()
 
 
-def format_date_filename(date, every=None):
+def format_date_filename(date, every=None):  # noqa: ARG001
     # pattern = '%Y-%m-%d'
     pattern = "%Y-%m-%dT%H-%M-%S"
     # if every in ['secondly', 'minutely', 'hourly']:
@@ -196,13 +202,14 @@ def convert_absolute_timestamp(value: Union[datetime, str]) -> datetime:
         value = dateutil.parser.parse(value)
     else:
         raise TypeError(
-            f"Unknown data type for `start` or `stop` value: {value} ({type(value)})"
+            f"Unknown data type for `start` or `stop` value: {value} ({type(value)})",
         )
     return value
 
 
 def convert_input_timestamp(
-    value: Union[datetime, str], relative_to: Optional[datetime] = None
+    value: Union[datetime, str],
+    relative_to: Optional[datetime] = None,
 ) -> datetime:
     """
     Read and convert absolute or relative (humanized) timestamps.

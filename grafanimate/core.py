@@ -17,7 +17,10 @@ log = logging.getLogger(__name__)
 
 
 def make_grafana(
-    url: str, dashboard_uid: str, options: dict, headless=False
+    url: str,
+    dashboard_uid: str,
+    options: dict,
+    headless=False,
 ) -> GrafanaWrapper:
     do_login = False
     url = furl(url)
@@ -46,10 +49,11 @@ def make_grafana(
     if str(url)[-1] != "/":
         url = str(url) + "/"
     url = str(url) + view + "/" + dashboard_uid + "/" + slug + query
-    print(url)
+    log.info(f"URL: {url}")
 
     grafana = GrafanaWrapper(
-        baseurl=str(url), use_panel_events=options["use-panel-events"]
+        baseurl=str(url),
+        use_panel_events=options["use-panel-events"],
     )
     grafana.boot_firefox(headless=headless)
     grafana.boot_grafana()
@@ -77,7 +81,7 @@ def get_scenario(source: str) -> AnimationScenario:
 
     if scenario is None:
         raise NotImplementedError(
-            f'Animation scenario "{source}" not found or implemented'
+            f'Animation scenario "{source}" not found or implemented',
         )
 
     scenario.source = source
@@ -105,10 +109,12 @@ def resolve_reference(module, symbol):
 
 
 def run_animation_scenario(
-    scenario: AnimationScenario, grafana: GrafanaWrapper, options: Munch
+    scenario: AnimationScenario,
+    grafana: GrafanaWrapper,
+    options: Munch,
 ) -> TemporaryStorage:
     log.info(
-        f"Running animation scenario at {scenario.grafana_url}, with dashboard UID {scenario.dashboard_uid}"
+        f"Running animation scenario at {scenario.grafana_url}, with dashboard UID {scenario.dashboard_uid}",
     )
 
     storage = TemporaryStorage()
@@ -129,7 +135,9 @@ def run_animation_scenario(
 
     # Start the engines.
     animation = SequentialAnimation(
-        grafana=grafana, dashboard_uid=scenario.dashboard_uid, options=animation_options
+        grafana=grafana,
+        dashboard_uid=scenario.dashboard_uid,
+        options=animation_options,
     )
     animation.start()
 

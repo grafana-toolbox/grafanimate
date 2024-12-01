@@ -125,11 +125,15 @@ def ldi_all():
     return [
         # LDI, ramp-up
         AnimationSequence(
-            start=datetime(2015, 10, 1), stop=datetime(2017, 1, 1), every="monthly"
+            start=datetime(2015, 10, 1),
+            stop=datetime(2017, 1, 1),
+            every="monthly",
         ),
         # LDI, growth
         AnimationSequence(
-            start=datetime(2017, 1, 1), stop=datetime.now(), every="weekly"
+            start=datetime(2017, 1, 1),
+            stop=datetime.now(),
+            every="weekly",
         ),
     ]
 
@@ -147,16 +151,22 @@ def ldi_with_gaps():
     return [
         # LDI, ramp-up
         AnimationSequence(
-            start=datetime(2015, 10, 1), stop=datetime(2017, 1, 1), every="monthly"
+            start=datetime(2015, 10, 1),
+            stop=datetime(2017, 1, 1),
+            every="monthly",
         ),
         # LDI, growth, with gap at 2018-04-29 - 2018-12-20
         # TODO: Detect empty data from datasource through Grafana Sidecar and skip respective images.
         AnimationSequence(
-            start=datetime(2017, 1, 1), stop=datetime(2018, 6, 5), every="weekly"
+            start=datetime(2017, 1, 1),
+            stop=datetime(2018, 6, 5),
+            every="weekly",
         ),
         # LDI, until now
         AnimationSequence(
-            start=datetime(2018, 12, 20), stop=datetime.now(), every="weekly"
+            start=datetime(2018, 12, 20),
+            stop=datetime.now(),
+            every="weekly",
         ),
     ]
 

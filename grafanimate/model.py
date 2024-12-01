@@ -65,7 +65,9 @@ class AnimationSequence:
 
     def get_frames(self) -> Generator[AnimationFrame, None, None]:
         timerange = Timerange(
-            start=self.start, stop=self.stop, recurrence=self.recurrence
+            start=self.start,
+            stop=self.stop,
+            recurrence=self.recurrence,
         )
 
         # until = datetime.now()
@@ -86,7 +88,7 @@ class AnimationSequence:
                 until=timerange.stop,
                 freq=self.recurrence.frequency,
                 interval=self.recurrence.interval,
-            )
+            ),
         )
         # logger.info('Date range is: %s', daterange)
 

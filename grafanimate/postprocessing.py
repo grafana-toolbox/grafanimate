@@ -29,7 +29,7 @@ class MediaProducer:
         command = f"ffmpeg -framerate {self.options.video_framerate} -pattern_type glob -i '{source}' -c:v libx264 -vf 'pad=ceil(iw/2)*2:ceil(ih/2)*2,fps={self.options.video_fps},format=yuv420p' '{target}' -y"
         logger.info(f"Rendering video: {target}")
         logger.debug(command)
-        os.system(command)
+        os.system(command)  # noqa: S605
 
     def to_gif(self, source, target):
         """
@@ -81,11 +81,11 @@ class MediaProducer:
         command = f"ffmpeg -i '{source}' -filter_complex 'fps={self.options.gif_fps},scale={self.options.gif_width}:-1:flags=lanczos,split [o1] [o2];[o1] palettegen [p]; [o2] [p] paletteuse' '{target}' -y"
         logger.info("Rendering GIF: %s", target)
         logger.debug(command)
-        os.system(command)
+        os.system(command)  # noqa: S605
 
     def upload_server(self, source):
         command = f"make --makefile=/Users/amo/dev/hiveeyes/sources/documentation/Makefile ptrace source={source}"
-        os.system(command)
+        os.system(command)  # noqa: S605
 
     def render(self, source, target):
         mp4 = target
