@@ -67,7 +67,7 @@ optional-dependencies.develop = [
 optional-dependencies.release = [
   "build<2",
   "keyring",
-  "twine<6",
+  "twine<7",
 ]
 optional-dependencies.test = [
   "freezegun>=1,<2",
