@@ -150,7 +150,7 @@ class FirefoxMarionetteBase:
 
             if self.firefox_already_started:
                 logger.warning(
-                    "Can not shutdown Firefox as it was already running before starting this program"
+                    "Can not shutdown Firefox as it was already running before starting this program",
                 )
                 return False
 
@@ -171,7 +171,7 @@ class FirefoxMarionetteBase:
         Wait for element to appear.
         """
         waiter = Wait(self.marionette, timeout=20.0, interval=0.1)
-        element = waiter.until(lambda m: self.find_tag(tagname))
+        element = waiter.until(lambda _: self.find_tag(tagname))
         return element
 
     def render_image(self, element=None):

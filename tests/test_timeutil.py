@@ -44,7 +44,10 @@ def test_freq_delta_legacy():
     assert recurrence.frequency == WEEKLY
     assert recurrence.interval == 1
     assert recurrence.duration == relativedelta(
-        days=+6, hours=+23, minutes=+59, seconds=+59
+        days=+6,
+        hours=+23,
+        minutes=+59,
+        seconds=+59,
     )
 
     recurrence = get_freq_delta("monthly")

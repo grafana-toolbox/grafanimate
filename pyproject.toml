@@ -90,10 +90,53 @@ line-length = 121
 src_paths = [ "grafanimate", "tests" ]
 
 [tool.ruff]
-lint.select = [ "AIR", "E", "F", "G", "I", "PIE", "PLR1714", "PLW2901", "TRY201", "UP" ]
+lint.select = [
+  "AIR",
+  # flake8-unused-arguments
+  "ARG",
+  # pyupgrade
+  # "UP",
+  # flake8-commas
+  "COM",
+  # Pycodestyle
+  "E",
+  # eradicate
+  "ERA",
+  # Pyflakes
+  "F",
+  "G",
+  # isort
+  "I",
+  # flake8-use-pathlib
+  # "PTH",
+  "PIE",
+  "PLR1714",
+  "PLW2901",
+  # flake8-quotes
+  "Q",
+  # return
+  "RET",
+  # Bandit
+  "S",
+  # print
+  "T20",
+  # future-annotations
+  # "FA",
+  # flake8-type-checking
+  "TCH",
+  "TRY201",
+  "UP",
+  "W",
+  # flake8-2020
+  "YTT",
+]
+
 lint.ignore = [
-  "E501", # line too long
-  "G004", # Logging statement uses f-string
+  "E501",   # line too long
+  "ERA001", # Found commented-out code
+  "G004",   # Logging statement uses f-string
+  "RET503", # Missing explicit `return` at the end of function able to return non-`None` value
+  "RET504", # Unnecessary assignment to `results` before `return` statement
 ]
 lint.per-file-ignores."__init__.py" = [
   "F401", # allow unused imports in __init__.py
@@ -110,6 +153,7 @@ lint.per-file-ignores."tests/*" = [
   "ARG",  # allow unused arguments for pytest fixtures
   "E741", # allow reused variables
   "F841", # allow unused local variables
+  "S101", # use of `assert` detected
 ]
 
 [tool.isort]

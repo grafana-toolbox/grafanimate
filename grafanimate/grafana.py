@@ -21,7 +21,10 @@ class GrafanaWrapper(FirefoxMarionetteBase):
     """
 
     def __init__(
-        self, baseurl: str = None, use_panel_events: bool = True, dry_run: bool = False
+        self,
+        baseurl: str = None,
+        use_panel_events: bool = True,
+        dry_run: bool = False,
     ):
         self.baseurl = baseurl
         self.use_panel_events = use_panel_events
@@ -93,7 +96,7 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         log.info('Waiting for "all-data-received" event')
         waiter = Wait(self.marionette, timeout=20.0, interval=0.1)
 
-        def condition(marionette):
+        def condition(marionette):  # noqa: ARG001
             return self.calljs("grafanaStudio.hasAllData", silent=True)
 
         try:
@@ -153,7 +156,9 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         if not silent:
             log.debug("Running Javascript: %s", sourcecode)
         return self.marionette.execute_script(
-            sourcecode, sandbox=None, new_sandbox=False
+            sourcecode,
+            sandbox=None,
+            new_sandbox=False,
         )
 
     def calljs(self, name, *args, silent=False):

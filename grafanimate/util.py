@@ -53,8 +53,7 @@ def check_socket(host, port):
         sock.settimeout(1)
         if sock.connect_ex((host, port)) == 0:
             return True
-        else:
-            return False
+        return False
 
 
 def filter_dict(data, keys):
@@ -93,10 +92,9 @@ def asbool(obj):
         obj = obj.strip().lower()
         if obj in ["true", "yes", "on", "y", "t", "1"]:
             return True
-        elif obj in ["false", "no", "off", "n", "f", "0"]:
+        if obj in ["false", "no", "off", "n", "f", "0"]:
             return False
-        else:
-            raise ValueError(f"String is not true/false: {obj!r}")
+        raise ValueError(f"String is not true/false: {obj!r}")
     return bool(obj)
 
 
@@ -115,8 +113,7 @@ def as_list(seq):
     # From `numpy.distutils.misc_util`
     if is_sequence(seq):
         return list(seq)
-    else:
-        return [seq]
+    return [seq]
 
 
 def import_module(name: str, path: str):
