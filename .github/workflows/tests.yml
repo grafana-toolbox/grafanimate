@@ -23,13 +23,18 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    - name: Install uv
+      uses: astral-sh/setup-uv@v4
+      with:
+        version: "latest"
+
     - name: Set timezone
       uses: szenius/set-timezone@v2.0
 
     - name: Set up project
       run: |
         # Install package in editable mode.
-        pip install --use-pep517 --prefer-binary --editable=.[develop,test]
+        uv pip install --system --editable='.[develop,test]'
 
     - name: Run linters and software tests
       run: poe check
