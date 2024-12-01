@@ -14,7 +14,7 @@
 .. image:: https://img.shields.io/pypi/pyversions/grafanimate.svg
     :target: https://pypi.org/project/grafanimate/
 
-.. image:: https://img.shields.io/badge/Grafana-5.x%20--%208.x-blue.svg
+.. image:: https://img.shields.io/badge/Grafana-10.x%20--%2011.x-blue.svg
     :target: https://github.com/grafana/grafana
     :alt: Supported Grafana versions
 
