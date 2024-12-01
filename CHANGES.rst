@@ -5,8 +5,24 @@ grafanimate changelog
 
 in progress
 ===========
-- Add Dockerfile, and publish OCI images to GHCR. Thanks, @intermittentnrg.
+- OCI: Added Dockerfile, and started publishing OCI images to GHCR
+- OCI: Dockerfile: Added ``xauth`` and ``ffmpeg`` packages
+- OCI: Dockerfile: Use ``tini`` for bootstrapping ``xvfb-run``
+- Improved finding executable to ``firefox-esr``. Thanks, @gogglespisano.
+- Improved support with ``AnimationSequence.recurrence``
+- Migrated to ``pyproject.toml``
+- Added support for Python up to version 3.13, and dropped support for
+  Python up to version 3.8.
+- Added support for recent versions of Grafana based on React.js
+- Grafana Studio: Update title in solo panel mode, improve login method,
+  set attribution in map, remove some dead changes, fix for ``onDashboardLoad``,
+  remove legacy code, fix for ``use-panel-events``, undock menu if visible,
+  try to set kiosk mode, fix using single panel view
+- Grafana Studio: Dropped support for Grafana without Scenes
+- ffmpeg: fifo filter for gif was not available for ffmpeg on debian 13
+- Added --headless option, to allow rendering whole dashboards
 
+Thanks a stack, @intermittentnrg and @maurerle.
 
 2022-04-10 0.7.0
 ================
