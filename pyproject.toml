@@ -11,7 +11,11 @@ readme = "README.rst"
 keywords = [ "animate", "animation", "automation", "gif", "grafana", "time", "video" ]
 
 license = { text = "AGPL 3, EUPL 1.2" }
-authors = [ { name = "Andreas Motl", email = "andreas.motl@panodata.org" } ]
+authors = [
+  { name = "Andreas Motl", email = "andreas.motl@panodata.org" },
+  { name = "Florian Maurer", email = "f.maurer@outlook.de" },
+  { name = "intermittent.energy" },
+]
 requires-python = ">=3.9,<3.14"
 
 classifiers = [
@@ -23,9 +27,12 @@ classifiers = [
   "Intended Audience :: Science/Research",
   "Intended Audience :: System Administrators",
   "Intended Audience :: Telecommunications Industry",
+  "License :: OSI Approved :: European Union Public Licence 1.2 (EUPL 1.2)",
+  "License :: OSI Approved :: GNU Affero General Public License v3",
   "Operating System :: MacOS",
   "Operating System :: POSIX",
   "Operating System :: Unix",
+  "Programming Language :: Python",
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
@@ -83,11 +90,6 @@ packages = { find = {} }
 
 [tool.setuptools.package-data]
 "grafanimate" = [ "*.js" ]
-
-[tool.black]
-line-length = 121
-#include = '\.pyi?$'
-src_paths = [ "grafanimate", "tests" ]
 
 [tool.ruff]
 lint.select = [
