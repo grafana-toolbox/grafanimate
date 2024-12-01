@@ -44,6 +44,13 @@ env:
 jobs:
 
   oci:
+
+    # Fix workflow permissions to permit the recipe to upload to GHCR.
+    # https://github.com/docker/build-push-action/issues/687#issuecomment-1651816012
+    permissions:
+      contents: read
+      packages: write
+
     runs-on: ubuntu-22.04
     if: ${{ ! (startsWith(github.actor, 'dependabot') || github.event.pull_request.head.repo.fork ) }}
 
