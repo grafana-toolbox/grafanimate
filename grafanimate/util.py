@@ -129,7 +129,7 @@ def import_module(name: str, path: str):
     import importlib.util
 
     spec = importlib.util.spec_from_file_location(name, modulefile)
-    if spec is None:
+    if spec is None or spec.loader is None:
         raise FileNotFoundError(f"Unable to find module file {modulefile}")
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)

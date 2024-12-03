@@ -35,8 +35,8 @@ class AnimationSequence:
         self,
         start: Union[datetime, int, str],
         stop: Union[datetime, int, str],
-        every: str = None,
-        recurrence: RecurrenceInfo = None,
+        every: Optional[str] = None,
+        recurrence: Optional[RecurrenceInfo] = None,
         mode: Optional[SequencingMode] = SequencingMode.WINDOW,
     ):
         # Convert start/stop timestamps, resolving relative timestamps.
@@ -53,6 +53,10 @@ class AnimationSequence:
         if recurrence is not None:
             self.recurrence = recurrence
         else:
+            if every is None:
+                raise ValueError(
+                    "Parameter `every` is mandatory when `recurrence` is not given"
+                )
             self.recurrence = get_freq_delta(every)
 
         self.mode = mode

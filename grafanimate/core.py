@@ -23,13 +23,14 @@ def make_grafana(
     headless=False,
 ) -> GrafanaWrapper:
     do_login = False
-    url = furl(url)
-    if url.username:
+    url_object = furl(url)
+    if url_object.username:
         do_login = True
-        username = url.username
-        password = url.password
-        url.username = None
-        url.password = None
+        username = url_object.username
+        password = url_object.password
+        url_object.username = None
+        url_object.password = None
+    url = str(url_object)
 
     view = "d"
     slug = "foo"
@@ -46,9 +47,9 @@ def make_grafana(
         else:
             query = "?viewPanel=" + options["panel-id"]
 
-    if str(url)[-1] != "/":
-        url = str(url) + "/"
-    url = str(url) + view + "/" + dashboard_uid + "/" + slug + query
+    if url[-1] != "/":
+        url += "/"
+    url += view + "/" + dashboard_uid + "/" + slug + query
     log.info(f"URL: {url}")
 
     grafana = GrafanaWrapper(
@@ -143,7 +144,7 @@ def run_animation_scenario(
 
     # Run animation scenario.
     for index, sequence in enumerate(scenario.sequences):
-        sequence.index = index
+        sequence.index = index  # type: ignore[assignment]  # TODO: Review.
         results = list(animation.run(sequence))
         if not options.dry_run:
             storage.save_items(results)

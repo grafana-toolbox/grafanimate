@@ -3,6 +3,7 @@
 import json
 import logging
 import time
+import typing as t
 from importlib.resources import read_text
 
 from marionette_driver import Wait
@@ -22,7 +23,7 @@ class GrafanaWrapper(FirefoxMarionetteBase):
 
     def __init__(
         self,
-        baseurl: str = None,
+        baseurl: t.Optional[str] = None,
         use_panel_events: bool = True,
         dry_run: bool = False,
     ):
