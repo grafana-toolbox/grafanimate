@@ -24,7 +24,7 @@ setup-virtualenv:
 # Test
 # ----
 test: setup-virtualenv
-	$(pytest) -vvv tests
+	$(pytest)
 
 format-js:
 	brew install prettier

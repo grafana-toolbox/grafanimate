@@ -80,6 +80,7 @@ optional-dependencies.release = [
 optional-dependencies.test = [
   "freezegun>=1,<2",
   "pytest>=6,<9",
+  "pytest-cov<7",
 ]
 urls.Homepage = "https://github.com/grafana-toolbox/grafanimate"
 urls.Issues = "https://github.com/grafana-toolbox/grafanimate/issues"
@@ -100,7 +101,7 @@ lint.select = [
   # pyupgrade
   # "UP",
   # flake8-commas
-  "COM",
+  # "COM",
   # Pycodestyle
   "E",
   # eradicate
@@ -163,6 +164,19 @@ lint.per-file-ignores."tests/*" = [
 profile = "black"
 src_paths = [ "grafanimate", "tests" ]
 
+[tool.pytest.ini_options]
+addopts = "-rA --verbosity=3 --cov --cov-report=term-missing --cov-report=xml"
+minversion = "2.0"
+log_level = "DEBUG"
+log_cli_level = "DEBUG"
+log_format = "%(asctime)-15s [%(name)-36s] %(levelname)-8s: %(message)s"
+testpaths = [
+  "grafanimate",
+  "tests",
+]
+xfail_strict = true
+markers = [
+]
 [tool.poe.tasks]
 
 check = [

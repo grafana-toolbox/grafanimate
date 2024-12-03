@@ -8,3 +8,5 @@
 .DS_Store
 gecko.log
 *.orig
+.coverage
+coverage.xml
