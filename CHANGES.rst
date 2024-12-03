@@ -5,6 +5,9 @@ grafanimate changelog
 
 in progress
 ===========
+
+2024-12-03 0.8.0
+================
 - OCI: Added Dockerfile, and started publishing OCI images to GHCR
 - OCI: Dockerfile: Added ``xauth`` and ``ffmpeg`` packages
 - OCI: Dockerfile: Use ``tini`` for bootstrapping ``xvfb-run``
