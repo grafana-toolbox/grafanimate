@@ -178,6 +178,16 @@ xfail_strict = true
 markers = [
 ]
 
+[tool.coverage.run]
+branch = false
+omit = [
+  "tests/*",
+]
+
+[tool.coverage.report]
+fail_under = 0
+show_missing = true
+
 [tool.mypy]
 packages = [ "grafanimate" ]
 exclude = [
