@@ -2,6 +2,7 @@
 # License: GNU Affero General Public License, Version 3
 import logging
 import time
+import typing as t
 
 from munch import Munch, munchify
 
@@ -15,12 +16,12 @@ class SequentialAnimation:
     def __init__(
         self,
         grafana: GrafanaWrapper,
-        dashboard_uid: str = None,
-        options: Munch = None,
+        dashboard_uid: t.Optional[str] = None,
+        options: t.Optional[Munch] = None,
     ):
         self.grafana = grafana
         self.dashboard_uid = dashboard_uid
-        self.options = options or None
+        self.options = options or Munch()
         self.dry_run: bool = self.options.get("dry-run", False)
 
     def start(self):
@@ -38,7 +39,7 @@ class SequentialAnimation:
 
         self.log(f"Starting animation: {sequence}")
 
-        frame: AnimationFrame = None
+        frame: AnimationFrame
         for frame in sequence.get_frames():
             # logger.info("=" * 42)
 

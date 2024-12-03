@@ -26,7 +26,7 @@ class RecurrenceInfo:
     duration: relativedelta
 
     # Original interval/windowing label.
-    every: str = None
+    every: Optional[str] = None
 
 
 @dataclasses.dataclass
@@ -134,7 +134,7 @@ def get_freq_delta(every: str) -> RecurrenceInfo:
         raise ValueError(f'Unknown interval "{every}"')
 
     if isinstance(delta, timedelta):
-        delta = get_relativedelta(seconds=delta.total_seconds())
+        delta = get_relativedelta(seconds=int(delta.total_seconds()))
 
     return RecurrenceInfo(
         every=every,
@@ -190,7 +190,7 @@ def format_date_grafana(date: datetime, recurrence: RecurrenceInfo):
     return date_formatted
 
 
-def convert_absolute_timestamp(value: Union[datetime, str]) -> datetime:
+def convert_absolute_timestamp(value: Union[datetime, str, int]) -> datetime:
     """
     Read and convert absolute timestamps.
     """
@@ -208,7 +208,7 @@ def convert_absolute_timestamp(value: Union[datetime, str]) -> datetime:
 
 
 def convert_input_timestamp(
-    value: Union[datetime, str],
+    value: Union[datetime, str, int],
     relative_to: Optional[datetime] = None,
 ) -> datetime:
     """
@@ -221,6 +221,8 @@ def convert_input_timestamp(
             delta = parse_human_time(value)
             if not delta:
                 raise ValueError(f"Unable to parse {value}")
+            if not relative_to:
+                raise ValueError("relative_to not given or empty")
             return relative_to + timedelta(seconds=delta)
         except ValueError as ex:
             if "Unable to parse" not in str(ex):

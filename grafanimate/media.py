@@ -15,7 +15,10 @@ def produce_artifacts(
     # TODO: Can put `start` into filename?
 
     title_slug = slug(scenario.dashboard_title or scenario.dashboard_uid)
-    scenario_slug = slug(scenario.source.replace(".py", ""))
+    if scenario.source is not None:
+        scenario_slug = slug(scenario.source.replace(".py", ""))
+    else:
+        scenario_slug = None
 
     # Compute input pattern and output file name.
     input = os.path.join(str(input), "*.png")

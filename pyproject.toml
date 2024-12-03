@@ -177,6 +177,22 @@ testpaths = [
 xfail_strict = true
 markers = [
 ]
+
+[tool.mypy]
+packages = [ "grafanimate" ]
+exclude = [
+]
+ignore_missing_imports = true
+check_untyped_defs = false
+implicit_optional = true
+install_types = true
+no_implicit_optional = true
+non_interactive = true
+show_error_codes = true
+strict_equality = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+
 [tool.poe.tasks]
 
 check = [
@@ -195,7 +211,7 @@ format = [
 lint = [
   { cmd = "ruff check ." },
   { cmd = "validate-pyproject pyproject.toml" },
-  # { cmd = "mypy" },
+  { cmd = "mypy" },
 ]
 
 release = [
