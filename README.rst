@@ -169,11 +169,11 @@ Usage in Containers
 *******************
 
 You can use ``grafanimate`` with Docker and Podman. An OCI image is published
-to ``ghcr.io/panodata/grafanimate``.
+to ``ghcr.io/grafana-toolbox/grafanimate``.
 
 .. code:: sh
 
-    docker run --rm -it --volume=$(PWD)/animations:/animations ghcr.io/panodata/grafanimate \
+    docker run --rm -it --volume=$(PWD)/animations:/animations ghcr.io/grafana-toolbox/grafanimate \
         --header-layout=no-chrome \
         --video-fps=30 --video-framerate=30 \
         --scenario=playdemo --output=./animations
@@ -301,7 +301,7 @@ Development
 .. code:: sh
 
     # Acquire sources.
-    git clone https://github.com/panodata/grafanimate
+    git clone https://github.com/grafana-toolbox/grafanimate
     cd grafanimate
 
     # Create and activate virtualenv.
@@ -319,7 +319,7 @@ Development
 Project information
 *******************
 
-The code lives on `GitHub <https://github.com/panodata/grafanimate>`_ and
+The code lives on `GitHub <https://github.com/grafana-toolbox/grafanimate>`_ and
 the Python package is published to `PyPI <https://pypi.org/project/grafanimate/>`_.
 
 
@@ -354,7 +354,7 @@ License
 .. _Marionette Python Client: https://marionette-client.readthedocs.io/
 .. _Playlists: http://docs.grafana.org/reference/playlist/
 .. _pytimeparse2: https://github.com/onegreyonewhite/pytimeparse2
-.. _scenarios.py: https://github.com/panodata/grafanimate/blob/main/grafanimate/scenarios.py
+.. _scenarios.py: https://github.com/grafana-toolbox/grafanimate/blob/main/grafanimate/scenarios.py
 .. _Scripted Dashboards: http://docs.grafana.org/reference/scripting/
 .. _set time range in Grafana: https://stackoverflow.com/questions/48264279/how-to-set-time-range-in-grafana-dashboard-from-text-panels/52492205#52492205
 .. _time range control: http://docs.grafana.org/reference/timerange/
