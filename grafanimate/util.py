@@ -43,6 +43,8 @@ def read_list(data, separator=","):
 
 def find_program_candidate(candidates):
     for candidate in candidates:
+        if candidate is None:
+            continue
         if os.path.isfile(candidate):
             return candidate
 
