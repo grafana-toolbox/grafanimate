@@ -148,6 +148,16 @@ line options, please invoke:
 
     grafanimate --help
 
+Configuration
+=============
+
+Firefox Location
+----------------
+grafanimate will discover a Firefox installation on your system path.
+If you need to configure a specific installation location, use the
+environment variable ``FIREFOX_BIN`` to point to the Firefox executable
+on your system.
+
 Examples
 ========
 

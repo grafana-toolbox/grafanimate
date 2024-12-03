@@ -3,6 +3,7 @@
 import atexit
 import json
 import logging
+import os
 from collections import OrderedDict
 
 import where
@@ -109,10 +110,10 @@ class FirefoxMarionetteBase:
 
     @classmethod
     def find_firefox(cls):
-        candidates = []
-        candidates += where.where("firefox-bin")
-        candidates += where.where("firefox-esr")
-        candidates += [
+        candidates = [
+            os.environ.get("FIREFOX_BIN"),
+            where.where("firefox-bin"),
+            where.where("firefox-esr"),
             "/Applications/Firefox.app/Contents/MacOS/firefox-bin",
         ]
         firefox = find_program_candidate(candidates)
