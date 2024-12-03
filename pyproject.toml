@@ -73,6 +73,7 @@ optional-dependencies.develop = [
 ]
 optional-dependencies.release = [
   "build<2",
+  "bump2version",
   "keyring",
   "twine<7",
 ]
