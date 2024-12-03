@@ -12,8 +12,6 @@ $(eval pip          := $(venvpath)/bin/pip)
 $(eval python       := $(venvpath)/bin/python)
 $(eval pytest       := $(venvpath)/bin/pytest)
 $(eval bumpversion  := $(venvpath)/bin/bumpversion)
-$(eval black        := $(venvpath)/bin/black)
-$(eval isort        := $(venvpath)/bin/isort)
 
 
 # Setup Python virtualenv
@@ -28,10 +26,6 @@ setup-virtualenv:
 test: setup-virtualenv
 	$(pytest) -vvv tests
 
-format: install-releasetools
-	$(isort) .
-	$(black) .
-
 format-js:
 	brew install prettier
 	prettier --write grafanimate
@@ -44,7 +38,7 @@ format-js:
 # Release this piece of software
 # Synopsis:
 #   make release bump=minor  (major,minor,patch)
-release: bumpversion push sdist pypi-upload
+release: bumpversion push package pypi-upload
 
 
 # -------------
@@ -66,17 +60,17 @@ bumpversion: install-releasetools
 push:
 	git push && git push --tags
 
-sdist:
-	@$(python) setup.py sdist
+package:
+	@$(python) -m build
 
 pypi-upload: install-releasetools
-	twine upload --skip-existing --verbose dist/*.tar.gz
+	twine upload --skip-existing --verbose dist/*{.tar.gz,.whl}
 
 install-doctools: setup-virtualenv
-	@$(pip) install --quiet --requirement requirements-docs.txt --upgrade
+	@$(pip) install --quiet --upgrade --requirement '.[docs]'
 
 install-releasetools: setup-virtualenv
-	@$(pip) install --quiet --requirement requirements-release.txt --upgrade
+	@$(pip) install --quiet --upgrade --requirement '.[release]'
 
 
 # ==========================================
