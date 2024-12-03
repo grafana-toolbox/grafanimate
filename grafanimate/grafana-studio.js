@@ -29,24 +29,27 @@ class GrafanaStudioSrv {
 
     // https://github.com/grafana/grafana/blob/v8.2.4/public/app/core/components/Login/LoginCtrl.tsx#L85-L106
     $.post({
-        url: '/login',  // The URL where the POST request is sent
-        contentType: 'application/json',
-        data: JSON.stringify({ user: username, password: password }),
-        success: function(response) {
-            console.log('Success:', response);  // Handle success
-        },
-        error: function(xhr, status, error) {
-            console.log('Login Failed:', error);  // Handle error
-        }
+      url: "/login", // The URL where the POST request is sent
+      contentType: "application/json",
+      data: JSON.stringify({ user: username, password: password }),
+      success: function (response) {
+        console.log("Success:", response); // Handle success
+      },
+      error: function (xhr, status, error) {
+        console.log("Login Failed:", error); // Handle error
+      },
     });
   }
 
   hasAllData(value) {
-    return document.querySelector('[aria-label="Refresh"]') && !document.querySelector('[aria-label="Cancel"]')
+    return (
+      document.querySelector('[aria-label="Refresh"]') &&
+      !document.querySelector('[aria-label="Cancel"]')
+    );
   }
 
   setTime(from, to) {
-    __grafanaSceneContext.state.$timeRange.setState({ from: from, to: to});
+    __grafanaSceneContext.state.$timeRange.setState({ from: from, to: to });
     __grafanaSceneContext.state.$timeRange.onRefresh();
   }
 
@@ -132,7 +135,7 @@ class GrafanaStudioSrv {
 
     var _this = this;
     __grafanaSceneContext._events.on("refresh", function (event) {
-      console.log('================ DASHBOARD REFRESH');
+      console.log("================ DASHBOARD REFRESH");
       // Clear signal.
 
       // Adjust user interface on dashboard refresh.
@@ -150,7 +153,7 @@ class GrafanaStudioSrv {
   improveDashboardChrome() {
     // undock menu if visible
     if (document.querySelector('[aria-label="Undock menu"]')) {
-      document.querySelector('[aria-label="Undock menu"]').click()
+      document.querySelector('[aria-label="Undock menu"]').click();
     }
 
     // below CSS properteis are not working with Grafana 11 anymore
@@ -240,8 +243,8 @@ class GrafanaStudioSrv {
       title += infix + dtstart;
     }
 
-    if (this.options["panel-id"] != undefined){
-      $("h2").text(title)
+    if (this.options["panel-id"] != undefined) {
+      $("h2").text(title);
     }
 
     // Add attribution content.
@@ -261,9 +264,9 @@ class GrafanaStudioSrv {
 
   setKioskMode() {
     if (!document.querySelector('[title="Enable kiosk mode"]')) {
-      document.querySelector('[title="Toggle top search bar"]').click()
+      document.querySelector('[title="Toggle top search bar"]').click();
     }
-    document.querySelector('[title="Enable kiosk mode"]').click()
+    document.querySelector('[title="Enable kiosk mode"]').click();
   }
 
   addAttribution() {
@@ -273,10 +276,10 @@ class GrafanaStudioSrv {
     if (!signature.data("manipulated")) {
       signature.data("manipulated", true);
       var grafanimate = $(
-        '<a href="https://github.com/grafana-toolbox/grafanimate" title="grafanimate: Animate timeseries data with Grafana">grafanimate</a>'
+        '<a href="https://github.com/grafana-toolbox/grafanimate" title="grafanimate: Animate timeseries data with Grafana">grafanimate</a>',
       );
       var grafana = $(
-        '<a href="https://grafana.com/" title="Grafana: The leading open source software for time series analytics">Grafana</a>'
+        '<a href="https://grafana.com/" title="Grafana: The leading open source software for time series analytics">Grafana</a>',
       );
       var separator = " | ";
       //signature.prepend(luftdaten_info, separator, grafanimate, separator, grafana, separator);

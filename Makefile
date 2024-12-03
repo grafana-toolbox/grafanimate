@@ -27,7 +27,7 @@ test: setup-virtualenv
 	$(pytest)
 
 format-js:
-	brew install prettier
+	brew install prettier || true
 	prettier --write grafanimate
 
 
