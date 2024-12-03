@@ -67,10 +67,10 @@ pypi-upload: install-releasetools
 	twine upload --skip-existing --verbose dist/*{.tar.gz,.whl}
 
 install-doctools: setup-virtualenv
-	@$(pip) install --quiet --upgrade --requirement '.[docs]'
+	@$(pip) install --quiet --upgrade '.[docs]'
 
 install-releasetools: setup-virtualenv
-	@$(pip) install --quiet --upgrade --requirement '.[release]'
+	@$(pip) install --quiet --upgrade '.[release]'
 
 
 # ==========================================

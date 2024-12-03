@@ -9,5 +9,6 @@
 .DS_Store
 gecko.log
 *.orig
+build
 .coverage
 coverage.xml
