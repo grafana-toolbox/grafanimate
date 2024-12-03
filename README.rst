@@ -4,6 +4,10 @@
 .. image:: https://img.shields.io/pypi/status/grafanimate.svg
     :target: https://pypi.org/project/grafanimate/
 
+.. image:: https://codecov.io/gh/grafana-toolbox/grafanimate/branch/main/graph/badge.svg
+    :target: https://codecov.io/gh/grafana-toolbox/grafanimate
+    :alt: Code coverage
+
 .. image:: https://img.shields.io/pypi/l/grafanimate.svg
     :alt: License
     :target: https://pypi.org/project/grafanimate/

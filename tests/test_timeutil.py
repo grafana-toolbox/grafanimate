@@ -1,7 +1,10 @@
+import re
+
+import pytest
 from dateutil.relativedelta import relativedelta
 from dateutil.rrule import DAILY, HOURLY, MINUTELY, MONTHLY, SECONDLY, WEEKLY, YEARLY
 
-from grafanimate.timeutil import get_freq_delta
+from grafanimate.timeutil import convert_absolute_timestamp, get_freq_delta
 
 
 def test_freq_delta_legacy():
@@ -131,3 +134,13 @@ def test_freq_delta_pytimeparse():
     assert recurrence.frequency == YEARLY
     assert recurrence.interval == 3
     assert recurrence.duration == relativedelta(years=+3, months=+5, seconds=-1)
+
+
+def test_convert_absolute_timestamp_wrong_type():
+    with pytest.raises(TypeError) as ex:
+        convert_absolute_timestamp(42.42)
+    assert ex.match(
+        re.escape(
+            "Unknown data type for `start` or `stop` value: 42.42 (<class 'float'>)"
+        )
+    )
