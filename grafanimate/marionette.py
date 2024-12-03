@@ -110,10 +110,11 @@ class FirefoxMarionetteBase:
 
     @classmethod
     def find_firefox(cls):
-        candidates = [
+        candidates = []
+        candidates += where.where("firefox-bin") + where.where("firefox-esr")
+        candidates += [
             os.environ.get("FIREFOX_BIN"),
-            where.where("firefox-bin"),
-            where.where("firefox-esr"),
+            "/Applications/Firefox.app/Contents/MacOS/firefox",
             "/Applications/Firefox.app/Contents/MacOS/firefox-bin",
         ]
         firefox = find_program_candidate(candidates)
