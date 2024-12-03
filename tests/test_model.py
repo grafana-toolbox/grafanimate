@@ -1,11 +1,14 @@
+import re
 from datetime import datetime, timezone
 
+import pytest
 from dateutil.relativedelta import relativedelta
 from dateutil.rrule import DAILY, MINUTELY
 from dateutil.tz import tzutc
 from freezegun import freeze_time
 
 from grafanimate.model import AnimationScenario, AnimationSequence, SequencingMode
+from grafanimate.timeutil import RecurrenceInfo
 
 
 def test_sequence_datetime():
@@ -171,6 +174,60 @@ def test_sequence_relative_with_now():
         "2021-11-18T20:34:17+00:00/2021-11-19T20:34:16+00:00",
         "2021-11-19T20:34:17+00:00/2021-11-20T20:34:16+00:00",
     ]
+
+
+@freeze_time("2021-11-19T20:34:17Z")
+def test_sequence_recurrence():
+    seq = AnimationSequence(
+        start="-7d",
+        stop="now",
+        recurrence=RecurrenceInfo(
+            frequency=DAILY, interval=1, duration=relativedelta(days=+1, seconds=-1)
+        ),
+    )
+
+    assert seq.start == datetime(2021, 11, 12, 20, 34, 17, tzinfo=tzutc())
+    assert seq.stop == datetime(2021, 11, 19, 20, 34, 17, tzinfo=tzutc())
+
+    assert seq.recurrence.every is None
+    assert seq.recurrence.frequency == DAILY
+    assert seq.recurrence.interval == 1
+    assert seq.recurrence.duration == relativedelta(days=+1, seconds=-1)
+
+    assert list(seq.get_timeranges_isoformat()) == [
+        "2021-11-12T20:34:17+00:00/2021-11-13T20:34:16+00:00",
+        "2021-11-13T20:34:17+00:00/2021-11-14T20:34:16+00:00",
+        "2021-11-14T20:34:17+00:00/2021-11-15T20:34:16+00:00",
+        "2021-11-15T20:34:17+00:00/2021-11-16T20:34:16+00:00",
+        "2021-11-16T20:34:17+00:00/2021-11-17T20:34:16+00:00",
+        "2021-11-17T20:34:17+00:00/2021-11-18T20:34:16+00:00",
+        "2021-11-18T20:34:17+00:00/2021-11-19T20:34:16+00:00",
+        "2021-11-19T20:34:17+00:00/2021-11-20T20:34:16+00:00",
+    ]
+
+
+def test_sequence_needs_recurrence_or_every():
+    with pytest.raises(ValueError) as ex:
+        AnimationSequence(
+            start="-7d",
+            stop="now",
+        )
+    assert ex.match("Parameter `every` is mandatory when `recurrence` is not given")
+
+
+@freeze_time("2021-11-19T20:34:17Z")
+def test_sequence_start_greater_than_stop():
+    with pytest.raises(ValueError) as ex:
+        AnimationSequence(
+            start="+1d",
+            stop="-1d",
+            every="10m",
+        )
+    assert ex.match(
+        re.escape(
+            "Timestamp start=2021-11-20T20:34:17+00:00 is after stop=2021-11-18T20:34:17+00:00"
+        )
+    )
 
 
 def test_scenario_basic():
