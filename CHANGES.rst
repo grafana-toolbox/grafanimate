@@ -5,9 +5,14 @@ grafanimate changelog
 
 in progress
 ===========
+
+2024-12-04 0.9.0
+================
 - Optionally configure Firefox location using ``FIREFOX_BIN``
   environment variable. Thanks, @gogglespisano and @intermittentnrg.
-- Added CLI options ``--window-size`` and ``--zoom-factor``
+- Added CLI options ``--window-size`` and ``--zoom-factor``.
+  Thanks, @intermittentnrg.
+- Fixed login by waiting a little. Thanks, @maurerle.
 
 2024-12-03 0.8.0
 ================
