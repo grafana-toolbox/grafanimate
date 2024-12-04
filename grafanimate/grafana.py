@@ -72,8 +72,9 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         log.info("Logging in")
         javascript = mkjscall("grafanaStudio.login", username, password)
         self.run_javascript(javascript)
-        # the login works, but it is not shown even after reload
-        # self.navigate(self.baseurl)
+        # the login works, we need to wait a bit and reload the page
+        time.sleep(0.5)
+        self.navigate(self.baseurl)
 
     def open_dashboard(self, uid, options=None):
         """
