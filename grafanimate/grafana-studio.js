@@ -266,7 +266,7 @@ class GrafanaStudioSrv {
     if (!document.querySelector('[title="Enable kiosk mode"]')) {
       document.querySelector('[title="Toggle top search bar"]').click();
     }
-    document.querySelector('[title="Enable kiosk mode"]').click();
+    setTimeout(() => { document.querySelector('[title="Enable kiosk mode"]').click() }, 0)
   }
 
   addAttribution() {
