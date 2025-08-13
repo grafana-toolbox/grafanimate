@@ -87,6 +87,7 @@ class FirefoxMarionetteBase:
             startup_timeout=self.startup_timeout,
             headless=self.firefox_run_headless,
             verbose=self.firefox_verbosity,
+            app_args=["--remote-allow-system-access"]
         )
 
         self.marionette.DEFAULT_SHUTDOWN_TIMEOUT = self.shutdown_timeout
