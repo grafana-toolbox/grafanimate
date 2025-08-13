@@ -185,7 +185,7 @@ def format_date_filename(date, every=None):  # noqa: ARG001
 def format_date_grafana(date: datetime, recurrence: RecurrenceInfo):
     pattern = "%Y-%m-%d"
     if recurrence.frequency in [SECONDLY, MINUTELY, HOURLY]:
-        pattern = "%Y-%m-%dT%H:%M:%S"
+        pattern = "%Y-%m-%dT%H:%M:%SZ"
     date_formatted = date.strftime(pattern)
     return date_formatted
 
