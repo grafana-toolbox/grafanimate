@@ -176,6 +176,21 @@ class FirefoxMarionetteBase:
         element = waiter.until(lambda _: self.find_tag(tagname))
         return element
 
+    def find_class(self, classname):
+        try:
+            element = self.marionette.find_element("class name", classname)
+            return element
+        except NoSuchElementException:
+            pass
+
+    def wait_for_element_class(self, classname):
+        """
+        Wait for element to appear.
+        """
+        waiter = Wait(self.marionette, timeout=60.0, interval=0.1)
+        element = waiter.until(lambda _: self.find_class(classname))
+        return element
+
     def render_image(self, element=None):
         """
         Return screenshot from element.

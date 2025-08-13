@@ -76,7 +76,7 @@ class GrafanaWrapper(FirefoxMarionetteBase):
         Wait for element <grafana-app> to appear.
         """
         log.info("Waiting for Grafana to load")
-        element = self.wait_for_element_tag("grafana-app")
+        element = self.wait_for_element_class("grafana-app")
         time.sleep(0.3)
         log.info("Grafana loaded")
         return element
