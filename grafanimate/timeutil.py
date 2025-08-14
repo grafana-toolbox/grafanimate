@@ -2,7 +2,7 @@
 # License: GNU Affero General Public License, Version 3
 import dataclasses
 from datetime import datetime, timedelta, timezone
-from typing import Optional, Union
+from typing import Literal, Optional, Union
 
 import dateutil.parser
 from dateutil.relativedelta import relativedelta
@@ -17,7 +17,7 @@ class RecurrenceInfo:
     """
 
     # One of `rrules`s DAILY, HOURLY, ...
-    frequency: int
+    frequency: Literal[0, 1, 2, 3, 4, 5, 6]
 
     # The segment duration in seconds.
     interval: int
@@ -37,7 +37,7 @@ class Timerange:
 
 
 def get_freq_delta(every: str) -> RecurrenceInfo:
-    rr_freq = MINUTELY
+    rr_freq: Literal[0, 1, 2, 3, 4, 5, 6] = MINUTELY
     rr_interval = 1
 
     # 1. Attempt to parse time using `pytimeparse` module.
