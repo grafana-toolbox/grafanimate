@@ -5,6 +5,11 @@ grafanimate changelog
 
 in progress
 ===========
+- Fixed Grafana timestamp format by adding UTC identifier ``Z``
+- Started finding the Grafana app per ``wait_for_element_class("grafana-app")``
+- Fixed starting Firefox by using ``--remote-allow-system-access``
+
+Thank you, @NaddiNadja.
 
 2024-12-04 0.9.0
 ================
