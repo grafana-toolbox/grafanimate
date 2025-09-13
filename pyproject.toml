@@ -80,7 +80,7 @@ optional-dependencies.release = [
 optional-dependencies.test = [
   "freezegun>=1,<2",
   "pytest>=6,<9",
-  "pytest-cov<7",
+  "pytest-cov<8",
 ]
 urls.Homepage = "https://github.com/grafana-toolbox/grafanimate"
 urls.Issues = "https://github.com/grafana-toolbox/grafanimate/issues"
