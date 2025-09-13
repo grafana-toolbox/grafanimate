@@ -5,7 +5,7 @@ requires = [ "setuptools>=61.0" ]
 
 [project]
 name = "grafanimate"
-version = "0.9.0"
+version = "0.10.0"
 description = "Animate timeseries data with Grafana"
 readme = "README.rst"
 keywords = [ "animate", "animation", "automation", "gif", "grafana", "time", "video" ]
