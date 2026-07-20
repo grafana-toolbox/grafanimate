@@ -52,7 +52,7 @@ classifiers = [
 ]
 
 dependencies = [
-  "datetime-interval==0.2",
+  "datetime-interval==0.3",
   "docopt-ng<0.10",
   "furl>=2,<3",
   "marionette-driver>=3.4,<4",
