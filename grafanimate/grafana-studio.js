@@ -142,12 +142,6 @@ class GrafanaStudioSrv {
       _this.improveDashboardChrome();
       _this.improvePanelChrome();
     });
-
-    // Adjust user interface on dashboard load.
-    // FIXME: This happens too fast. Complex dashboards might not have finished loading here.
-    if (this.hasHeaderLayout("no-chrome", "studio")) {
-      this.setKioskMode();
-    }
   }
 
   improveDashboardChrome() {
@@ -158,7 +152,6 @@ class GrafanaStudioSrv {
 
     // below CSS properteis are not working with Grafana 11 anymore
     if (this.hasHeaderLayout("no-chrome", "studio")) {
-      //this.setKioskMode();
 
       // Add some padding to content top.
       $(".main-view").css("padding-top", "1rem");
@@ -260,13 +253,6 @@ class GrafanaStudioSrv {
       title = dashboard.meta.folderTitle + " / " + title;
     }
     return title;
-  }
-
-  setKioskMode() {
-    if (!document.querySelector('[title="Enable kiosk mode"]')) {
-      document.querySelector('[title="Toggle top search bar"]').click();
-    }
-    document.querySelector('[title="Enable kiosk mode"]').click();
   }
 
   addAttribution() {
